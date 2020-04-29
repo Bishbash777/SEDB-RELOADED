@@ -1,4 +1,4 @@
-##This plugin is a replacement for the current SEDiscordBridge as it was no longer maintained by its origional author (FabioZumbi)
+##This plugin is a replacement for the current SEDiscordBridge as it was no longer maintained by its original author (FabioZumbi)
 
 
 The same config can still be used for this plugin - just remove the old version of SEDB
