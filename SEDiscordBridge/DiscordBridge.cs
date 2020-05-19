@@ -199,7 +199,7 @@ namespace SEDiscordBridge
             }               
         }
 
-        public async void SendStatusMessage(string user, string msg)
+        public async void SendStatusMessage(ulong user, string msg)
         {
             if (Ready && Plugin.Config.StatusChannelId.Length > 0)
             {
@@ -207,12 +207,10 @@ namespace SEDiscordBridge
                 {
                     DiscordChannel chann = Discord.GetChannelAsync(ulong.Parse(Plugin.Config.StatusChannelId)).Result;
 
-                    if (user != null)
+                    if (user != 0)
                     {
-                        if (user.StartsWith("ID:"))
-                            return;
-
-                        msg = msg.Replace("{p}", user).Replace("{ts}", TimeZone.CurrentTimeZone.ToLocalTime(DateTime.Now).ToString());
+                        string username = GetPlayerName(user);
+                        msg = msg.Replace("{p}", $"{username} ({user})").Replace("{ts}", TimeZone.CurrentTimeZone.ToLocalTime(DateTime.Now).ToString());
                     }
                     botId = Discord.SendMessageAsync(chann, msg.Replace("/n", "\n")).Result.Author.Id;
                 }
@@ -519,6 +517,22 @@ namespace SEDiscordBridge
                     } while (index < message.Length);
                 }
             }
+        }
+
+        public static string GetPlayerName(ulong steamId) {
+            long num = MySession.Static.Players.TryGetIdentityId(steamId, 0);
+            if (num == 0L) {
+                return steamId.ToString();
+            }
+            return GetPlayerName(num);
+        }
+
+        private static string GetPlayerName(long identityId) {
+            MyIdentity myIdentity = MySession.Static.Players.TryGetIdentity(identityId);
+            if (myIdentity == null) {
+                return identityId.ToString();
+            }
+            return myIdentity.DisplayName;
         }
     }
 }
