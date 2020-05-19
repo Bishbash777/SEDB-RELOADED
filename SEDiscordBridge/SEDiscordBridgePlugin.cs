@@ -1,5 +1,4 @@
 ﻿using NLog;
-using Sandbox.Game;
 using Sandbox.Game.Entities;
 using Sandbox.Game.Entities.Character;
 using Sandbox.Game.Gui;
@@ -123,13 +122,13 @@ namespace SEDiscordBridge
 
                     //load
                     LoadSEDB();
-                    if (DDBridge != null) DDBridge.SendStatusMessage(0, Config.Started);
+                    if (DDBridge != null) DDBridge.SendStatusMessage(null, Config.Started);
 
                     break;
 
                 case TorchSessionState.Unloading:
                     if (Config.Stopped.Length > 0)
-                        DDBridge.SendStatusMessage(0, Config.Stopped);
+                        DDBridge.SendStatusMessage(null, Config.Stopped);
                     break;
 
                 case TorchSessionState.Unloaded:
@@ -189,7 +188,7 @@ namespace SEDiscordBridge
                     {
                         _multibase.PlayerJoined += _multibase_PlayerJoined;
                         _multibase.PlayerLeft += _multibase_PlayerLeft;
-                        MyVisualScriptLogicProvider.PlayerConnected += PlayerConnect;
+                        MyEntities.OnEntityAdd += MyEntities_OnEntityAdd;
                     }
                 }
 
@@ -320,7 +319,7 @@ namespace SEDiscordBridge
             _conecting.Remove(obj.SteamId);
             if (Config.Leave.Length > 0)
             {
-                await Task.Run(() => DDBridge.SendStatusMessage(obj.SteamId, Config.Leave));
+                await Task.Run(() => DDBridge.SendStatusMessage(obj.Name, Config.Leave, obj));
             }
         }
 
@@ -332,23 +331,28 @@ namespace SEDiscordBridge
             _conecting.Add(obj.SteamId);
             if (Config.Connect.Length > 0)
             {
-                await Task.Run(() => DDBridge.SendStatusMessage(obj.SteamId, Config.Connect));
+                await Task.Run(() => DDBridge.SendStatusMessage(obj.Name, Config.Connect, obj));
             }
         }
 
-        private void PlayerConnect(long playerId) {
-            ulong steamid = MySession.Static.Players.TryGetSteamId(playerId);
-            Task.Run(() =>
-            {
-                System.Threading.Thread.Sleep(1000);
-                if (_conecting.Contains(steamid) && Config.Join.Length > 0) {
-                    DDBridge.SendStatusMessage(steamid, Config.Join);
-                    //After spawn on world, remove from connecting list
-                    _conecting.Remove(steamid);
-                }
-            });
-        }
+        private void MyEntities_OnEntityAdd(VRage.Game.Entity.MyEntity obj)
+        {
+            if (!Config.Enabled) return;
 
+            if (obj is MyCharacter character)
+            {
+                Task.Run(() =>
+                {
+                    System.Threading.Thread.Sleep(1000);
+                    if (_conecting.Contains(character.ControlSteamId) && character.IsPlayer && Config.Join.Length > 0)
+                    {
+                        DDBridge.SendStatusMessage(character.DisplayName, Config.Join);
+                        //After spawn on world, remove from connecting list
+                        _conecting.Remove(character.ControlSteamId);
+                    }
+                });
+            }
+        }
 
         /// <inheritdoc />        
         public override void Dispose()
@@ -356,8 +360,8 @@ namespace SEDiscordBridge
             if (_multibase != null)
             {
                 _multibase.PlayerJoined -= _multibase_PlayerJoined;
+                MyEntities.OnEntityAdd -= MyEntities_OnEntityAdd;
                 _multibase.PlayerLeft -= _multibase_PlayerLeft;
-                MyVisualScriptLogicProvider.PlayerConnected -= PlayerConnect;
             }
             _multibase = null;
 
