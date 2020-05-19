@@ -280,7 +280,7 @@ namespace SEDiscordBridge
                     if (torchServer.SimulationRatio < float.Parse(Config.SimThresh))
                     {
                         //condition
-                        if (i == DiscordBridge.MinIncrement && DiscordBridge.Locked != 1)
+                        if (i == DiscordBridge.MinIncrement && DiscordBridge.Locked != 1 && MySession.Static.Players.GetOnlinePlayerCount() > 0)
                         {
                             Task.Run(() => DDBridge.SendSimMessage(Config.SimMessage));
                             i = 0;
@@ -289,7 +289,7 @@ namespace SEDiscordBridge
                             DiscordBridge.CooldownNeutral = 0;
                             Log.Warn("Simulation warning sent!");
                         }
-                        if (DiscordBridge.FirstWarning == 1 && DiscordBridge.CooldownNeutral.ToString("00") == "60")
+                        if (DiscordBridge.FirstWarning == 1 && DiscordBridge.CooldownNeutral.ToString("00") == "60" && MySession.Static.Players.GetOnlinePlayerCount() > 0)
                         {
                             Task.Run(() => DDBridge.SendSimMessage(Config.SimMessage));
                             Log.Warn("Simulation warning sent!");
