@@ -169,6 +169,10 @@ namespace SEDiscordBridge
                     SEDiscordBridgePlugin.Log.Warn($"Message: {msg}");
                     retry = 0;
                 }
+                catch(System.Net.Http.HttpRequestException) {
+                    SEDiscordBridgePlugin.Log.Fatal($"Unable to send message");
+                    SEDiscordBridgePlugin.Log.Warn($"Message: {msg}");
+                }
             }       
         }
 
