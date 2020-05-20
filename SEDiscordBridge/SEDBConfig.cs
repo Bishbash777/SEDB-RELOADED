@@ -14,6 +14,9 @@ namespace SEDiscordBridge
         private bool _embed = false;
         public bool Embed { get => _embed; set => SetValue(ref _embed, value); }
 
+        private bool _displaySteamId = false;
+        public bool DisplaySteamId { get => _displaySteamId; set => SetValue(ref _displaySteamId, value); }
+
         private string _token = "";
         public string BotToken { get => _token; set => SetValue(ref _token, value); }
 

@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d" Height="1945" Width="610">
-    <StackPanel>
+             mc:Ignorable="d" Height="2000" Width="610">
+    <StackPanel Margin="0,0,0,-35">
         <DockPanel Height="31" LastChildFill="False" Margin="3,0,20,0">
             <Border DockPanel.Dock="Bottom" Width="600" Height="30">
                 <Border.Background>
@@ -52,6 +52,7 @@
             <Label Content="Chat Format Discord -&gt; In-Game"/>
         </StackPanel>
         <CheckBox Content="Use Discord nicknames?" Margin="3" IsChecked="{Binding UseNicks}" ToolTip="Use Discord username or nicknames"/>
+        <CheckBox Content="Display SteamID next to user on connect?" Margin="3" IsChecked="{Binding DisplaySteamId}"/>
 
         <CheckBox Content="Discord Messages as Server" Margin="3" IsChecked="{Binding AsServer}" ToolTip="Messages from discord will be as server or with discord user name? May conflict if the username is the same as the player online"/>
         <StackPanel Orientation="Horizontal">

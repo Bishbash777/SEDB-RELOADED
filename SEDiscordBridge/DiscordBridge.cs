@@ -216,7 +216,7 @@ namespace SEDiscordBridge
                         if (user.StartsWith("ID:"))
                             return;
 
-                        if (obj != null) {
+                        if (obj != null && Plugin.Config.DisplaySteamId) {
                             user = $"{user} ({obj.SteamId.ToString()})";
                         }
 
