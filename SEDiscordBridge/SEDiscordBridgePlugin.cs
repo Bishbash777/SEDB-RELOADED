@@ -36,6 +36,7 @@ namespace SEDiscordBridge
         private UserControl _control;
         private TorchSessionManager _sessionManager;
         private ChatManagerServer _chatmanager;
+        private IChatManagerServer ChatManager => _chatmanager ?? (Torch.CurrentSession.Managers.GetManager<IChatManagerServer>());
         private IMultiplayerManagerBase _multibase;
         private Timer _timer;
         private TorchServer torchServer;
@@ -83,7 +84,7 @@ namespace SEDiscordBridge
                 if (!Config.Enabled) return;
 
 
-                if (msg.AuthorSteamId != null)
+                if (msg.AuthorSteamId != null && !ChatManager.MutedUsers.Contains((ulong)msg.AuthorSteamId))
                 {
                     switch (msg.Channel)
                     {
