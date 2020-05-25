@@ -53,7 +53,7 @@ namespace SEDiscordBridge
                         new KeyValuePair<string, string>("steamid",Context.Player.SteamUserId.ToString()),
                 };
                 FormUrlEncodedContent content = new FormUrlEncodedContent(pairs);
-                response = await clients.PostAsync("http://sedb.uk/guid-manager.php", content);
+                response = await clients.PostAsync("http://sedb.uk/discord/guid-manager.php", content);
             }
             string texts = await response.Content.ReadAsStringAsync();
             utils utils = new utils();
