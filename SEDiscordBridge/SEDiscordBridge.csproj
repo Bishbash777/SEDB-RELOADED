@@ -153,6 +153,7 @@
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml">
       <Private>False</Private>
     </Reference>
@@ -211,6 +212,7 @@
     <Compile Include="SEDBCommandHandler.cs" />
     <Compile Include="DiscordBridge.cs" />
     <Compile Include="SEDiscordBridgePlugin.cs" />
+    <Compile Include="Utilities.cs" />
     <Page Include="SEDBControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
