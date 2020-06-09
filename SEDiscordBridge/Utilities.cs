@@ -47,9 +47,9 @@ namespace SEDiscordBridge {
             using (HttpClient clients = new HttpClient()) {
                 List<KeyValuePair<string, string>> pairs = new List<KeyValuePair<string, string>>
                 {
-                        new KeyValuePair<string, string>("steamid", uSteamid),
-                        new KeyValuePair<string, string>("function",funciton),
-                        new KeyValuePair<string, string>("API_KEY","#####"),
+                        new KeyValuePair<string, string>("STEAMID", uSteamid),
+                        new KeyValuePair<string, string>("FUNCTION",funciton),
+                        new KeyValuePair<string, string>("API_KEY","######"),
                         new KeyValuePair<string, string>("GUID", guid),
                 };
                 FormUrlEncodedContent content = new FormUrlEncodedContent(pairs);

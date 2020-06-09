@@ -78,7 +78,7 @@ namespace SEDiscordBridge
 
 
                 if (player != null) {
-                    uSteamid = Context.Player.SteamUserId.ToString();
+                    uSteamid = player.SteamUserId.ToString();
                     found = true;
                 }
 
