@@ -1,13 +1,7 @@
-##This plugin is a replacement for the current SEDiscordBridge as it was no longer maintained by its original author (FabioZumbi)
-
-
-The same config can still be used for this plugin - just remove the old version of SEDB
-
 ![Logo](https://torchapi.net/images/plugins/3cd3ba7f-c47c-4efe-8cf1-bd3f618f5b9c.png)
 
 ## SEDiscordBridge
-A Torch plugin to connect the SE server to Discord  
-OLD redundant plugin on Torch site: [SEDiscordBridge Download](https://torchapi.net/plugins/item/3cd3ba7f-c47c-4efe-8cf1-bd3f618f5b9c)
+A Torch plugin that allows you to connect a SE Server to specific channels on Discord.
 
 ### Changelog
 **18/04/2020**:
@@ -30,10 +24,10 @@ Follow this instructions: [https://goo.gl/5Do8LJ](https://goo.gl/5Do8LJ)
 
 ### Commands
 Commands to control SEDB in-game:  
-- *bridge-reload*: To do a full reload of the configs in-game.  
-- *bridge-enable*: To enable SEDB if disabled.  
-- *bridge-disable*: To disable SEDB if enabled.  
-- *bridge-startserver*: To start torch when SEDB pre-loaded.  
+- *!sedb reload*: To do a full reload of the configs in-game.  
+- *!sedb enable*: To enable SEDB if disabled.  
+- *!sedb disable*: To disable SEDB if enabled.  
+- *!sedb startserver*: To start torch when SEDB pre-loaded.  
 
 ### External Resources
 SEDiscordBridge uses the library DSharpPlus. More info here:  
@@ -45,7 +39,7 @@ If you like the plugin you can donate to the original author of the plugin &lt;3
 [Click to Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=fabio.fmagalhaes12@gmail.com&amp;lc=EN&amp;item_name=SEDiscordBridge&amp;no_note=0&amp;cn=&amp;curency_code=USD&amp;bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted)
 
 ###  Source and Issues
-Use our github to see source and report bugs: [https://github.com/FabioZumbi12/SEDiscordBridge](https://github.com/FabioZumbi12/SEDiscordBridge)
+Use our github to see source and report bugs: [https://github.com/Bishbash777/SEDB-RELOADED](https://github.com/Bishbash777/SEDB-RELOADED)
 
 Maintainer: [Bishbash777](https://github.com/Bishbash777)
 Creator: [FabioZumbi12](https://github.com/FabioZumbi12)  
