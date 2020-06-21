@@ -103,9 +103,7 @@ namespace SEDiscordBridge
                 }
                 else if (Config.ServerToDiscord && msg.Channel.Equals(ChatChannel.Global) && !msg.Message.StartsWith(Config.CommandPrefix) && msg.Target.Equals(0))
                 {
-                    // Run in a new Thread to do not freeze the server
-                    // GetAllMembersAsync need to run in a new thread if called from Torch GUI or from main thread
-                    Task.Run(() => DDBridge.SendChatMessage(msg.Author, msg.Message));
+                    DDBridge.SendChatMessage(msg.Author, msg.Message);
                 }
             }
             catch (Exception e)

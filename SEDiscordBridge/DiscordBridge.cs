@@ -136,7 +136,7 @@ namespace SEDiscordBridge
             }            
         }
 
-        public void SendChatMessage(string user, string msg)
+        public async void SendChatMessage(string user, string msg)
         {
             if (lastMessage.Equals(user + msg)) return;
 
@@ -412,6 +412,10 @@ namespace SEDiscordBridge
                             string name = Regex.Replace(part.Substring(1), @"[,#]", "");
                             if (string.Compare(name, "everyone", true) == 0 && !Plugin.Config.MentEveryone)
                             {
+                                msg = msg.Replace(part, part.Substring(1));
+                                continue;
+                            }
+                            if (string.Compare(name, "here", true) == 0 && !Plugin.Config.MentEveryone) {
                                 msg = msg.Replace(part, part.Substring(1));
                                 continue;
                             }
