@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/SEDiscordBridge/v16/Server/sqlite3
+/.vs/SEDiscordBridge/v16/Server/sqlite3
+/GameBinaries
+/SEDiscordBridge/obj/Debug
+/TorchBinaries

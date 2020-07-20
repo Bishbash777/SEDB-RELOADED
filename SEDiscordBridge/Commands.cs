@@ -138,6 +138,14 @@ namespace SEDiscordBridge
             }
         }
 
+        [Command("unlink", "If you have linked your discord account, you can verify the link by entering this command")]
+        [Permission(MyPromoteLevel.None)]
+        public async void Unlink() {
+            string uSteamid = Context.Player.SteamUserId.ToString();
+            await utils.dataRequest(uSteamid, Context.Plugin.Id.ToString(), "unlink");
+            Context.Respond("Your discord account has been unlinked! You may now link your account again");
+        }
+
 
         [Command("enable", "To enable SEDB if disabled")]
         [Permission(MyPromoteLevel.Admin)]

@@ -87,15 +87,15 @@
       <HintPath>..\packages\Nito.Disposables.2.0.0\lib\netstandard2.0\Nito.Disposables.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>C:\Users\PC\Desktop\Torch\NLog.dll</HintPath>
+      <HintPath>..\..\..\TEST SERVER\NLog.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Sandbox.Common">
-      <HintPath>..\..\..\..\Torch\DedicatedServer64\Sandbox.Common.dll</HintPath>
+      <HintPath>..\..\..\TEST SERVER\DedicatedServer64\Sandbox.Common.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Sandbox.Game">
-      <HintPath>C:\Users\PC\Desktop\Torch\DedicatedServer64\Sandbox.Game.dll</HintPath>
+      <HintPath>..\..\..\TEST SERVER\DedicatedServer64\Sandbox.Game.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Sandbox.Graphics">
@@ -207,28 +207,34 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Torch">
-      <HintPath>C:\Users\PC\Desktop\Torch\Torch.dll</HintPath>
+      <HintPath>..\..\..\TEST SERVER\Torch.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Torch.API">
-      <HintPath>C:\Users\PC\Desktop\Torch\Torch.API.dll</HintPath>
+      <HintPath>..\..\..\TEST SERVER\Torch.API.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Torch.Server">
-      <HintPath>C:\Users\PC\Desktop\Torch\Torch.Server.exe</HintPath>
+      <HintPath>..\..\..\TEST SERVER\Torch.Server.exe</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="VRage">
-      <HintPath>C:\Users\PC\Desktop\Torch\DedicatedServer64\VRage.dll</HintPath>
+      <HintPath>..\..\..\TEST SERVER\DedicatedServer64\VRage.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="VRage.Game">
-      <HintPath>C:\Users\PC\Desktop\Torch\DedicatedServer64\VRage.Game.dll</HintPath>
+      <HintPath>..\..\..\TEST SERVER\DedicatedServer64\VRage.Game.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="VRage.Input">
+      <HintPath>..\..\..\TEST SERVER\DedicatedServer64\VRage.Input.dll</HintPath>
     </Reference>
     <Reference Include="VRage.Library">
       <HintPath>C:\Users\PC\Desktop\Torch\DedicatedServer64\VRage.Library.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="VRage.Math">
+      <HintPath>..\..\..\TEST SERVER\DedicatedServer64\VRage.Math.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase">
       <Private>False</Private>
