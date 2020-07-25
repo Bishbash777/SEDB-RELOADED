@@ -40,7 +40,7 @@
         <Label FontWeight="Bold" FontSize="16" Content="Chat configuration:" />
         <StackPanel Orientation="Horizontal">
             <TextBox Width="180" Text="{Binding ChatChannelId}" ToolTip="Channel ID to send/receive messages from/to in-game/discord" Margin="3" />
-            <Label Content="Channel id for global chat messages"/>
+            <Label Content="Channel id for global chat messages (Seperate by space for multiple channels)"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
             <TextBox Width="180" Text="{Binding Format}" ToolTip="Format for message from in-game -&gt; discord. You can use {p}, {msg}, and {ts}" Margin="3" />
@@ -70,7 +70,7 @@
         <CheckBox Content="Embedded response" Margin="3" IsChecked="{Binding Embed}" ToolTip="Enable or disable embedded command response"/>
         <StackPanel Orientation="Horizontal">
             <TextBox Width="180" Text="{Binding CommandChannelId}" ToolTip="Discord channel to send commands to Torch" Margin="3" />
-            <Label Content="Channel id for commands"/>
+            <Label Content="Channel id for commands (Seperate by space for multiple channels)"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
             <TextBox Width="180" Text="{Binding CommandPrefix}" ToolTip="Prefix for Commands from Discord" Margin="3" />

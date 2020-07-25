@@ -7,3 +7,10 @@
 /GameBinaries
 /SEDiscordBridge/obj/Debug
 /TorchBinaries
+/packages
+/SEDiscordBridge/bin/Debug
+/SEDiscordBridge/Properties
+/SEDiscordBridge/app.config
+/SEDiscordBridge/FodyWeavers.xml
+/.vs/SEDiscordBridge/v15
+/.gitattributes

@@ -136,7 +136,7 @@ namespace SEDiscordBridge
             }            
         }
 
-        public async void SendChatMessage(string user, string msg)
+        public async Task SendChatMessage(string user, string msg)
         {
             if (lastMessage.Equals(user + msg)) return;
 
@@ -239,7 +239,7 @@ namespace SEDiscordBridge
                 if (!string.IsNullOrEmpty(comChannelId))
                 {
                     //execute commands
-                    if (e.Channel.Id.Equals(ulong.Parse(Plugin.Config.CommandChannelId)) && e.Message.Content.StartsWith(Plugin.Config.CommandPrefix))
+                    if (Plugin.Config.CommandChannelId.Contains(e.Channel.Id.ToString()) && e.Message.Content.StartsWith(Plugin.Config.CommandPrefix)) 
                     {
                         var cmdArgs = e.Message.Content.Substring(Plugin.Config.CommandPrefix.Length);
                         var cmd = cmdArgs.Split(' ')[0];
@@ -318,7 +318,7 @@ namespace SEDiscordBridge
                 }
 
                 //send to global
-                if (e.Channel.Id.Equals(ulong.Parse(Plugin.Config.ChatChannelId)))
+                if (Plugin.Config.ChatChannelId.Contains(e.Channel.Id.ToString()))
                 {
                     string sender = Plugin.Config.ServerName;
 
