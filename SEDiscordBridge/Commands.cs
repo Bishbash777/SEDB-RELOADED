@@ -45,6 +45,12 @@ namespace SEDiscordBridge
         [Command("link", "Link you steamID to a discord account")]
         [Permission(MyPromoteLevel.None)]
         public async void link() {
+            IMyPlayer player = Context.Player;
+            if (player == null) {
+                Context.Respond("Command cannot be ran from console");
+                return;
+            }
+
             HttpResponseMessage response;
             using (HttpClient clients = new HttpClient()) {
                 List<KeyValuePair<string, string>> pairs = new List<KeyValuePair<string, string>>
@@ -141,6 +147,12 @@ namespace SEDiscordBridge
         [Command("unlink", "If you have linked your discord account, you can verify the link by entering this command")]
         [Permission(MyPromoteLevel.None)]
         public async void Unlink() {
+
+            IMyPlayer player = Context.Player;
+            if (player == null) {
+                Context.Respond("Command cannot be ran from console");
+                return;
+            }
             string uSteamid = Context.Player.SteamUserId.ToString();
             await utils.dataRequest(uSteamid, Context.Plugin.Id.ToString(), "unlink");
             Context.Respond("Your discord account has been unlinked! You may now link your account again");
