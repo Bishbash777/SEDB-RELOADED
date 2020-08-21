@@ -233,13 +233,23 @@ namespace SEDiscordBridge
 
         private Task Discord_MessageCreated(DSharpPlus.EventArgs.MessageCreateEventArgs e)
         {
+            bool cmdConditionMatch = false;   
+            dynamic cmdPrefixes = Plugin.Config.CommandPrefix;
+            cmdPrefixes = cmdPrefixes.Split();
+            
             if (!e.Author.IsBot || (!botId.Equals(e.Author.Id) && Plugin.Config.BotToGame))
             {
                 string comChannelId = Plugin.Config.CommandChannelId;
                 if (!string.IsNullOrEmpty(comChannelId))
                 {
+                    
+                    foreach (string prefix in cmdPrefixes) {
+                        if (Plugin.Config.CommandChannelId.Contains(e.Channel.Id.ToString()) && e.Message.Content.StartsWith(prefix)) {
+                            cmdConditionMatch = true;
+                        }
+                    }
                     //execute commands
-                    if (Plugin.Config.CommandChannelId.Contains(e.Channel.Id.ToString()) && e.Message.Content.StartsWith(Plugin.Config.CommandPrefix)) 
+                    if (cmdConditionMatch) 
                     {
                         var cmdArgs = e.Message.Content.Substring(Plugin.Config.CommandPrefix.Length);
                         var cmd = cmdArgs.Split(' ')[0];
