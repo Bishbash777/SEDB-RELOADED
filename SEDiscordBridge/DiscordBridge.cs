@@ -235,6 +235,7 @@ namespace SEDiscordBridge
         {
             bool cmdConditionMatch = false;   
             dynamic cmdPrefixes = Plugin.Config.CommandPrefix;
+            string matchedPrefix = "";
             cmdPrefixes = cmdPrefixes.Split();
             
             if (!e.Author.IsBot || (!botId.Equals(e.Author.Id) && Plugin.Config.BotToGame))
@@ -246,12 +247,13 @@ namespace SEDiscordBridge
                     foreach (string prefix in cmdPrefixes) {
                         if (Plugin.Config.CommandChannelId.Contains(e.Channel.Id.ToString()) && e.Message.Content.StartsWith(prefix)) {
                             cmdConditionMatch = true;
+                            matchedPrefix = prefix;
                         }
                     }
                     //execute commands
                     if (cmdConditionMatch) 
                     {
-                        var cmdArgs = e.Message.Content.Substring(Plugin.Config.CommandPrefix.Length);
+                        var cmdArgs = e.Message.Content.Substring(matchedPrefix.Length);
                         var cmd = cmdArgs.Split(' ')[0];
 
                         // Check for permission
