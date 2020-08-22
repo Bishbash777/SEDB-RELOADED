@@ -327,7 +327,7 @@ namespace SEDiscordBridge
                         if (Plugin.Config.UseNicks)
                             sender = e.Guild.GetMemberAsync(e.Author.Id).Result.Nickname;
                         else
-                            sender = e.Author.Username;
+                            sender = e.Guild.GetMemberAsync(e.Author.Id).Result.Username;
                     }
 
                     var manager = Plugin.Torch.CurrentSession.Managers.GetManager<IChatManagerServer>();
