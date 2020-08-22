@@ -6,6 +6,7 @@
 /.vs/SEDiscordBridge/v16/Server/sqlite3
 /GameBinaries
 /SEDiscordBridge/obj/Debug
+/SEDiscordBridge/SEDiscordBridge.csproj
 /TorchBinaries
 /packages
 /SEDiscordBridge/bin/Debug
