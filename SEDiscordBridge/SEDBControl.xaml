@@ -74,7 +74,7 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal">
             <TextBox Width="180" Text="{Binding CommandPrefix}" ToolTip="Prefix for Commands from Discord" Margin="3" />
-            <Label Content="Commands Prefix"/>
+            <Label Content="Commands Prefix (Seperate by space for multiple or dual prefixes)"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
             <TextBox Width="180" Text="{Binding RemoveResponse}" ToolTip="Time in seconds to remove the command response from discord." Margin="3" />
