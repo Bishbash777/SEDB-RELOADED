@@ -116,6 +116,14 @@ namespace SEDiscordBridge
             }
         }
 
+        public static async void SendDiscordMessageStatic(string message) {
+            await Discord.SendMessageAsync(Discord.GetChannelAsync(ulong.Parse(Plugin.Config.ChatChannelId)).Result, message);
+        }
+
+        public static async void SendDiscordMessageStatic(string message, string channelID) {
+            await Discord.SendMessageAsync(Discord.GetChannelAsync(ulong.Parse(channelID)).Result, message);
+        }
+
         public void SendSimMessage(string msg)
         {
             try
@@ -124,7 +132,7 @@ namespace SEDiscordBridge
                 {
                     DiscordChannel chann = Discord.GetChannelAsync(ulong.Parse(Plugin.Config.SimChannel)).Result;
                     //mention
-                    msg = MentionNameToID(msg, chann);
+                    //msg = MentionNameToID(msg, chann);
                     msg = Plugin.Config.SimMessage.Replace("{ts}", TimeZone.CurrentTimeZone.ToLocalTime(DateTime.Now).ToString());
                     botId = Discord.SendMessageAsync(chann, msg.Replace("/n", "\n")).Result.Author.Id;
                 }
@@ -235,6 +243,7 @@ namespace SEDiscordBridge
         {
             bool cmdConditionMatch = false;   
             dynamic cmdPrefixes = Plugin.Config.CommandPrefix;
+            string matchedPrefix = "";
             cmdPrefixes = cmdPrefixes.Split();
             
             if (!e.Author.IsBot || (!botId.Equals(e.Author.Id) && Plugin.Config.BotToGame))
@@ -246,12 +255,13 @@ namespace SEDiscordBridge
                     foreach (string prefix in cmdPrefixes) {
                         if (Plugin.Config.CommandChannelId.Contains(e.Channel.Id.ToString()) && e.Message.Content.StartsWith(prefix)) {
                             cmdConditionMatch = true;
+                            matchedPrefix = prefix;
                         }
                     }
                     //execute commands
                     if (cmdConditionMatch) 
                     {
-                        var cmdArgs = e.Message.Content.Substring(Plugin.Config.CommandPrefix.Length);
+                        var cmdArgs = e.Message.Content.Substring(matchedPrefix.Length);
                         var cmd = cmdArgs.Split(' ')[0];
 
                         // Check for permission
