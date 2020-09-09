@@ -59,6 +59,9 @@ namespace SEDiscordBridge
         private string _stopped = ":x: Server Stopped!";
         public string Stopped { get => _stopped; set => SetValue(ref _stopped, value); }
 
+        private bool _stripGPS = false;
+        public bool StripGPS { get => _stripGPS; set => SetValue(ref _stripGPS, value); }
+
         private string _connect = ":key: The player {p} connected to server";
         public string Connect { get => _connect; set => SetValue(ref _connect, value); }
 
