@@ -113,6 +113,7 @@ namespace SEDiscordBridge
             {
                 game.Name = status;
                 Discord.UpdateStatusAsync(game);
+
             }
         }
 
@@ -521,7 +522,7 @@ namespace SEDiscordBridge
                     .Replace("~", "\\~");
                 if (Plugin.Config.StripGPS)
                 {
-                    message = Regex.Replace(message, @"@?\ ?[0-9E+.-]+,[0-9E+.-]+,[0-9E+.-]+", "", RegexOptions.Multiline);
+                    message = Regex.Replace(message, @"@\ ?[0-9E+.-]+,[0-9E+.-]+,[0-9E+.-]+", "", RegexOptions.Multiline);
                 }
 
                 const int chunkSize = 2000 - 1; // Remove 1 just ensure everything is ok
