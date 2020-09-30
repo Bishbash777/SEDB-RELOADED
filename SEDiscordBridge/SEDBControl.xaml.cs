@@ -27,8 +27,6 @@ namespace SEDiscordBridge
             Plugin = plugin;
             DataContext = plugin.Config;
 
-            cbFontColor.ItemsSource = new ObservableCollection<string>(typeof(MyFontEnum).GetFields().Select(x => x.Name).ToList());
-            cbFacFontColor.ItemsSource = new ObservableCollection<string>(typeof(MyFontEnum).GetFields().Select(x => x.Name).ToList());
             UpdateFacDataGrid();
             UpdatePermsDataGrid();
         }
@@ -72,71 +70,6 @@ namespace SEDiscordBridge
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
             e.Handled = true;
-        }
-
-        private void BtnAddFac_Click(object sender, RoutedEventArgs e)
-        {
-            if (txtFacName.Text.Length > 0 && txtFacChannel.Text.Length > 0)
-            {
-                Plugin.Config.FactionChannels.Add(txtFacName.Text + ":" + txtFacChannel.Text);
-                UpdateFacDataGrid();
-                dgFacList.Items.MoveCurrentToLast();
-            }
-        }
-
-        private void BtnDelFac_Click(object sender, RoutedEventArgs e)
-        {
-            if (dgFacList.SelectedIndex >= 0)
-            {
-                dynamic dataRow = dgFacList.SelectedItem;
-                Plugin.Config.FactionChannels.Remove(dataRow.Faction + ":" + dataRow.Channel);
-                UpdateFacDataGrid();
-            }
-        }
-
-        private void DgFacList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (dgFacList.SelectedIndex >= 0)
-            {
-                dynamic dataRow = dgFacList.SelectedItem;
-                txtFacName.Text = dataRow.Faction;
-                txtFacChannel.Text = dataRow.Channel;
-            }
-        }
-
-        private void CbFontColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            Plugin.Config.GlobalColor = cbFontColor.SelectedValue.ToString();
-        }
-
-        private void DgPermList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (dgPermList.SelectedIndex >= 0)
-            {
-                dynamic dataRow = dgPermList.SelectedItem;
-                txtPlayerName.Text = dataRow.Player;
-                txtPermission.Text = dataRow.Permission;
-            }
-        }
-
-        private void btnAddPerm_Click(object sender, RoutedEventArgs e)
-        {
-            if (txtPlayerName.Text.Length > 0 && txtPermission.Text.Length > 0)
-            {
-                Plugin.Config.CommandPerms.Add(txtPlayerName.Text + ":" + txtPermission.Text);
-                UpdatePermsDataGrid();
-                dgPermList.Items.MoveCurrentToLast();
-            }
-        }
-
-        private void btnDelPerm_Click(object sender, RoutedEventArgs e)
-        {
-            if (dgPermList.SelectedIndex >= 0)
-            {
-                dynamic dataRow = dgPermList.SelectedItem;
-                Plugin.Config.CommandPerms.Remove(dataRow.Player + ":" + dataRow.Permission);
-                UpdatePermsDataGrid();
-            }
         }
     }
 }

@@ -90,10 +90,10 @@ namespace SEDiscordBridge
                     switch (msg.Channel)
                     {
                         case ChatChannel.Global:
-                            DDBridge.SendChatMessage(msg.Author, msg.Message);
+                            DDBridge.RunSendTask(msg.Author, msg.Message);
                             break;
                         case ChatChannel.GlobalScripted:
-                            DDBridge.SendChatMessage(msg.Author, msg.Message);
+                            DDBridge.RunSendTask(msg.Author, msg.Message);
                             break;
                         case ChatChannel.Faction:
                             IMyFaction fac = MySession.Static.Factions.TryGetFactionById(msg.Target);
@@ -103,7 +103,7 @@ namespace SEDiscordBridge
                 }
                 else if (Config.ServerToDiscord && msg.Channel.Equals(ChatChannel.Global) && !msg.Message.StartsWith(Config.CommandPrefix) && msg.Target.Equals(0))
                 {
-                    DDBridge.SendChatMessage(msg.Author, msg.Message);
+                    DDBridge.RunSendTask(msg.Author, msg.Message);
                 }
             }
             catch (Exception e)

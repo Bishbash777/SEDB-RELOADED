@@ -3,242 +3,122 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d" Height="2000" Width="610">
-    <StackPanel Margin="0,0,0,-35">
-        <DockPanel Height="31" LastChildFill="False" Margin="3,0,20,0">
-            <Border DockPanel.Dock="Bottom" Width="600" Height="30">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="1,0" EndPoint="0,0">
-                        <GradientStop Offset="1" Color="#55555555"/>
-                        <GradientStop Offset="0" Color="Transparent"/>
-                    </LinearGradientBrush>
-                </Border.Background>
-                <Button Width="100" Content="Save Config" Click="SaveConfig_OnClick" Margin="3,4,10,4" HorizontalAlignment="Left" />
-            </Border>
-        </DockPanel>
+             mc:Ignorable="d">
+    <Grid HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top">
+        <TabControl HorizontalAlignment="Left" Height="425" VerticalAlignment="Top" Width="590">
 
-        <Label x:Name="popupTarget" FontWeight="Bold" FontSize="16" Content="Main Config:" />
-        <CheckBox Content="Enabled" Margin="3" IsChecked="{Binding Enabled}" ToolTip="Enable or disable SEDiscordBridge"/>
-        <CheckBox Content="Load Bot before server start" Margin="3" IsChecked="{Binding PreLoad}" ToolTip="Load BOT before server start? Good to test or check if boot is connecting!"/>
-        <Label Height="20">
-            <LineBreak/>
-        </Label>
-        <Label Width="Auto">
-            <Hyperlink NavigateUri="https://goo.gl/5Do8LJ" RequestNavigate="Hyperlink_RequestNavigate">
-                <Run Text="Click here to setup your BOT to get your bot token!"/>
-            </Hyperlink>
-        </Label>
-        <Label Content="*After setup the token, save and restart the torch." />
+            <TabItem Header="Main">
+                <Grid Background="#FFE5E5E5">
+                    <CheckBox Content="Enabled" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding Enabled}" ToolTip="Enable or disable SEDiscordBridge"/>
+                    <Button Content="Save Config" HorizontalAlignment="Left" Margin="467,10,0,0" VerticalAlignment="Top" Width="87" Click="SaveConfig_OnClick"/>
+                    <CheckBox Content="Load Before Start" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" IsChecked="{Binding PreLoad}" ToolTip="Load BOT before server start? Good to test or check if boot is connecting!"/>
+                    <Label HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top">
+                        <Hyperlink NavigateUri="https://goo.gl/5Do8LJ" RequestNavigate="Hyperlink_RequestNavigate">
+                            <Run Text="Click here to setup your BOT to get your bot token!"/>
+                        </Hyperlink>
+                    </Label>
+                    <Label Content="*After setup the token, save and restart the torch." HorizontalAlignment="Left" Margin="20,81,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Bot Token" HorizontalAlignment="Left" Margin="10,112,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,143,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="492" IsEnabled="{Binding TokenVisibleState}" Text="{Binding BotToken}" ToolTip="You need to create a discord bot to get the token"/>
+                    <Label Content="*If the token text box is not enabled, you need to enable or change directly on config file." HorizontalAlignment="Left" Margin="20,171,0,0" VerticalAlignment="Top"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Chat">
+                <Grid Background="#FFE5E5E5">
+                    <Label Content="Channel id for global chat messages (Seperate by space for multiple channels)" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,41,0,0" TextWrapping="Wrap" Text="{Binding ChatChannelId}" ToolTip="Channel ID to send/receive messages from/to in-game/discord" VerticalAlignment="Top" Width="422"/>
+                    <Label Content="Chat Format In-Game -&gt; Discord" HorizontalAlignment="Left" Margin="10,69,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,100,0,0" TextWrapping="Wrap" Text="{Binding Format}" ToolTip="Format for message from in-game -&gt; discord. You can use {p}, {msg}, and {ts}" VerticalAlignment="Top" Width="422"/>
+                    <Label Content="Chat Format Discord -&gt; In-Game" HorizontalAlignment="Left" Margin="10,128,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,159,0,0" TextWrapping="Wrap" Text="{Binding Format2}" ToolTip="Format for message from discord -&gt; in-game. You can use {p} (we can't format message for in-game)" VerticalAlignment="Top" Width="422"/>
+                    <CheckBox Content="Use Discord Nick" HorizontalAlignment="Left" Margin="10,187,0,0" VerticalAlignment="Top" IsChecked="{Binding UseNicks}"/>
+                    <CheckBox Content="Send SteamId" HorizontalAlignment="Left" Margin="10,207,0,0" VerticalAlignment="Top" IsChecked="{Binding DisplaySteamId}"/>
+                    <CheckBox Content="Send As Server" HorizontalAlignment="Left" Margin="10,227,0,0" VerticalAlignment="Top" IsChecked="{Binding AsServer}" ToolTip="Messages from discord will be as server or with discord user name? May conflict if the username is the same as the player online"/>
+                    <CheckBox Content="Recive Other Bot Messages" HorizontalAlignment="Left" Margin="10,247,0,0" VerticalAlignment="Top"  IsChecked="{Binding BotToGame}" ToolTip="Receive and send bot messages to in-game?"/>
+                    <CheckBox Content="Send Server Broadcasts to Discord" HorizontalAlignment="Left" Margin="10,267,0,0" VerticalAlignment="Top" IsChecked="{Binding ServerToDiscord}" ToolTip="Send any in-game Server outputs to Discord?"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Commands">
+                <Grid Background="#FFE5E5E5">
+                    <CheckBox Content="Embedded response" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding Embed}" ToolTip="Enable or disable embedded command response"/>
+                    <Label Content="Commands Channel Id" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,61,0,0" TextWrapping="Wrap" Text="{Binding CommandChannelId}" ToolTip="Discord channel to send commands to Torch" VerticalAlignment="Top" Width="120"/>
+                    <Label Content="Command Prefix" HorizontalAlignment="Left" Margin="10,89,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,120,0,0" TextWrapping="Wrap" Text="{Binding CommandPrefix}" ToolTip="Prefix for Commands from Discord" VerticalAlignment="Top" Width="120"/>
+                    <Label Content="Remove response cooldown" HorizontalAlignment="Left" Margin="10,148,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,179,0,0" TextWrapping="Wrap" Text="{Binding RemoveResponse}" ToolTip="Time in seconds to remove the command response from discord." VerticalAlignment="Top" Width="120"/>
+                    <CheckBox Content="Strip GPS Output" HorizontalAlignment="Left" Margin="10,207,0,0" VerticalAlignment="Top" IsChecked="{Binding StripGPS}" ToolTip="Prevent GPS points returned by commands from appearing in Discord?"/>
+                    <Label Content="Command Permissions (leave blank to disable):" HorizontalAlignment="Left" Margin="10,227,0,0" VerticalAlignment="Top"/>
+                    <DataGrid x:Name="dgPermList" HorizontalAlignment="Left" Height="100" Margin="10,258,0,0" VerticalAlignment="Top" Width="297" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding Player}" Header="Player/Role ID"/>
+                            <DataGridTextColumn Binding="{Binding Permission}" Header="Command Name"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Status Messages">
+                <Grid Background="#FFE5E5E5">
+                    <Label Content="Channel id for status messages" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,41,0,0" TextWrapping="Wrap" Text="{Binding StatusChannelId}" ToolTip="Discord channel to send status messages" VerticalAlignment="Top" Width="342"/>
+                    <Label Content="Server Start" HorizontalAlignment="Left" Margin="10,69,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,100,0,0" TextWrapping="Wrap" Text="{Binding Started}" ToolTip="Message to show on server started" VerticalAlignment="Top" Width="342"/>
+                    <Label Content="Server Stop" HorizontalAlignment="Left" Margin="10,128,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,159,0,0" TextWrapping="Wrap" Text="{Binding Stopped}" ToolTip="Message to show on server stop" VerticalAlignment="Top" Width="342"/>
+                    <Label Content="Player Connect" HorizontalAlignment="Left" Margin="10,187,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,218,0,0" TextWrapping="Wrap" Text="{Binding Connect}" ToolTip="Use {p} for player name. Leave empty to disable" VerticalAlignment="Top" Width="342"/>
+                    <Label Content="Player Join" HorizontalAlignment="Left" Margin="10,246,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,277,0,0" TextWrapping="Wrap" Text="{Binding Join}" ToolTip="Use {p} for player name. Leave empty to disable" VerticalAlignment="Top" Width="342"/>
+                    <Label Content="Player Leave" HorizontalAlignment="Left" Margin="10,305,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,336,0,0" TextWrapping="Wrap" Text="{Binding Leave}" ToolTip="Use {p} for player name. Leave empty to disable" VerticalAlignment="Top" Width="342"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Sim Status">
+                <Grid Background="#FFE5E5E5">
+                    <CheckBox Content="Feature Enabled" IsChecked="{Binding SimPing}" ToolTip="Send message when simulation speed is below specified" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Channel if for Notifications" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,61,0,0" TextWrapping="Wrap" Text="{Binding SimChannel}" ToolTip="Discord channel to send simulation messages" VerticalAlignment="Top" Width="357"/>
+                    <Label Content="Average Threshold" HorizontalAlignment="Left" Margin="10,89,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,120,0,0" TextWrapping="Wrap" Text="{Binding SimThresh}" VerticalAlignment="Top" Width="357"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,179,0,0" TextWrapping="Wrap" Text="{Binding SimMessage}" VerticalAlignment="Top" Width="357"/>
+                    <Label Content="Notification Text" HorizontalAlignment="Left" Margin="10,148,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Cooldown (s)" HorizontalAlignment="Left" Margin="10,207,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,238,0,0" TextWrapping="Wrap" Text="{Binding SimCooldown}" ToolTip="Cooldown after notification trigger (seconds)" VerticalAlignment="Top" Width="357"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Faction Channels">
+                <Grid Background="#FFE5E5E5">
+                    <Label Content="Faction Chat Format In-Game -&gt; Discord" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,41,0,0" TextWrapping="Wrap" Text="{Binding FacFormat}" ToolTip="Format for message from in-game -&gt; discord. You can use {p} and {msg}" VerticalAlignment="Top" Width="225"/>
+                    <Label Content="Faction Chat Format Discord -&gt; In-Game" HorizontalAlignment="Left" Margin="10,69,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,100,0,0" TextWrapping="Wrap" Text="{Binding FacFormat2}" ToolTip="Format for message from discord -&gt; in-game. You can use {p} (we can't format message for in-game)" VerticalAlignment="Top" Width="225"/>
+                    <Label Content="Faction Channels:" HorizontalAlignment="Left" Margin="10,128,0,0" VerticalAlignment="Top"/>
+                    <DataGrid x:Name="dgFacList" HorizontalAlignment="Left" Height="126" Margin="10,159,0,0" VerticalAlignment="Top" Width="342" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding Faction}" Header="Faction Name" Width="165"/>
+                            <DataGridTextColumn Binding="{Binding Channel}" Header="Discord Channel ID" Width="165"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Other">
+                <Grid Background="#FFE5E5E5">
+                    <Label Content="Bot RPC (Game)" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <Grid HorizontalAlignment="Left" Height="149" Margin="10,41,0,0" VerticalAlignment="Top" Width="544">
+                        <CheckBox Content="Feature Enabled" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding UseStatus}"/>
+                        <Label Content="Update Interval" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
+                        <TextBox HorizontalAlignment="Left" Height="23" Margin="10,61,0,0" TextWrapping="Wrap" Text="{Binding StatusInterval}" ToolTip="Interval to update the BOT status in millis. 1000 ms = 1 second" VerticalAlignment="Top" Width="120"/>
+                        <Label Content="Starting Message" HorizontalAlignment="Left" Margin="10,89,0,0" VerticalAlignment="Top"/>
+                        <TextBox HorizontalAlignment="Left" Height="23" Margin="10,120,0,0" TextWrapping="Wrap" Text="{Binding StatusPre}" ToolTip="Text to show until server is starting" VerticalAlignment="Top" Width="120"/>
+                        <Label Content="Running Message" HorizontalAlignment="Left" Margin="147,89,0,0" VerticalAlignment="Top"/>
+                        <TextBox HorizontalAlignment="Left" Height="23" Margin="147,120,0,0" TextWrapping="Wrap" Text="{Binding Status}" ToolTip="Text to show on BOT status. Valid placeholders: {ss} server sim ratio, {p} - for online players, {mc} - mods installed, {mp} - max players, {uptime@HH:mm:ss} - Uptime" VerticalAlignment="Top" Width="240"/>
+                    </Grid>
+                    <Label Content="Mentions" HorizontalAlignment="Left" Margin="10,195,0,0" VerticalAlignment="Top"/>
+                    <CheckBox Content="Allow in-game ping discord users" HorizontalAlignment="Left" Margin="10,226,0,0" VerticalAlignment="Top" IsChecked="{Binding MentOthers}"/>
+                    <CheckBox Content="Allow in-game ping everyone" HorizontalAlignment="Left" Margin="10,246,0,0" VerticalAlignment="Top" IsChecked="{Binding MentEveryone}"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
 
-        <StackPanel Orientation="Horizontal" Visibility="{Binding TokenVisibleState}">
-            <TextBox Width="420" Text="{Binding BotToken}" ToolTip="You need to create a discord bot to get the token" Margin="3"/>
-            <Label Content="Discord Bot Token"/>
-        </StackPanel>
-        <Label>
-            <TextBlock><Run Text="*If the token is not visible here, you need to enable or change directly on config file."/><LineBreak/><Run Text="Change between 'Visible' and 'Collapsed'."/></TextBlock>
-        </Label>
-        <Label FontWeight="Bold" FontSize="16" Content="Chat configuration:" />
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="180" Text="{Binding ChatChannelId}" ToolTip="Channel ID to send/receive messages from/to in-game/discord" Margin="3" />
-            <Label Content="Channel id for global chat messages (Seperate by space for multiple channels)"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="180" Text="{Binding Format}" ToolTip="Format for message from in-game -&gt; discord. You can use {p}, {msg}, and {ts}" Margin="3" />
-            <Label Content="Chat Format In-Game -&gt; Discord"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="180" Text="{Binding Format2}" ToolTip="Format for message from discord -&gt; in-game. You can use {p} (we can't format message for in-game)" Margin="3" />
-            <ComboBox x:Name="cbFontColor" Width="139" Margin="3" SelectionChanged="CbFontColor_SelectionChanged" SelectedItem="{Binding GlobalColor}"/>
-            <Label Content="Chat Format Discord -&gt; In-Game"/>
-        </StackPanel>
-        <CheckBox Content="Use Discord nicknames?" Margin="3" IsChecked="{Binding UseNicks}" ToolTip="Use Discord username or nicknames"/>
-        <CheckBox Content="Display SteamID next to user on connect?" Margin="3" IsChecked="{Binding DisplaySteamId}"/>
-
-        <CheckBox Content="Discord Messages as Server" Margin="3" IsChecked="{Binding AsServer}" ToolTip="Messages from discord will be as server or with discord user name? May conflict if the username is the same as the player online"/>
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="180" Text="{Binding ServerName}" ToolTip="The server name to show for discord messages, if message as server enabled" Margin="3" />
-            <Label Content="Discord Messages Server Name"/>
-        </StackPanel>
-        <CheckBox Content="Server outputs to Discord" Margin="3" IsChecked="{Binding ServerToDiscord}" ToolTip="Send any in-game Server outputs to Discord?"/>
-        <CheckBox Content="Receive Other BOT Messages" Margin="3" IsChecked="{Binding BotToGame}" ToolTip="Receive and send bot messages to in-game?"/>
-
-        <Label Height="20">
-            <LineBreak/>
-        </Label>
-
-        <Label FontWeight="Bold" FontSize="16" Content="Commands:" />
-        <CheckBox Content="Embedded response" Margin="3" IsChecked="{Binding Embed}" ToolTip="Enable or disable embedded command response"/>
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="180" Text="{Binding CommandChannelId}" ToolTip="Discord channel to send commands to Torch" Margin="3" />
-            <Label Content="Channel id for commands (Seperate by space for multiple channels)"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="180" Text="{Binding CommandPrefix}" ToolTip="Prefix for Commands from Discord" Margin="3" />
-            <Label Content="Commands Prefix (Seperate by space for multiple or dual prefixes)"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="180" Text="{Binding RemoveResponse}" ToolTip="Time in seconds to remove the command response from discord." Margin="3" />
-            <Label Content="Remove response interval ('0' to don't remove)"/>
-        </StackPanel>
-
-        <CheckBox Content="Strip GPS points from Command Output" Margin="3" IsChecked="{Binding StripGPS}" ToolTip="Prevent GPS points returned by commands from appearing in Discord?"/>
-        <Label Content="Command Permissions (leave blank to disable):" />
-        <StackPanel Orientation="Horizontal">
-            <Button x:Name="btnAddPerm" Width="100" Content="Add Permission" Margin="3" Height="22" Click="btnAddPerm_Click" />
-            <Button x:Name="btnDelPerm" Width="100" Content="Delete Permission" Margin="3" Click="btnDelPerm_Click" />
-        </StackPanel>
-
-        <StackPanel Orientation="Horizontal">
-            <TextBox x:Name="txtPlayerName" Width="169" Margin="3,3,0,3" HorizontalAlignment="Left" Height="20" />
-            <Label Content="Discord Player/Role ID (only numbers without @)"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBox x:Name="txtPermission" Width="169" Margin="3,3,0,3" HorizontalAlignment="Left" Height="20" />
-            <Label Content="Command name in lowercase. Use * to allow all commands"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <DataGrid x:Name="dgPermList" Height="139" Width="340" Margin="3" AutoGenerateColumns="False" IsReadOnly="True" SelectionChanged="DgPermList_SelectionChanged">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Player}" Header="Player/Role ID" Width="165"/>
-                    <DataGridTextColumn Binding="{Binding Permission}" Header="Command Name" Width="165"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </StackPanel>
-        <Label Height="20">
-            <LineBreak/>
-        </Label>
-        <Label FontWeight="Bold" FontSize="16" Content="Status Messages:" />
-
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="180" Text="{Binding StatusChannelId}" ToolTip="Discord channel to send status messages" Margin="3" />
-            <Label Content="Channel id for status messages"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="180" Text="{Binding Started}" ToolTip="Message to show on server started" Margin="3" />
-            <Label Content="Server Started Message"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="180" Text="{Binding Stopped}" ToolTip="Message to show on server stop" Margin="3" />
-            <Label Content="Server Stopped Message"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="180" Text="{Binding Connect}" Margin="3" ToolTip="Use {p} for player name. Leave empty to disable"/>
-            <Label Content="Player Connected Message" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="180" Text="{Binding Join}" Margin="3" ToolTip="Use {p} for player name. Leave empty to disable"/>
-            <Label Content="Player Joined Message" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="180" Text="{Binding Leave}" Margin="3" ToolTip="Use {p} for player name. Leave empty to disable"/>
-            <Label Content="Player Leave Message" />
-        </StackPanel>
-        <Label Height="20">
-            <LineBreak/>
-        </Label>
-        <Label FontWeight="Bold" FontSize="16" Content="Sim Status Messages:" />
-        <CheckBox Content="Send message when simulation speed is below specified?" Margin="3" IsChecked="{Binding SimPing}" ToolTip="Send message when simulation speed is below specified"/>
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="180" Text="{Binding SimChannel}" ToolTip="Discord channel to send simulation messages" Margin="3" />
-            <Label Content="Channel id for sim alert messages"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="180" Text="{Binding SimThresh}" Margin="3" ToolTip="Format: 1.00"/>
-            <Label Content="Average Sim Threshold" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="180" Text="{Binding SimMessage}" Margin="3" ToolTip="Format: 1.00"/>
-            <Label Content="Threshold Met Message" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="180" Text="{Binding SimCooldown}" Margin="3" ToolTip="5 = Five seconds "/>
-            <Label Content="Cooldown after notification trigger (seconds)" />
-        </StackPanel>
-
-        <Label Height="20">
-            <LineBreak/>
-        </Label>
-
-        <Label FontWeight="Bold" FontSize="16" Content="BOT Status:" />
-        <CheckBox Content="Enable BOT Status" Margin="3" IsChecked="{Binding UseStatus}" />
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="180" Text="{Binding StatusInterval}" ToolTip="Interval to update the BOT status in millis. 1000 ms = 1 second" Margin="3" />
-            <Label Content="Update Status Interval"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="180" Text="{Binding StatusPre}" ToolTip="Text to show until server is starting" Margin="3" />
-            <Label Content="Starting Message"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="180" Text="{Binding Status}" ToolTip="Text to show on BOT status. Valid placeholders: {ss} server sim ratio, {p} - for online players, {mc} - mods installed, {mp} - max players, {uptime@HH:mm:ss} - Uptime" Margin="3" />
-            <Label Content="Bot Status Message"/>
-        </StackPanel>
-
-        <Label Height="20">
-            <LineBreak/>
-        </Label>
-
-        <Label FontWeight="Bold" FontSize="16" Content="Mentions:" />
-        <CheckBox Content="Allow in-game players mention Discord users?" Margin="3" IsChecked="{Binding MentOthers}" />
-        <CheckBox Content="Allow in-game players ping @everyone?" Margin="3" IsChecked="{Binding MentEveryone}" />
-
-        <Label Height="20">
-            <LineBreak/>
-        </Label>
-
-        <Label FontWeight="Bold" FontSize="16" Content="Factions Channels:" />
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="180" Text="{Binding FacFormat}" ToolTip="Format for message from in-game -&gt; discord. You can use {p} and {msg}" Margin="3" />
-            <Label Content="Faction Chat Format In-Game -&gt; Discord"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBox Width="180" Text="{Binding FacFormat2}" ToolTip="Format for message from discord -&gt; in-game. You can use {p} (we can't format message for in-game)" Margin="3" />
-            <ComboBox x:Name="cbFacFontColor" Width="139" Margin="3" SelectionChanged="CbFontColor_SelectionChanged" SelectedItem="{Binding FacColor}"/>
-            <Label Content="Faction Chat Format Discord -&gt; In-Game"/>
-        </StackPanel>
-        
-        <Label Content="Add factions channels here:" />
-        <StackPanel Orientation="Horizontal">
-            <Button x:Name="btnAddFac" Width="100" Content="Add Faction" Margin="3" Click="BtnAddFac_Click" Height="22" />
-            <Button x:Name="btnDelFac" Width="100" Content="Delete Faction" Margin="3" Click="BtnDelFac_Click" Height="22"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBox x:Name="txtFacName" Width="169" Margin="3,3,0,3" HorizontalAlignment="Left" Height="20" />
-            <Label Content="Faction Name (can have spaces without quotes)"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBox x:Name="txtFacChannel" Width="169" Margin="3,3,0,3" HorizontalAlignment="Left" Height="20" />
-            <Label Content="Faction Discord Channel ID"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <DataGrid x:Name="dgFacList" Height="139" Width="340" Margin="3" AutoGenerateColumns="False" SelectionChanged="DgFacList_SelectionChanged" IsReadOnly="True">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Faction}" Header="Faction Name" Width="165"/>
-                    <DataGridTextColumn Binding="{Binding Channel}" Header="Discord Channel ID" Width="165"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </StackPanel>
-        <Label Height="20">
-            <LineBreak/>
-        </Label>
-        
-        <StackPanel Orientation="Horizontal"/>
-
-        <Label Width="Auto">
-            <Hyperlink NavigateUri="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=fabio.fmagalhaes12@gmail.com&amp;lc=EN&amp;item_name=SEDiscordBridge&amp;no_note=0&amp;cn=&amp;curency_code=USD&amp;bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted" RequestNavigate="Hyperlink_RequestNavigate">
-                <Run Text="Like the plugin? You can donate here!"/>
-            </Hyperlink>
-        </Label>
-        <DockPanel Height="31" LastChildFill="False" Margin="3,0,20,0">
-            <Border DockPanel.Dock="Bottom" Width="600" Height="30">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="1,0" EndPoint="0,0">
-                        <GradientStop Offset="1" Color="#55555555"/>
-                        <GradientStop Offset="0" Color="Transparent"/>
-                    </LinearGradientBrush>
-                </Border.Background>
-                <Button Width="100" Content="Save Config" Click="SaveConfig_OnClick" Margin="3,4,10,4" HorizontalAlignment="Left" />
-            </Border>
-        </DockPanel>
-    </StackPanel>
 </UserControl>
