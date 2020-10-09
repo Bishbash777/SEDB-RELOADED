@@ -1,6 +1,7 @@
 ﻿using NLog;
 using Sandbox.Game.Entities;
 using Sandbox.Game.Entities.Character;
+using Sandbox.Game.Entities.Cube;
 using Sandbox.Game.Gui;
 using Sandbox.Game.World;
 using System;
@@ -37,13 +38,14 @@ namespace SEDiscordBridge
         private UserControl _control;
         private TorchSessionManager _sessionManager;
         private ChatManagerServer _chatmanager;
-        private IChatManagerServer ChatManager => _chatmanager ?? (Torch.CurrentSession.Managers.GetManager<IChatManagerServer>());
+        public IChatManagerServer ChatManager => _chatmanager ?? (Torch.CurrentSession.Managers.GetManager<IChatManagerServer>());
         private IMultiplayerManagerBase _multibase;
         private Timer _timer;
         private TorchServer torchServer;
         private readonly HashSet<ulong>_conecting = new HashSet<ulong>();
 
         public static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        public static SEDiscordBridgePlugin Static { get; private set; }
 
         /// <inheritdoc />
         public UserControl GetControl() => _control ?? (_control = new SEDBControl(this));
@@ -56,7 +58,7 @@ namespace SEDiscordBridge
         {
             base.Init(torch);
             torchServer = (TorchServer)torch;
-
+            Static = this;
             //Init config
             InitConfig();
 
@@ -90,20 +92,20 @@ namespace SEDiscordBridge
                     switch (msg.Channel)
                     {
                         case ChatChannel.Global:
-                            DDBridge.RunSendTask(msg.Author, msg.Message);
+                            DDBridge.RunSendChatTask(msg.Author, msg.Message);
                             break;
                         case ChatChannel.GlobalScripted:
-                            DDBridge.RunSendTask(msg.Author, msg.Message);
+                            DDBridge.RunSendChatTask(msg.Author, msg.Message);
                             break;
                         case ChatChannel.Faction:
                             IMyFaction fac = MySession.Static.Factions.TryGetFactionById(msg.Target);
-                            DDBridge.SendFacChatMessage(msg.Author, msg.Message, fac.Name);
+                            DDBridge.RunSendFacTask(msg.Author, msg.Message, fac.Name);
                             break;
                     }
                 }
                 else if (Config.ServerToDiscord && msg.Channel.Equals(ChatChannel.Global) && !msg.Message.StartsWith(Config.CommandPrefix) && msg.Target.Equals(0))
                 {
-                    DDBridge.RunSendTask(msg.Author, msg.Message);
+                    DDBridge.RunSendChatTask(msg.Author, msg.Message);
                 }
             }
             catch (Exception e)
@@ -123,7 +125,7 @@ namespace SEDiscordBridge
                     //load
                     LoadSEDB();
                     if (DDBridge != null) DDBridge.SendStatusMessage(null, Config.Started);
-
+                    DamageSystem.Init();
                     break;
 
                 case TorchSessionState.Unloading:

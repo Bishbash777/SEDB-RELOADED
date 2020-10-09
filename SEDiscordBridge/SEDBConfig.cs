@@ -1,8 +1,14 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Windows.Documents;
+using System.Xml.Serialization;
 using Torch;
+using Torch.Collections;
 
 namespace SEDiscordBridge
 {
+    [XmlInclude(typeof(DeathRoutes))]
+    [XmlInclude(typeof(DamageTexts))]
     public class SEDBConfig : ViewModel
     {
         private bool _enabled = true;
@@ -127,5 +133,27 @@ namespace SEDiscordBridge
 
         private ObservableCollection<string> _cmdPerms = new ObservableCollection<string>();
         public ObservableCollection<string> CommandPerms { get => _cmdPerms; set => SetValue(ref _cmdPerms, value); }
+
+        private ObservableCollection<DamageTexts> _gridDeathMessages = new ObservableCollection<DamageTexts>();
+
+        [XmlArray("GridMessages")]
+        [XmlArrayItem("Message")]
+        public ObservableCollection<DamageTexts> GridDeathMessages { get => _gridDeathMessages; set => SetValue(ref _gridDeathMessages, value); }
+
+        private ObservableCollection<DamageTexts> _playerDeathMessages = new ObservableCollection<DamageTexts>();
+
+        [XmlArray("PlayerMessages")]
+        [XmlArrayItem("Message")]
+        public ObservableCollection<DamageTexts> PlayerDeathMessages { get => _playerDeathMessages; set => SetValue(ref _playerDeathMessages, value); }
+
+        private ObservableCollection<DeathRoutes> _deathRoutes = new ObservableCollection<DeathRoutes>();
+
+        [XmlArray("DeathRoutes")]
+        [XmlArrayItem("Route")]
+        public ObservableCollection<DeathRoutes> DeathRoutes { get => _deathRoutes; set => SetValue(ref _deathRoutes, value); }
+
+        private bool _deathsEnabled = false;
+
+        public bool DeathsEnabled { get => _deathsEnabled; set => SetValue(ref _deathsEnabled, value); }
     }
 }

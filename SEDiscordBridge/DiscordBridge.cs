@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,12 +14,14 @@ using Torch.API.Managers;
 using Torch.API.Session;
 using Torch.Commands;
 using VRage.Game;
+using VRage.Game.Entity;
 using VRage.Game.ModAPI;
+using VRage.Utils;
 using VRageMath;
 
 namespace SEDiscordBridge
 {
-    public class DiscordBridge
+    public partial class DiscordBridge
     {
         private static SEDiscordBridgePlugin Plugin;
         private DiscordGame game = new DiscordGame();
@@ -36,9 +39,16 @@ namespace SEDiscordBridge
         public static int FirstWarning;
         public static decimal MinIncrement;
         public static decimal Locked;
+
+        private Thread _deathLogThread;
+        private readonly Queue<DeathMessage> _deathMessagesStack = new Queue<DeathMessage>();
+
         public DiscordBridge(SEDiscordBridgePlugin plugin)
         {
             Plugin = plugin;
+
+            _deathLogThread = new Thread(DeathLogThread);
+
 
             Cooldown = plugin.Config.SimCooldown;
             Increment = (plugin.Config.StatusInterval / 1000);
@@ -46,7 +56,7 @@ namespace SEDiscordBridge
             Increment = plugin.Config.SimCooldown / Increment;
             MinIncrement = 60 / (plugin.Config.StatusInterval / 1000);
             Locked = 0;
-            RegisterDiscord().ConfigureAwait(false).GetAwaiter().GetResult();
+            Task.Run(() => RegisterDiscord());
         }
 
         private async void RunGameTask(Action obj)
@@ -60,7 +70,6 @@ namespace SEDiscordBridge
                 await Task.Run(obj);
             }
         }
-
         public void Stopdiscord()
         {
             DisconnectDiscord();
@@ -103,6 +112,7 @@ namespace SEDiscordBridge
             Discord.Ready += async e =>
             {
                 Ready = true;
+                _deathLogThread.Start();
                 await Task.CompletedTask;
             };
             return Task.CompletedTask;
@@ -133,12 +143,18 @@ namespace SEDiscordBridge
             catch (Exception e)
             {
                 SEDiscordBridgePlugin.Log.Error(e);
-            }            
+            }
         }
-        public void RunSendTask(string user, string msg)
+        public void RunSendChatTask(string user, string msg)
         {
             Task.Run(() => SendChatMessage(user, msg));
         }
+
+        public void RunSendFacTask(string user, string msg, string facName)
+        {
+            Task.Run(() => SendFacChatMessage(user, msg, facName));
+        }
+
         public async Task SendChatMessage(string user, string msg)
         {
             if (lastMessage.Equals(user + msg)) return;
@@ -153,28 +169,93 @@ namespace SEDiscordBridge
                 {
                     msg = Plugin.Config.Format.Replace("{msg}", msg).Replace("{p}", user).Replace("{ts}", TimeZone.CurrentTimeZone.ToLocalTime(DateTime.Now).ToString());
                 }
-                try {
+                try
+                {
                     await Discord.SendMessageAsync(chann, msg.Replace("/n", "\n"));
                 }
-                catch (DSharpPlus.Exceptions.RateLimitException) {
-                    if (retry <= 5) {
+                catch (DSharpPlus.Exceptions.RateLimitException)
+                {
+                    if (retry <= 5)
+                    {
                         retry++;
                         await SendChatMessage(user, msg);
                         retry = 0;
                     }
-                    else {
+                    else
+                    {
                         SEDiscordBridgePlugin.Log.Fatal($"Aborting send chat message (Too many attempts)");
                         SEDiscordBridgePlugin.Log.Warn($"Message: {msg}");
                     }
                 }
-                catch(System.Net.Http.HttpRequestException) {
+                catch (System.Net.Http.HttpRequestException)
+                {
                     SEDiscordBridgePlugin.Log.Fatal($"Unable to send message");
                     SEDiscordBridgePlugin.Log.Warn($"Message: {msg}");
                 }
-            }       
+            }
         }
 
-        public void SendFacChatMessage(string user, string msg, string facName)
+        public void CreateDeathMessage(MyEntity attacker, DamageType damageType, MyEntity target, EntityType targetType, MyPlayer attackerOwner, MyPlayer targetOwner)
+        {
+            if (!Plugin.Config.DeathsEnabled) return;
+            _deathMessagesStack.Enqueue(new DeathMessage()
+            {
+                Attacker = attacker,
+                DamageType = damageType,
+                Target = target,
+                TargetType = targetType,
+                AttackerOwner = attackerOwner,
+                TargetOwner = targetOwner
+            });
+        }
+
+        private async Task SendDeathMessageInternal(string message, ulong id)
+        {
+            var channel = await Discord.GetChannelAsync(id);
+            await Discord.SendMessageAsync(channel, message);
+        }
+
+        public void DeathLogThread()
+        {
+            while (true)
+            {
+                if (_deathMessagesStack.Count > 0)
+                {
+                    var messages = new Dictionary<EntityType, StringBuilder>
+                    {
+                        { EntityType.Character, new StringBuilder() },
+                        { EntityType.Grid, new StringBuilder() }
+                    };
+                    foreach (var group in _deathMessagesStack.GroupBy(b => b.Target))
+                    {
+                        var topMostAttaker = group.GroupBy(a => a.Attacker).OrderByDescending(b => b.Key).FirstOrDefault();
+                        var tagetType = group.GroupBy(b => b.TargetType).OrderByDescending(b => b.Key).FirstOrDefault();
+                        var topTargetOwner = group.GroupBy(a => a.TargetOwner).OrderByDescending(b => b.Key).FirstOrDefault();
+                        var topAttackOwner = group.GroupBy(a => a.AttackerOwner).OrderByDescending(b => b.Key).FirstOrDefault();
+                        var damageType = group.GroupBy(a => a.DamageType).OrderByDescending(b => b.Key).FirstOrDefault();
+
+                        messages[tagetType.Key].AppendLine(DamageTexts.Formate(new DeathMessage()
+                        {
+                            Target = group.Key,
+                            TargetOwner = topTargetOwner.Key,
+                            TargetType = tagetType.Key,
+                            Attacker = topMostAttaker.Key,
+                            AttackerOwner = topAttackOwner.Key,
+                            DamageType = damageType.Key,
+                        }, group.Count()));
+                    }
+                    _deathMessagesStack.Clear();
+
+                    Plugin.Config.DeathRoutes.ToList()
+                        .Where(b => messages[b.EntityType].Length > 10)
+                        .Select(b => SendDeathMessageInternal(messages[b.EntityType].ToString(), b.ChannelId))
+                        .ForEach(b => Task.Run(() => b));
+                }
+                Thread.Sleep(TimeSpan.FromSeconds(15));
+            }
+        }
+
+        public async Task SendFacChatMessage(string user, string msg, string facName)
         {
             try
             {
@@ -183,7 +264,7 @@ namespace SEDiscordBridge
                 {
                     foreach (string chId in channelIds)
                     {
-                        DiscordChannel chann = Discord.GetChannelAsync(ulong.Parse(chId.Split(':')[1])).Result;
+                        DiscordChannel chann = await Discord.GetChannelAsync(ulong.Parse(chId.Split(':')[1]));
                         //mention
                         msg = MentionNameToID(msg, chann);
 
@@ -191,14 +272,15 @@ namespace SEDiscordBridge
                         {
                             msg = Plugin.Config.FacFormat.Replace("{msg}", msg).Replace("{p}", user).Replace("{ts}", TimeZone.CurrentTimeZone.ToLocalTime(DateTime.Now).ToString());
                         }
-                        botId = Discord.SendMessageAsync(chann, msg.Replace("/n", "\n")).Result.Author.Id; ;
+                        var res = await Discord.SendMessageAsync(chann, msg.Replace("/n", "\n"));
+                        botId = res.Author.Id;
                     }
                 }
             }
             catch (Exception e)
             {
                 SEDiscordBridgePlugin.Log.Error($"SendFacChatMessage: {e.Message}");
-            }               
+            }
         }
 
         public async void SendStatusMessage(string user, string msg, Torch.API.IPlayer obj = null)
@@ -214,7 +296,8 @@ namespace SEDiscordBridge
                         if (user.StartsWith("ID:"))
                             return;
 
-                        if (obj != null && Plugin.Config.DisplaySteamId) {
+                        if (obj != null && Plugin.Config.DisplaySteamId)
+                        {
                             user = $"{user} ({obj.SteamId})";
                         }
 
@@ -229,27 +312,29 @@ namespace SEDiscordBridge
             }
         }
 
-        private Task Discord_MessageCreated(DSharpPlus.EventArgs.MessageCreateEventArgs e)
+        private async Task Discord_MessageCreated(DSharpPlus.EventArgs.MessageCreateEventArgs e)
         {
-            bool cmdConditionMatch = false;   
+            bool cmdConditionMatch = false;
             dynamic cmdPrefixes = Plugin.Config.CommandPrefix;
             string matchedPrefix = "";
             cmdPrefixes = cmdPrefixes.Split();
-            
+
             if (!e.Author.IsBot || (!botId.Equals(e.Author.Id) && Plugin.Config.BotToGame))
             {
                 string comChannelId = Plugin.Config.CommandChannelId;
                 if (!string.IsNullOrEmpty(comChannelId))
                 {
-                    
-                    foreach (string prefix in cmdPrefixes) {
-                        if (Plugin.Config.CommandChannelId.Contains(e.Channel.Id.ToString()) && e.Message.Content.StartsWith(prefix)) {
+
+                    foreach (string prefix in cmdPrefixes)
+                    {
+                        if (Plugin.Config.CommandChannelId.Contains(e.Channel.Id.ToString()) && e.Message.Content.StartsWith(prefix))
+                        {
                             cmdConditionMatch = true;
                             matchedPrefix = prefix;
                         }
                     }
                     //execute commands
-                    if (cmdConditionMatch) 
+                    if (cmdConditionMatch)
                     {
                         var cmdArgs = e.Message.Content.Substring(matchedPrefix.Length);
                         var cmd = cmdArgs.Split(' ')[0];
@@ -272,7 +357,7 @@ namespace SEDiscordBridge
                             }).Any())
                             {
                                 SendCmdResponse($"No permission for command: {cmd}", e.Channel, DiscordColor.Red, cmd);
-                                return Task.CompletedTask;
+                                return;
                             }
                         }
 
@@ -288,7 +373,7 @@ namespace SEDiscordBridge
                             {
                                 SendCmdResponse("Torch is already running!", e.Channel, DiscordColor.Yellow, cmd);
                             }
-                            return Task.CompletedTask;
+                            return;
                         }
 
                         if (Plugin.Torch.CurrentSession?.State == TorchSessionState.Loaded)
@@ -323,7 +408,7 @@ namespace SEDiscordBridge
                         {
                             SendCmdResponse("Error: Server is not running.", e.Channel, DiscordColor.Red, cmd);
                         }
-                        return Task.CompletedTask;
+                        return;
                     }
                 }
 
@@ -367,7 +452,7 @@ namespace SEDiscordBridge
                                 if (!Plugin.Config.AsServer)
                                 {
                                     if (Plugin.Config.UseNicks)
-                                        sender = e.Guild.GetMemberAsync(e.Author.Id).Result.Nickname;
+                                        sender = (await e.Guild.GetMemberAsync(e.Author.Id)).Nickname;
                                     else
                                         sender = e.Author.Username;
                                 }
@@ -381,13 +466,15 @@ namespace SEDiscordBridge
                     }
                 }
             }
-            return Task.CompletedTask;
+            return;
         }
 
         private void SendCmdResponse(string response, DiscordChannel chann, DiscordColor color, string command)
         {
-            if (Plugin.Config.Embed) {
-                DiscordEmbed discordEmbed = new DiscordEmbedBuilder() {
+            if (Plugin.Config.Embed)
+            {
+                DiscordEmbed discordEmbed = new DiscordEmbedBuilder()
+                {
                     Description = response,
                     Color = color,
                     Title = string.IsNullOrEmpty(command) ? null : $"Command: {command}"
@@ -398,7 +485,8 @@ namespace SEDiscordBridge
                 if (Plugin.Config.RemoveResponse > 0)
                     Task.Delay(Plugin.Config.RemoveResponse * 1000).ContinueWith(t => dms?.DeleteAsync());
             }
-            else {
+            else
+            {
                 DiscordMessage dms = Discord.SendMessageAsync(chann, response).Result;
                 botId = dms.Author.Id;
                 if (Plugin.Config.RemoveResponse > 0)
@@ -423,7 +511,8 @@ namespace SEDiscordBridge
                                 msg = msg.Replace(part, part.Substring(1));
                                 continue;
                             }
-                            if (string.Compare(name, "here", true) == 0 && !Plugin.Config.MentEveryone) {
+                            if (string.Compare(name, "here", true) == 0 && !Plugin.Config.MentEveryone)
+                            {
                                 msg = msg.Replace(part, part.Substring(1));
                                 continue;
                             }

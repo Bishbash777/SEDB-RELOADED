@@ -6,7 +6,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using VRage.Game;
 
 namespace SEDiscordBridge
 {
@@ -26,7 +25,9 @@ namespace SEDiscordBridge
         {
             Plugin = plugin;
             DataContext = plugin.Config;
-
+            GridMessages.ItemsSource = Plugin.Config.GridDeathMessages;
+            PlayerMessages.ItemsSource = Plugin.Config.PlayerDeathMessages;
+            ChannelRoutes.ItemsSource = Plugin.Config.DeathRoutes;
             UpdateFacDataGrid();
             UpdatePermsDataGrid();
         }
@@ -70,6 +71,41 @@ namespace SEDiscordBridge
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
             e.Handled = true;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (ChannelRoutes.SelectedItem != null && ChannelRoutes.SelectedItem is DeathRoutes routes) Plugin.Config.DeathRoutes.Remove(routes);
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            if (GridMessages.SelectedItem is DamageTexts pair) Plugin.Config.GridDeathMessages.Remove(pair);
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            if (PlayerMessages.SelectedItem is DamageTexts pair) Plugin.Config.PlayerDeathMessages.Remove(pair);
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            Plugin.Config.GridDeathMessages.Add(new DamageTexts(DamageType.Asphyxia, new ObservableCollection<StringInvalid>()));
+        }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            Plugin.Config.PlayerDeathMessages.Add(new DamageTexts(DamageType.Asphyxia, new ObservableCollection<StringInvalid>()));
+        }
+
+        private void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+            if (GridMessages.SelectedItem is DamageTexts damageTexts) new Window1(damageTexts).ShowDialog();
+        }
+
+        private void Button_Click_6(object sender, RoutedEventArgs e)
+        {
+            if (PlayerMessages.SelectedItem is DamageTexts damageTexts) new Window1(damageTexts).ShowDialog();
         }
     }
 }

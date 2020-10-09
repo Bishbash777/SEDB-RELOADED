@@ -3,14 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d">
+             mc:Ignorable="d" Height="685">
     <Grid HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top">
-        <TabControl HorizontalAlignment="Left" Height="425" VerticalAlignment="Top" Width="590">
+        <TabControl Height="650" Margin="0,25,0,-25">
 
             <TabItem Header="Main">
                 <Grid Background="#FFE5E5E5">
                     <CheckBox Content="Enabled" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding Enabled}" ToolTip="Enable or disable SEDiscordBridge"/>
-                    <Button Content="Save Config" HorizontalAlignment="Left" Margin="467,10,0,0" VerticalAlignment="Top" Width="87" Click="SaveConfig_OnClick"/>
                     <CheckBox Content="Load Before Start" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" IsChecked="{Binding PreLoad}" ToolTip="Load BOT before server start? Good to test or check if boot is connecting!"/>
                     <Label HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top">
                         <Hyperlink NavigateUri="https://goo.gl/5Do8LJ" RequestNavigate="Hyperlink_RequestNavigate">
@@ -101,6 +100,35 @@
                     </DataGrid>
                 </Grid>
             </TabItem>
+            <TabItem Header="Death Log">
+                <Grid Background="#FFE5E5E5" Margin="0,0,0,7">
+                    <CheckBox Content="Feature Enabled" ToolTip="Needs restart after change" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding Path=DeathsEnabled}"/>
+                    <Label Content="Log Channels Routing" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
+                    <DataGrid HorizontalAlignment="Left" Height="100" Margin="10,61,0,0" VerticalAlignment="Top" Width="501" x:Name="ChannelRoutes"/>
+                    <Button Content="Remove" HorizontalAlignment="Left" Margin="436,36,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+                    <Label Content="Grid Death Messages" HorizontalAlignment="Left" Margin="10,166,0,0" VerticalAlignment="Top"/>
+                    <DataGrid HorizontalAlignment="Left" Height="100" Margin="10,197,0,0" VerticalAlignment="Top" Width="501" x:Name="GridMessages">
+                    </DataGrid>
+                    <Button Content="Remove" HorizontalAlignment="Left" Margin="436,172,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
+                    <Label Content="Player Deaths Messages" HorizontalAlignment="Left" Margin="10,302,0,0" VerticalAlignment="Top"/>
+                    <DataGrid HorizontalAlignment="Left" Height="100" Margin="10,333,0,0" VerticalAlignment="Top" Width="501" x:Name="PlayerMessages">
+                    </DataGrid>
+                    <Button Content="Remove" HorizontalAlignment="Left" Margin="436,308,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,438,0,0" TextWrapping="Wrap" Text="Small Wiki..      
+                               {target} - target name
+                               {targetOwner} - target owner name
+                               {attacker} - attacker name
+                               {attackerOwner} - attacker owner name
+                               {type} - damage type
+                               {count} - count of damaged entities
+                               {ts} - timestamp" VerticalAlignment="Top" Height="217" Width="222"/>
+                    <Button Content="Add" HorizontalAlignment="Left" Margin="356,172,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_3"/>
+                    <Button Content="Add" HorizontalAlignment="Left" Margin="356,308,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_4"/>
+                    <Button Content="Edit Selected" HorizontalAlignment="Left" Margin="257,172,0,0" VerticalAlignment="Top" Width="94" Click="Button_Click_5"/>
+                    <Button Content="Edit Selected" HorizontalAlignment="Left" Margin="257,308,0,0" VerticalAlignment="Top" Width="94" Click="Button_Click_6"/>
+
+                </Grid>
+            </TabItem>
             <TabItem Header="Other">
                 <Grid Background="#FFE5E5E5">
                     <Label Content="Bot RPC (Game)" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
@@ -118,7 +146,9 @@
                     <CheckBox Content="Allow in-game ping everyone" HorizontalAlignment="Left" Margin="10,246,0,0" VerticalAlignment="Top" IsChecked="{Binding MentEveryone}"/>
                 </Grid>
             </TabItem>
+
         </TabControl>
+        <Button Content="Save Config" HorizontalAlignment="Left" Margin="430,0,0,0" VerticalAlignment="Top" Width="87" Click="SaveConfig_OnClick"/>
     </Grid>
 
 </UserControl>
