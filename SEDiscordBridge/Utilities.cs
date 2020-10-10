@@ -12,6 +12,10 @@ using Sandbox.Game.Entities;
 using Sandbox.Game.Entities.Character;
 using Sandbox.Game.Weapons;
 using Sandbox.Game.Entities.Cube;
+using VRageMath;
+using System.Collections.ObjectModel;
+using System.Reflection;
+using VRage;
 
 namespace SEDiscordBridge {
 
@@ -112,6 +116,16 @@ namespace SEDiscordBridge {
                 response = await clients.PostAsync("http://sedb.uk/api/index.php", content);
             }
             return await response.Content.ReadAsStringAsync();
-        } 
+        }
+
+        public static ReadOnlyObservableCollection<ColorStruct> Colors { get; } = new ReadOnlyObservableCollection<ColorStruct>(new ObservableCollection<ColorStruct>(typeof(Color).GetProperties(BindingFlags.Public | BindingFlags.Static).Select(b => new ColorStruct((Color)b.GetValue(null), b.Name))));
+        public static ColorStruct GetFromColor(Color color) => Colors.ToList().Find(b => b.Color == color);
+    }
+
+    public struct ColorStruct
+    {
+        public ColorStruct (Color color, string name) { Color = color; DisplayName = name; }
+        public string DisplayName { get; set; }
+        public Color Color { get; set; }
     }
 }

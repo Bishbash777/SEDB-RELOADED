@@ -25,6 +25,7 @@
         Debug,
         Wolf,
         Spider,
-        Temperature
+        Temperature,
+        Laser
     }
 }

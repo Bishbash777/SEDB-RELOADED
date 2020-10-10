@@ -259,12 +259,12 @@ namespace SEDiscordBridge
         {
             try
             {
-                IEnumerable<string> channelIds = Plugin.Config.FactionChannels.Where(c => c.Split(':')[0].Equals(facName));
+                var channelIds = Plugin.Config.FactionChannels.Where(c => c.Faction.Equals(facName));
                 if (Ready && channelIds.Count() > 0)
                 {
-                    foreach (string chId in channelIds)
+                    foreach (var chId in channelIds)
                     {
-                        DiscordChannel chann = await Discord.GetChannelAsync(ulong.Parse(chId.Split(':')[1]));
+                        DiscordChannel chann = await Discord.GetChannelAsync(chId.Channel);
                         //mention
                         msg = MentionNameToID(msg, chann);
 
@@ -343,14 +343,14 @@ namespace SEDiscordBridge
                         if (Plugin.Config.CommandPerms.Count() > 0)
                         {
                             var userId = e.Author.Id.ToString();
-                            bool hasRolePerm = e.Guild.GetMemberAsync(e.Author.Id).Result.Roles.Where(r => Plugin.Config.CommandPerms.Where(c => c.Split(':')[0].Equals(r.Id.ToString())).Any()).Any();
+                            bool hasRolePerm = (await e.Guild.GetMemberAsync(e.Author.Id)).Roles.Where(r => Plugin.Config.CommandPerms.Where(c => c.Player.Equals(r.Id.ToString())).Any()).Any();
 
                             if (Plugin.Config.CommandPerms.Where(c =>
                             {
-                                if (!hasRolePerm && !c.Split(':')[0].Equals(userId))
+                                if (!hasRolePerm && !c.Player.Equals(userId))
                                     return true;
                                 else
-                                if ((c.Split(':')[0].Equals(userId) || hasRolePerm) && (c.Split(':')[1].Equals(cmd) || c.Split(':')[1].Equals("*")))
+                                if ((c.Player.Equals(userId) || hasRolePerm) && c.Permission.Equals(cmd) || c.Permission.Equals("*"))
                                     return false;
 
                                 return true;
@@ -429,16 +429,16 @@ namespace SEDiscordBridge
                     var dSender = Plugin.Config.Format2.Replace("{p}", sender);
                     var msg = MentionIDToName(e.Message);
                     lastMessage = dSender + msg;
-                    manager.SendMessageAsOther(dSender, msg, Color.Red);
+                    manager.SendMessageAsOther(dSender, msg, Plugin.Config.GlobalColor);
                 }
 
                 //send to faction
-                IEnumerable<string> channelIds = Plugin.Config.FactionChannels.Where(c => e.Channel.Id.Equals(ulong.Parse(c.Split(':')[1])));
+                var channelIds = Plugin.Config.FactionChannels.Where(c => e.Channel.Id.Equals(c.Channel));
                 if (channelIds.Count() > 0)
                 {
-                    foreach (string chId in channelIds)
+                    foreach (var chId in channelIds)
                     {
-                        IEnumerable<IMyFaction> facs = MySession.Static.Factions.Factions.Values.Where(f => f.Name.Equals(chId.Split(':')[0]));
+                        IEnumerable<IMyFaction> facs = MySession.Static.Factions.Factions.Values.Where(f => f.Tag.Equals(chId.Faction));
                         if (facs.Count() > 0)
                         {
                             IMyFaction fac = facs.First();
@@ -460,7 +460,7 @@ namespace SEDiscordBridge
                                 var dSender = Plugin.Config.FacFormat2.Replace("{p}", sender);
                                 var msg = MentionIDToName(e.Message);
                                 lastMessage = dSender + msg;
-                                manager.SendMessageAsOther(dSender, msg, Color.Red, steamid);
+                                manager.SendMessageAsOther(dSender, msg, Plugin.Config.FacColor, steamid);
                             }
                         }
                     }
@@ -524,13 +524,13 @@ namespace SEDiscordBridge
                                 {
                                     continue;
                                 }
-                                var memberByNickname = members.FirstOrDefault((u) => String.Compare(u.Nickname, name, true) == 0);
+                                var memberByNickname = members.FirstOrDefault((u) => string.Compare(u.Nickname, name, true) == 0);
                                 if (memberByNickname != null)
                                 {
                                     msg = msg.Replace(part, $"<@{memberByNickname.Id}>");
                                     continue;
                                 }
-                                var memberByUsername = members.FirstOrDefault((u) => String.Compare(u.Username, name, true) == 0);
+                                var memberByUsername = members.FirstOrDefault((u) => string.Compare(u.Username, name, true) == 0);
                                 if (memberByUsername != null)
                                 {
                                     msg = msg.Replace(part, $"<@{memberByUsername.Id}>");

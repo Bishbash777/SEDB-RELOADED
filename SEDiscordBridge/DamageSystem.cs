@@ -17,26 +17,30 @@ namespace SEDiscordBridge
     {
         private static void AfterDamageHandler(object target, MyDamageInformation info)
         {
-            if (target != null && target is IMyDestroyableObject destroyableObject)
+            if (target != null && target is IMyDestroyableObject destroyableObject && SEDiscordBridgePlugin.Static.Config.DeathsEnabled)
             {
-                if (destroyableObject.Integrity <= 0)
+                try
                 {
-                    DiscordBridge.EntityType type;
-                    if (destroyableObject is MyCharacter)
-                        type = DiscordBridge.EntityType.Character;
-                    else if (destroyableObject is MySlimBlock)
-                        type = DiscordBridge.EntityType.Grid;
-                    else return;
+                    if (destroyableObject.Integrity <= 0)
+                    {
+                        DiscordBridge.EntityType type;
+                        if (destroyableObject is MyCharacter)
+                            type = DiscordBridge.EntityType.Character;
+                        else if (destroyableObject is MySlimBlock)
+                            type = DiscordBridge.EntityType.Grid;
+                        else return;
 
-                    var attacker = utils.EntityByIdOrDefault<MyEntity>(info.AttackerId);
+                        var attacker = utils.EntityByIdOrDefault<MyEntity>(info.AttackerId);
 
-                    SEDiscordBridgePlugin.Static.DDBridge.CreateDeathMessage(attacker,
-                                                                             (DamageType)Enum.Parse(typeof(DamageType), info.Type.String, true),
-                                                                             utils.GetEntityFromObject(target),
-                                                                             type,
-                                                                             utils.GetEntityOwner(attacker),
-                                                                             utils.GetEntityOwner(destroyableObject));
+                        SEDiscordBridgePlugin.Static.DDBridge.CreateDeathMessage(attacker,
+                                                                                 (DamageType)Enum.Parse(typeof(DamageType), info.Type.String, true),
+                                                                                 utils.GetEntityFromObject(target),
+                                                                                 type,
+                                                                                 utils.GetEntityOwner(attacker),
+                                                                                 utils.GetEntityOwner(destroyableObject));
+                    }
                 }
+                catch { }
             }
         }
 

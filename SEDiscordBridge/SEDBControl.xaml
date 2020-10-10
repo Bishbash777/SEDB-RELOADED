@@ -30,11 +30,13 @@
                     <TextBox HorizontalAlignment="Left" Height="23" Margin="10,100,0,0" TextWrapping="Wrap" Text="{Binding Format}" ToolTip="Format for message from in-game -&gt; discord. You can use {p}, {msg}, and {ts}" VerticalAlignment="Top" Width="422"/>
                     <Label Content="Chat Format Discord -&gt; In-Game" HorizontalAlignment="Left" Margin="10,128,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Left" Height="23" Margin="10,159,0,0" TextWrapping="Wrap" Text="{Binding Format2}" ToolTip="Format for message from discord -&gt; in-game. You can use {p} (we can't format message for in-game)" VerticalAlignment="Top" Width="422"/>
-                    <CheckBox Content="Use Discord Nick" HorizontalAlignment="Left" Margin="10,187,0,0" VerticalAlignment="Top" IsChecked="{Binding UseNicks}"/>
-                    <CheckBox Content="Send SteamId" HorizontalAlignment="Left" Margin="10,207,0,0" VerticalAlignment="Top" IsChecked="{Binding DisplaySteamId}"/>
-                    <CheckBox Content="Send As Server" HorizontalAlignment="Left" Margin="10,227,0,0" VerticalAlignment="Top" IsChecked="{Binding AsServer}" ToolTip="Messages from discord will be as server or with discord user name? May conflict if the username is the same as the player online"/>
-                    <CheckBox Content="Recive Other Bot Messages" HorizontalAlignment="Left" Margin="10,247,0,0" VerticalAlignment="Top"  IsChecked="{Binding BotToGame}" ToolTip="Receive and send bot messages to in-game?"/>
-                    <CheckBox Content="Send Server Broadcasts to Discord" HorizontalAlignment="Left" Margin="10,267,0,0" VerticalAlignment="Top" IsChecked="{Binding ServerToDiscord}" ToolTip="Send any in-game Server outputs to Discord?"/>
+                    <CheckBox Content="Use Discord Nick" HorizontalAlignment="Left" Margin="10,214,0,0" VerticalAlignment="Top" IsChecked="{Binding UseNicks}"/>
+                    <CheckBox Content="Send SteamId" HorizontalAlignment="Left" Margin="10,234,0,0" VerticalAlignment="Top" IsChecked="{Binding DisplaySteamId}"/>
+                    <CheckBox Content="Send As Server" HorizontalAlignment="Left" Margin="10,254,0,0" VerticalAlignment="Top" IsChecked="{Binding AsServer}" ToolTip="Messages from discord will be as server or with discord user name? May conflict if the username is the same as the player online"/>
+                    <CheckBox Content="Recive Other Bot Messages" HorizontalAlignment="Left" Margin="10,274,0,0" VerticalAlignment="Top"  IsChecked="{Binding BotToGame}" ToolTip="Receive and send bot messages to in-game?"/>
+                    <CheckBox Content="Send Server Broadcasts to Discord" HorizontalAlignment="Left" Margin="10,294,0,0" VerticalAlignment="Top" IsChecked="{Binding ServerToDiscord}" ToolTip="Send any in-game Server outputs to Discord?"/>
+                    <ComboBox HorizontalAlignment="Left" Margin="54,187,0,0" VerticalAlignment="Top" Width="120" x:Name="GlobalChatColorBox" RenderTransformOrigin="0.475,2.727" DisplayMemberPath="DisplayName" SelectedValuePath="Color" SelectionChanged="GlobalChatColorBox_SelectionChanged"/>
+                    <Label Content="Color" HorizontalAlignment="Left" Margin="10,187,0,0" VerticalAlignment="Top" RenderTransformOrigin="-6.711,-4.692"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Commands">
@@ -54,6 +56,8 @@
                             <DataGridTextColumn Binding="{Binding Permission}" Header="Command Name"/>
                         </DataGrid.Columns>
                     </DataGrid>
+                    <Button Content="Remove" HorizontalAlignment="Left" Margin="232,363,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_10"/>
+                    <Button Content="Add" HorizontalAlignment="Left" Margin="152,363,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_9"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Status Messages">
@@ -91,13 +95,17 @@
                     <TextBox HorizontalAlignment="Left" Height="23" Margin="10,41,0,0" TextWrapping="Wrap" Text="{Binding FacFormat}" ToolTip="Format for message from in-game -&gt; discord. You can use {p} and {msg}" VerticalAlignment="Top" Width="225"/>
                     <Label Content="Faction Chat Format Discord -&gt; In-Game" HorizontalAlignment="Left" Margin="10,69,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Left" Height="23" Margin="10,100,0,0" TextWrapping="Wrap" Text="{Binding FacFormat2}" ToolTip="Format for message from discord -&gt; in-game. You can use {p} (we can't format message for in-game)" VerticalAlignment="Top" Width="225"/>
-                    <Label Content="Faction Channels:" HorizontalAlignment="Left" Margin="10,128,0,0" VerticalAlignment="Top"/>
-                    <DataGrid x:Name="dgFacList" HorizontalAlignment="Left" Height="126" Margin="10,159,0,0" VerticalAlignment="Top" Width="342" AutoGenerateColumns="False">
+                    <Label Content="Faction Channels:" HorizontalAlignment="Left" Margin="10,159,0,0" VerticalAlignment="Top"/>
+                    <DataGrid x:Name="dgFacList" HorizontalAlignment="Left" Height="126" Margin="10,190,0,0" VerticalAlignment="Top" Width="342" AutoGenerateColumns="False ">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Binding="{Binding Faction}" Header="Faction Name" Width="165"/>
+                            <DataGridTextColumn Binding="{Binding Faction}" Header="Faction Tag" Width="165"/>
                             <DataGridTextColumn Binding="{Binding Channel}" Header="Discord Channel ID" Width="165"/>
                         </DataGrid.Columns>
                     </DataGrid>
+                    <Label Content="Color" HorizontalAlignment="Left" Margin="10,128,0,0" VerticalAlignment="Top"/>
+                    <ComboBox HorizontalAlignment="Left" Margin="54,128,0,0" VerticalAlignment="Top" Width="120" x:Name="FacColorBox" DisplayMemberPath="DisplayName" SelectedValuePath="Color" SelectionChanged="FacColorBox_SelectionChanged"/>
+                    <Button Content="Add" HorizontalAlignment="Left" Margin="202,162,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_7"/>
+                    <Button Content="Remove" HorizontalAlignment="Left" Margin="282,162,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_8"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Death Log">

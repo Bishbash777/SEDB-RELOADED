@@ -314,7 +314,7 @@ namespace SEDiscordBridge
             }
         }
 
-        private async void _multibase_PlayerLeft(IPlayer obj)
+        private void _multibase_PlayerLeft(IPlayer obj)
         {
             if (!Config.Enabled) return;
 
@@ -322,11 +322,11 @@ namespace SEDiscordBridge
             _conecting.Remove(obj.SteamId);
             if (Config.Leave.Length > 0)
             {
-                await Task.Run(() => DDBridge.SendStatusMessage(obj.Name, Config.Leave, obj));
+                Task.Run(() => DDBridge.SendStatusMessage(obj.Name, Config.Leave, obj));
             }
         }
 
-        private async void _multibase_PlayerJoined(IPlayer obj)
+        private void _multibase_PlayerJoined(IPlayer obj)
         {
             if (!Config.Enabled) return;
 
@@ -334,7 +334,7 @@ namespace SEDiscordBridge
             _conecting.Add(obj.SteamId);
             if (Config.Connect.Length > 0)
             {
-                await Task.Run(() => DDBridge.SendStatusMessage(obj.Name, Config.Connect, obj));
+                Task.Run(() => DDBridge.SendStatusMessage(obj.Name, Config.Connect, obj));
             }
         }
 
