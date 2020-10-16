@@ -70,7 +70,7 @@ namespace SEDiscordBridge
                 await Task.Run(obj);
             }
         }
-        public void Stopdiscord()
+        public void StopDiscord()
         {
             DisconnectDiscord();
         }
@@ -118,12 +118,12 @@ namespace SEDiscordBridge
             return Task.CompletedTask;
         }
 
-        public void SendStatus(string status)
+        public void SendStatus(string status, UserStatus userStatus)
         {
             if (Ready && status?.Length > 0)
             {
                 game.Name = status;
-                Discord.UpdateStatusAsync(game);
+                Task.Run(() => Discord.UpdateStatusAsync(game, userStatus));
             }
         }
 

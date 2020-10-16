@@ -68,12 +68,14 @@
                     <TextBox HorizontalAlignment="Left" Height="23" Margin="10,100,0,0" TextWrapping="Wrap" Text="{Binding Started}" ToolTip="Message to show on server started" VerticalAlignment="Top" Width="342"/>
                     <Label Content="Server Stop" HorizontalAlignment="Left" Margin="10,128,0,0" VerticalAlignment="Top"/>
                     <TextBox HorizontalAlignment="Left" Height="23" Margin="10,159,0,0" TextWrapping="Wrap" Text="{Binding Stopped}" ToolTip="Message to show on server stop" VerticalAlignment="Top" Width="342"/>
-                    <Label Content="Player Connect" HorizontalAlignment="Left" Margin="10,187,0,0" VerticalAlignment="Top"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,218,0,0" TextWrapping="Wrap" Text="{Binding Connect}" ToolTip="Use {p} for player name. Leave empty to disable" VerticalAlignment="Top" Width="342"/>
-                    <Label Content="Player Join" HorizontalAlignment="Left" Margin="10,246,0,0" VerticalAlignment="Top"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,277,0,0" TextWrapping="Wrap" Text="{Binding Join}" ToolTip="Use {p} for player name. Leave empty to disable" VerticalAlignment="Top" Width="342"/>
-                    <Label Content="Player Leave" HorizontalAlignment="Left" Margin="10,305,0,0" VerticalAlignment="Top"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,336,0,0" TextWrapping="Wrap" Text="{Binding Leave}" ToolTip="Use {p} for player name. Leave empty to disable" VerticalAlignment="Top" Width="342"/>
+                    <Label Content="Player Connect" HorizontalAlignment="Left" Margin="10,241,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,272,0,0" TextWrapping="Wrap" Text="{Binding Connect}" ToolTip="Use {p} for player name. Leave empty to disable" VerticalAlignment="Top" Width="342"/>
+                    <Label Content="Player Join" HorizontalAlignment="Left" Margin="10,300,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,331,0,0" TextWrapping="Wrap" Text="{Binding Join}" ToolTip="Use {p} for player name. Leave empty to disable" VerticalAlignment="Top" Width="342"/>
+                    <Label Content="Player Leave" HorizontalAlignment="Left" Margin="10,359,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,390,0,0" TextWrapping="Wrap" Text="{Binding Leave}" ToolTip="Use {p} for player name. Leave empty to disable" VerticalAlignment="Top" Width="342"/>
+                    <Label Content="Server Restart" HorizontalAlignment="Left" Margin="10,187,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,218,0,0" TextWrapping="Wrap" Text="{Binding Restarted}" VerticalAlignment="Top" Width="342" RenderTransformOrigin="-0.125,1.261"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Sim Status">

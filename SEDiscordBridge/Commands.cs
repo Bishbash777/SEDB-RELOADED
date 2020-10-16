@@ -25,7 +25,6 @@ namespace SEDiscordBridge
         [Permission(MyPromoteLevel.Admin)]
         public void ReloadBridge() {
             Plugin.InitConfig();
-            Plugin.DDBridge?.SendStatus(null);
 
             if (Plugin.Config.Enabled) {
                 if (Plugin.Torch.CurrentSession == null && !Plugin.Config.PreLoad) {

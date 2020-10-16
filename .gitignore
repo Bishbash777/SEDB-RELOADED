@@ -1,4 +1,4 @@
-﻿################################################################################
+################################################################################
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
@@ -15,3 +15,7 @@
 /.vs/SEDiscordBridge/v15
 /.gitattributes
 /.vs/SEDiscordBridge/v16/.suo
+
+SEDiscordBridge/bin/
+
+SEDiscordBridge/obj/

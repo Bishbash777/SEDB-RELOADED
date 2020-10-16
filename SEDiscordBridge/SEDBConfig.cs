@@ -50,7 +50,7 @@ namespace SEDiscordBridge
 
         private bool _botToGame = false;
         public bool BotToGame { get => _botToGame; set => SetValue(ref _botToGame, value); }
-        
+
         private bool _serverToDiscord = false;
         public bool ServerToDiscord { get => _serverToDiscord; set => SetValue(ref _serverToDiscord, value); }
 
@@ -66,6 +66,7 @@ namespace SEDiscordBridge
         private string _stopped = ":x: Server Stopped!";
         public string Stopped { get => _stopped; set => SetValue(ref _stopped, value); }
 
+        public string Restarted { get => _restarted; set => SetValue(ref _restarted, value); }
         private bool _stripGPS = false;
         public bool StripGPS { get => _stripGPS; set => SetValue(ref _stripGPS, value); }
 
@@ -154,6 +155,7 @@ namespace SEDiscordBridge
         public ObservableCollection<DeathRoutes> DeathRoutes { get => _deathRoutes; set => SetValue(ref _deathRoutes, value); }
 
         private bool _deathsEnabled = false;
+        private string _restarted = ":arrows_counterclockwise: Server Go To Restart!";
 
         public bool DeathsEnabled { get => _deathsEnabled; set => SetValue(ref _deathsEnabled, value); }
     }

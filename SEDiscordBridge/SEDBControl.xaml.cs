@@ -40,7 +40,6 @@ namespace SEDiscordBridge
         private void SaveConfig_OnClick(object sender, RoutedEventArgs e)
         {
             Plugin.Save();
-            Plugin.DDBridge?.SendStatus(null);
 
             if (Plugin.Config.Enabled)
             {
