@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <PluginManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <Name>SEDiscordBridge - RELOADED</Name>
+  <Name>SEDB-RELOADED</Name>
   <Guid>6c09afc7-ad85-4c12-9cb5-dacd3f4b9840</Guid>
-  <Repository>Bishbash777/SEDB-Reloaded</Repository>
-  <Version>v1.0.2</Version>
+  <Repository>protectedsnow/SEDB-Reloaded</Repository>
+  <Version>v2.0.2.2</Version>
 </PluginManifest>

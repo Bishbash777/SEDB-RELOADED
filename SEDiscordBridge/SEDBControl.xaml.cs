@@ -6,7 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using VRage.Game;
+using VRageMath;
 
 namespace SEDiscordBridge
 {
@@ -26,29 +26,20 @@ namespace SEDiscordBridge
         {
             Plugin = plugin;
             DataContext = plugin.Config;
-
-            cbFontColor.ItemsSource = new ObservableCollection<string>(typeof(MyFontEnum).GetFields().Select(x => x.Name).ToList());
-            cbFacFontColor.ItemsSource = new ObservableCollection<string>(typeof(MyFontEnum).GetFields().Select(x => x.Name).ToList());
-            UpdateFacDataGrid();
-            UpdatePermsDataGrid();
-        }
-
-        private void UpdateFacDataGrid()
-        {
-            var factions = from f in Plugin.Config.FactionChannels select new { Faction = f.Split(':')[0], Channel = f.Split(':')[1] };
-            dgFacList.ItemsSource = factions;
-        }
-
-        private void UpdatePermsDataGrid()
-        {
-            var perms = from f in Plugin.Config.CommandPerms select new { Player = f.Split(':')[0], Permission = f.Split(':')[1] };
-            dgPermList.ItemsSource = perms;
+            GridMessages.ItemsSource = Plugin.Config.GridDeathMessages;
+            PlayerMessages.ItemsSource = Plugin.Config.PlayerDeathMessages;
+            ChannelRoutes.ItemsSource = Plugin.Config.DeathRoutes;
+            dgFacList.ItemsSource = Plugin.Config.FactionChannels;
+            dgPermList.ItemsSource = Plugin.Config.CommandPerms;
+            FacColorBox.ItemsSource = utils.Colors;
+            GlobalChatColorBox.ItemsSource = utils.Colors;
+            FacColorBox.SelectedItem = utils.GetFromColor(Plugin.Config.FacColor);
+            GlobalChatColorBox.SelectedItem = utils.GetFromColor(Plugin.Config.GlobalColor);
         }
 
         private void SaveConfig_OnClick(object sender, RoutedEventArgs e)
         {
             Plugin.Save();
-            Plugin.DDBridge?.SendStatus(null);
 
             if (Plugin.Config.Enabled)
             {
@@ -74,69 +65,77 @@ namespace SEDiscordBridge
             e.Handled = true;
         }
 
-        private void BtnAddFac_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (txtFacName.Text.Length > 0 && txtFacChannel.Text.Length > 0)
-            {
-                Plugin.Config.FactionChannels.Add(txtFacName.Text + ":" + txtFacChannel.Text);
-                UpdateFacDataGrid();
-                dgFacList.Items.MoveCurrentToLast();
-            }
+            if (ChannelRoutes.SelectedItem != null && ChannelRoutes.SelectedItem is DeathRoutes routes) Plugin.Config.DeathRoutes.Remove(routes);
         }
 
-        private void BtnDelFac_Click(object sender, RoutedEventArgs e)
+        private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            if (dgFacList.SelectedIndex >= 0)
-            {
-                dynamic dataRow = dgFacList.SelectedItem;
-                Plugin.Config.FactionChannels.Remove(dataRow.Faction + ":" + dataRow.Channel);
-                UpdateFacDataGrid();
-            }
+            if (GridMessages.SelectedItem is DamageTexts pair) Plugin.Config.GridDeathMessages.Remove(pair);
         }
 
-        private void DgFacList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            if (dgFacList.SelectedIndex >= 0)
-            {
-                dynamic dataRow = dgFacList.SelectedItem;
-                txtFacName.Text = dataRow.Faction;
-                txtFacChannel.Text = dataRow.Channel;
-            }
+            if (PlayerMessages.SelectedItem is DamageTexts pair) Plugin.Config.PlayerDeathMessages.Remove(pair);
         }
 
-        private void CbFontColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            Plugin.Config.GlobalColor = cbFontColor.SelectedValue.ToString();
+            Plugin.Config.GridDeathMessages.Add(new DamageTexts(DamageType.Asphyxia, new ObservableCollection<StringInvalid>()));
         }
 
-        private void DgPermList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Button_Click_4(object sender, RoutedEventArgs e)
         {
-            if (dgPermList.SelectedIndex >= 0)
-            {
-                dynamic dataRow = dgPermList.SelectedItem;
-                txtPlayerName.Text = dataRow.Player;
-                txtPermission.Text = dataRow.Permission;
-            }
+            Plugin.Config.PlayerDeathMessages.Add(new DamageTexts(DamageType.Asphyxia, new ObservableCollection<StringInvalid>()));
         }
 
-        private void btnAddPerm_Click(object sender, RoutedEventArgs e)
+        private void Button_Click_5(object sender, RoutedEventArgs e)
         {
-            if (txtPlayerName.Text.Length > 0 && txtPermission.Text.Length > 0)
-            {
-                Plugin.Config.CommandPerms.Add(txtPlayerName.Text + ":" + txtPermission.Text);
-                UpdatePermsDataGrid();
-                dgPermList.Items.MoveCurrentToLast();
-            }
+            if (GridMessages.SelectedItem is DamageTexts damageTexts) new Window1(damageTexts).ShowDialog();
         }
 
-        private void btnDelPerm_Click(object sender, RoutedEventArgs e)
+        private void Button_Click_6(object sender, RoutedEventArgs e)
         {
-            if (dgPermList.SelectedIndex >= 0)
+            if (PlayerMessages.SelectedItem is DamageTexts damageTexts) new Window1(damageTexts).ShowDialog();
+        }
+
+        private void Button_Click_7(object sender, RoutedEventArgs e)
+        {
+            Plugin.Config.FactionChannels.Add(new FactionChannel()
             {
-                dynamic dataRow = dgPermList.SelectedItem;
-                Plugin.Config.CommandPerms.Remove(dataRow.Player + ":" + dataRow.Permission);
-                UpdatePermsDataGrid();
-            }
+                Faction = "ABC",
+                Channel = 1234,
+            });
+        }
+
+        private void Button_Click_8(object sender, RoutedEventArgs e)
+        {
+            if (dgFacList.SelectedItem is FactionChannel factionChannel) Plugin.Config.FactionChannels.Remove(factionChannel);
+        }
+
+        private void Button_Click_9(object sender, RoutedEventArgs e)
+        {
+            Plugin.Config.CommandPerms.Add(new CommandPermission()
+            {
+                Player = 1234,
+                Permission = "*",
+            });
+        }
+
+        private void Button_Click_10(object sender, RoutedEventArgs e)
+        {
+            if (dgPermList.SelectedItem is CommandPermission commandPermission) Plugin.Config.CommandPerms.Remove(commandPermission);
+        }
+
+        private void FacColorBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (FacColorBox.SelectedValue is Color color) Plugin.Config.FacColor = color; 
+        }
+
+        private void GlobalChatColorBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (GlobalChatColorBox.SelectedValue is Color color) Plugin.Config.GlobalColor = color;
         }
     }
 }
