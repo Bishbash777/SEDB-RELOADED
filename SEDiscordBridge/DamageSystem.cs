@@ -33,11 +33,11 @@ namespace SEDiscordBridge
                         var attacker = utils.EntityByIdOrDefault<MyEntity>(info.AttackerId);
 
                         SEDiscordBridgePlugin.Static.DDBridge.CreateDeathMessage(attacker,
-                                                                                 (DamageType)Enum.Parse(typeof(DamageType), info.Type.String, true),
-                                                                                 utils.GetEntityFromObject(target),
-                                                                                 type,
-                                                                                 utils.GetEntityOwner(attacker),
-                                                                                 utils.GetEntityOwner(destroyableObject));
+                            (DamageType)Enum.Parse(typeof(DamageType), info.Type.String, true),
+                            utils.GetEntityFromObject(target),
+                            type,
+                            utils.GetEntityOwner(attacker),
+                            utils.GetEntityOwner(destroyableObject));
                     }
                 }
                 catch { }
