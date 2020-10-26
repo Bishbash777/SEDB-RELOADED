@@ -217,41 +217,42 @@ namespace SEDiscordBridge
 
         public void DeathLogThread()
         {
-            while (true)
-            {
-                if (_deathMessagesStack.Count > 0)
-                {
-                    var messages = new Dictionary<EntityType, StringBuilder>
-                    {
+            try {
+                while (true) {
+                    if (_deathMessagesStack.Count > 0) {
+                        var messages = new Dictionary<EntityType, StringBuilder>
+                        {
                         { EntityType.Character, new StringBuilder() },
                         { EntityType.Grid, new StringBuilder() }
                     };
-                    foreach (var group in _deathMessagesStack.GroupBy(b => b.Target))
-                    {
-                        var topMostAttaker = group.GroupBy(a => a.Attacker).OrderByDescending(b => b.Key).FirstOrDefault();
-                        var tagetType = group.GroupBy(b => b.TargetType).OrderByDescending(b => b.Key).FirstOrDefault();
-                        var topTargetOwner = group.GroupBy(a => a.TargetOwner).OrderByDescending(b => b.Key).FirstOrDefault();
-                        var topAttackOwner = group.GroupBy(a => a.AttackerOwner).OrderByDescending(b => b.Key).FirstOrDefault();
-                        var damageType = group.GroupBy(a => a.DamageType).OrderByDescending(b => b.Key).FirstOrDefault();
+                        foreach (var group in _deathMessagesStack.GroupBy(b => b.Target)) {
+                            var topMostAttaker = group.GroupBy(a => a.Attacker).OrderByDescending(b => b.Key).FirstOrDefault();
+                            var tagetType = group.GroupBy(b => b.TargetType).OrderByDescending(b => b.Key).FirstOrDefault();
+                            var topTargetOwner = group.GroupBy(a => a.TargetOwner).OrderByDescending(b => b.Key).FirstOrDefault();
+                            var topAttackOwner = group.GroupBy(a => a.AttackerOwner).OrderByDescending(b => b.Key).FirstOrDefault();
+                            var damageType = group.GroupBy(a => a.DamageType).OrderByDescending(b => b.Key).FirstOrDefault();
 
-                        messages[tagetType.Key].AppendLine(DamageTexts.Formate(new DeathMessage()
-                        {
-                            Target = group.Key,
-                            TargetOwner = topTargetOwner.Key,
-                            TargetType = tagetType.Key,
-                            Attacker = topMostAttaker.Key,
-                            AttackerOwner = topAttackOwner.Key,
-                            DamageType = damageType.Key,
-                        }, group.Count()));
+                            messages[tagetType.Key].AppendLine(DamageTexts.Formate(new DeathMessage() {
+                                Target = group.Key,
+                                TargetOwner = topTargetOwner.Key,
+                                TargetType = tagetType.Key,
+                                Attacker = topMostAttaker.Key,
+                                AttackerOwner = topAttackOwner.Key,
+                                DamageType = damageType.Key,
+                            }, group.Count()));
+                        }
+                        _deathMessagesStack.Clear();
+
+                        Plugin.Config.DeathRoutes.ToList()
+                            .Where(b => messages[b.EntityType].Length > 10)
+                            .Select(b => SendDeathMessageInternal(messages[b.EntityType].ToString(), b.ChannelId))
+                            .ForEach(b => Task.Run(() => b));
                     }
-                    _deathMessagesStack.Clear();
-
-                    Plugin.Config.DeathRoutes.ToList()
-                        .Where(b => messages[b.EntityType].Length > 10)
-                        .Select(b => SendDeathMessageInternal(messages[b.EntityType].ToString(), b.ChannelId))
-                        .ForEach(b => Task.Run(() => b));
+                    Thread.Sleep(TimeSpan.FromSeconds(15));
                 }
-                Thread.Sleep(TimeSpan.FromSeconds(15));
+            }
+            catch (Exception e) {
+                SEDiscordBridgePlugin.Log.Error(e.ToString());
             }
         }
 
