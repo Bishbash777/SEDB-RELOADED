@@ -43,11 +43,11 @@
                 <Grid Background="#FFE5E5E5">
                     <CheckBox Content="Embedded response" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding Embed}" ToolTip="Enable or disable embedded command response"/>
                     <Label Content="Commands Channel Id" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,61,0,0" TextWrapping="Wrap" Text="{Binding CommandChannelId}" ToolTip="Discord channel to send commands to Torch" VerticalAlignment="Top" Width="120"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,61,0,0" TextWrapping="Wrap" Text="{Binding CommandChannelId}" ToolTip="Discord channel to send commands to Torch" VerticalAlignment="Top" Width="145"/>
                     <Label Content="Command Prefix" HorizontalAlignment="Left" Margin="10,89,0,0" VerticalAlignment="Top"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,120,0,0" TextWrapping="Wrap" Text="{Binding CommandPrefix}" ToolTip="Prefix for Commands from Discord" VerticalAlignment="Top" Width="120"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,120,0,0" TextWrapping="Wrap" Text="{Binding CommandPrefix}" ToolTip="Prefix for Commands from Discord" VerticalAlignment="Top" Width="142"/>
                     <Label Content="Remove response cooldown" HorizontalAlignment="Left" Margin="10,148,0,0" VerticalAlignment="Top"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,179,0,0" TextWrapping="Wrap" Text="{Binding RemoveResponse}" ToolTip="Time in seconds to remove the command response from discord." VerticalAlignment="Top" Width="120"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,179,0,0" TextWrapping="Wrap" Text="{Binding RemoveResponse}" ToolTip="Time in seconds to remove the command response from discord." VerticalAlignment="Top" Width="141"/>
                     <CheckBox Content="Strip GPS Output" HorizontalAlignment="Left" Margin="10,207,0,0" VerticalAlignment="Top" IsChecked="{Binding StripGPS}" ToolTip="Prevent GPS points returned by commands from appearing in Discord?"/>
                     <Label Content="Command Permissions (leave blank to disable):" HorizontalAlignment="Left" Margin="10,227,0,0" VerticalAlignment="Top"/>
                     <DataGrid x:Name="dgPermList" HorizontalAlignment="Left" Height="100" Margin="10,258,0,0" VerticalAlignment="Top" Width="297" AutoGenerateColumns="False">
