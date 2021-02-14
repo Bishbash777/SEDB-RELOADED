@@ -2,7 +2,7 @@
 using System.Reflection;
 using Torch.Managers.PatchManager;
 using NLog;
-using VRage.Network;
+using Torch;
 using Sandbox.Engine.Multiplayer;
 using Torch.Managers.ChatManager;
 using VRage.Game;
@@ -10,6 +10,8 @@ using Torch.Utils;
 using Sandbox.Game.Gui;
 using System;
 using Sandbox.Game.World;
+using Torch.Managers;
+using Torch.Server;
 
 namespace SEDiscordBridge {
     [PatchShim]
@@ -30,6 +32,7 @@ namespace SEDiscordBridge {
         }
 
         public static void Patch(PatchContext ctx) {
+
             var target = FindOverLoadMethod(typeof(MyMultiplayerBase).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static), "OnChatMessageReceived_Server", 1);
             var patchMethod = typeof(PlayerdDataPatch).GetMethod(nameof(OnChatMessageReceived_Server), BindingFlags.Static | BindingFlags.NonPublic);
             ctx.GetPattern(target).Prefixes.Add(patchMethod);

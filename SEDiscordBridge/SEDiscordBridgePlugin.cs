@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
@@ -19,6 +20,7 @@ using Torch.API;
 using Torch.API.Managers;
 using Torch.API.Plugins;
 using Torch.API.Session;
+using Torch.Managers;
 using Torch.Managers.ChatManager;
 using Torch.Server;
 using Torch.Session;
@@ -156,6 +158,32 @@ namespace SEDiscordBridge
 
         public void LoadSEDB()
         {
+
+            var pluginId = new Guid("cbfdd6ab-4cda-4544-a201-f73efa3d46c0");
+            var pluginManager = Torch.Managers.GetManager<PluginManager>();
+
+            if (pluginManager.Plugins.TryGetValue(pluginId, out ITorchPlugin EssentialsPlugin)) {
+                try {
+                    MethodInfo canAddMethod = EssentialsPlugin.GetType().GetMethod("GetPlayers", BindingFlags.Static | BindingFlags.Public);
+                    // Work with the Plugin
+
+                    Log.Info("Communication with Essentials successful");
+
+                }
+                catch (Exception e) {
+                    Log.Warn(e, "Could not connect to Essentials");
+                }
+
+            }
+            else {
+                Log.Info("Essentials Plugin not found! ");
+            }
+            /*
+             * 
+             * 
+             *
+             */
+
             if (Config.BotToken.Length <= 0)
             {
                 Log.Error("No BOT token set, plugin will not work at all! Add your bot TOKEN, save and restart torch.");
