@@ -254,6 +254,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands.cs" />
+    <Compile Include="PlayerDataPatch.cs" />
     <Compile Include="SEDBCommandHandler.cs" />
     <Compile Include="DiscordBridge.cs" />
     <Compile Include="SEDiscordBridgePlugin.cs" />
