@@ -35,7 +35,8 @@ namespace SEDiscordBridge
         public Persistent<SEDBConfig> _config;
 
         public DiscordBridge DDBridge;
-        
+        public MethodInfo InjectDiscordIDMethod = null;
+
         private UserControl _control;
         private TorchSessionManager _sessionManager;
         private ChatManagerServer _chatmanager;
@@ -156,34 +157,83 @@ namespace SEDiscordBridge
             Dispose();
         }
 
-        public void LoadSEDB()
-        {
 
+        public void ReflectEssentials() {
             var pluginId = new Guid("cbfdd6ab-4cda-4544-a201-f73efa3d46c0");
             var pluginManager = Torch.Managers.GetManager<PluginManager>();
 
             if (pluginManager.Plugins.TryGetValue(pluginId, out ITorchPlugin EssentialsPlugin)) {
                 try {
-                    MethodInfo canAddMethod = EssentialsPlugin.GetType().GetMethod("GetPlayers", BindingFlags.Static | BindingFlags.Public);
-                    // Work with the Plugin
-
-                    Log.Info("Communication with Essentials successful");
-
+                    MethodInfo[] methods = null;
+                    methods = EssentialsPlugin.GetType().GetMethods();
+                    foreach (var meth in methods) {
+                        if (meth.Name == "InsertDiscordID") {
+                            InjectDiscordIDMethod = meth;
+                        }
+                    }
                 }
                 catch (Exception e) {
-                    Log.Warn(e, "Could not connect to Essentials");
+                    Log.Warn(e, "failure");
                 }
 
             }
             else {
                 Log.Info("Essentials Plugin not found! ");
             }
-            /*
-             * 
-             * 
-             *
-             */
+        }
 
+        public void InjectDiscordID(IPlayer player) {
+
+            try {
+                if (InjectDiscordIDMethod != null) {
+                    string discord_Id = Task.Run(async () => await GetID(player.SteamId)).Result;
+                    if (discord_Id != null) {
+                        var roledata = DDBridge.GetRoles(ulong.Parse(discord_Id));
+                        string discordName = DDBridge.GetName(ulong.Parse(discord_Id));
+                        Log.Info($"DiscordID for {player.Name} found! Retrieving role data and injecting into essentials...");
+                        InjectDiscordIDMethod.Invoke(null, new object[] { player.SteamId, discord_Id,discordName, roledata });
+                    }
+                }
+                else {
+                    Log.Warn("Commincation to target method failed!");
+                }
+
+            }
+            catch (Exception e) {
+                Log.Warn(e, "failure");
+            }
+
+           
+        }
+
+        public async Task<string> GetID(ulong steamid) {
+            try {
+
+                Dictionary<string, string> kvp = utils.ParseQueryString(await utils.dataRequest(steamid.ToString(), Id.ToString(), "get_discord_id"));
+                if (kvp["error_code"] == "0") {
+                    return kvp["data"];
+                }
+                if (kvp["error_code"] == "1") {
+                    
+                    Log.Warn(kvp["error_message"]);
+                }
+                if (kvp["error_code"] == "2") {
+                    Log.Warn("Unauthorised attempt to access data - Contact Bishbash777");
+                }
+                if (kvp["error_code"] == "3") {
+                    Log.Warn(kvp["error_message"]);
+                }
+                return null;
+            }
+            catch (System.Exception e) {
+                Log.Warn(e.ToString());
+                return null;
+            }
+        }
+
+        public void LoadSEDB()
+        {
+            ReflectEssentials();
             if (Config.BotToken.Length <= 0)
             {
                 Log.Error("No BOT token set, plugin will not work at all! Add your bot TOKEN, save and restart torch.");
@@ -354,6 +404,7 @@ namespace SEDiscordBridge
 
         private async void _multibase_PlayerJoined(IPlayer obj)
         {
+            InjectDiscordID(obj);
             if (!Config.Enabled) return;
 
             //Add to conecting list

@@ -7,11 +7,13 @@ using System.Web;
 using VRage.Game.ModAPI;
 using Sandbox.Game.World;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace SEDiscordBridge {
 
     public class utils {
         public static ITorchBase Torch { get; }
+        public static bool debug = true;
         public static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         public static string GetSubstringByString(string from, string until, string wholestring) {
@@ -56,6 +58,20 @@ namespace SEDiscordBridge {
                 response = await clients.PostAsync("http://sedb.uk/api/index.php", content);
             }
             return await response.Content.ReadAsStringAsync();
-        } 
+        }
+
+
+        public static MethodInfo FindOverLoadMethod(MethodInfo[] methodInfo, string name, int parameterLenth) {
+            MethodInfo method = null;
+            foreach (var DecalredMethod in methodInfo) {
+                if (debug)
+                    Log.Info($"Method name: {DecalredMethod.Name}");
+                if (DecalredMethod.GetParameters().Length == parameterLenth && DecalredMethod.Name == name) {
+                    method = DecalredMethod;
+                    break;
+                }
+            }
+            return method;
+        }
     }
 }
