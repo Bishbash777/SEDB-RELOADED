@@ -80,6 +80,11 @@ namespace SEDiscordBridge
 
         private void MessageRecieved(TorchChatMessage msg, ref bool consumed)
         {
+            Task.Run(async () => SendAsync(msg));
+        }
+
+        private async void SendAsync(TorchChatMessage msg)
+        {
             try
             {
                 if (!Config.Enabled) return;
