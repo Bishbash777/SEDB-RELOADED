@@ -241,12 +241,10 @@ namespace SEDiscordBridge
         }
 
         public Dictionary<ulong,string> GetRoles(ulong userID) {
-            SEDiscordBridgePlugin.Log.Fatal("Getting roles.");
             List<DiscordRole> discordRoles = new List<DiscordRole>();
             Dictionary<ulong, string> roleData = new Dictionary<ulong, string>();
             var guilds = Discord.Guilds;
             foreach(var guildID in guilds) {
-                SEDiscordBridgePlugin.Log.Fatal("FOUND GUILD");
                 var Guild = Discord.GetGuildAsync(guildID.Key).Result;
                 discordRoles = Guild.GetMemberAsync(userID).Result.Roles.ToList();
 
@@ -259,7 +257,6 @@ namespace SEDiscordBridge
         }
 
         public string GetName(ulong userID) {
-            SEDiscordBridgePlugin.Log.Fatal("Getting roles.");
             string discordname = "";
             var guilds = Discord.Guilds;
             foreach (var guildID in guilds) {

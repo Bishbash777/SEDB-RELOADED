@@ -42,6 +42,7 @@ namespace SEDiscordBridge
         private ChatManagerServer _chatmanager;
         private IChatManagerServer ChatManager => _chatmanager ?? (Torch.CurrentSession.Managers.GetManager<IChatManagerServer>());
         private IMultiplayerManagerBase _multibase;
+        private List<ulong> messageQueue = new List<ulong>();
         private Timer _timer;
         private TorchServer torchServer;
         private readonly HashSet<ulong>_conecting = new HashSet<ulong>();
@@ -191,7 +192,10 @@ namespace SEDiscordBridge
                         var roledata = DDBridge.GetRoles(ulong.Parse(discord_Id));
                         string discordName = DDBridge.GetName(ulong.Parse(discord_Id));
                         Log.Info($"DiscordID for {player.Name} found! Retrieving role data and injecting into essentials...");
-                        InjectDiscordIDMethod.Invoke(null, new object[] { player.SteamId, discord_Id,discordName, roledata });
+                        InjectDiscordIDMethod.Invoke(null, new object[] { player.SteamId, discord_Id, discordName, roledata });
+                    }
+                    else if(!messageQueue.Contains(player.SteamId)) {
+                        messageQueue.Add(player.SteamId);
                     }
                 }
                 else {
@@ -208,7 +212,6 @@ namespace SEDiscordBridge
 
         public async Task<string> GetID(ulong steamid) {
             try {
-
                 Dictionary<string, string> kvp = utils.ParseQueryString(await utils.dataRequest(steamid.ToString(), Id.ToString(), "get_discord_id"));
                 if (kvp["error_code"] == "0") {
                     return kvp["data"];
@@ -421,6 +424,7 @@ namespace SEDiscordBridge
 
             if (obj is MyCharacter character)
             {
+                var manager = Torch.CurrentSession.Managers.GetManager<IChatManagerServer>();
                 Task.Run(() =>
                 {
                     System.Threading.Thread.Sleep(1000);
@@ -428,6 +432,10 @@ namespace SEDiscordBridge
                     {
                         DDBridge.SendStatusMessage(character.DisplayName, Config.Join);
                         //After spawn on world, remove from connecting list
+                        if (messageQueue.Contains(character.ControlSteamId)) {
+                            manager.SendMessageAsOther(null, "Did you know you can link your steamID to your Discord account? Enter '!sedb link' to get started!", VRageMath.Color.Yellow, character.ControlSteamId);
+                            messageQueue.Remove(character.ControlSteamId);
+                        }
                         _conecting.Remove(character.ControlSteamId);
                     }
                 });
