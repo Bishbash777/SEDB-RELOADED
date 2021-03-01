@@ -11,6 +11,7 @@ using Sandbox.ModAPI;
 using System.Diagnostics;
 using Sandbox.Game.World;
 using VRage.ModAPI;
+using System.Threading.Tasks;
 
 namespace SEDiscordBridge
 {

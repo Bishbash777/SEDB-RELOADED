@@ -240,6 +240,33 @@ namespace SEDiscordBridge
             }
         }
 
+        public Dictionary<ulong,string> GetRoles(ulong userID) {
+            List<DiscordRole> discordRoles = new List<DiscordRole>();
+            Dictionary<ulong, string> roleData = new Dictionary<ulong, string>();
+            var guilds = Discord.Guilds;
+            foreach(var guildID in guilds) {
+                var Guild = Discord.GetGuildAsync(guildID.Key).Result;
+                discordRoles = Guild.GetMemberAsync(userID).Result.Roles.ToList();
+
+                foreach (var role in discordRoles) {
+                    roleData.Add(role.Id, role.Name);
+                }
+            }
+
+            return roleData;
+        }
+
+        public string GetName(ulong userID) {
+            string discordname = "";
+            var guilds = Discord.Guilds;
+            foreach (var guildID in guilds) {
+                var Guild = Discord.GetGuildAsync(guildID.Key).Result;
+                return discordname = Guild.GetMemberAsync(userID).Result.DisplayName;
+            }
+
+            return null;
+        }
+
         private Task Discord_MessageCreated(DSharpPlus.EventArgs.MessageCreateEventArgs e)
         {
             bool cmdConditionMatch = false;   

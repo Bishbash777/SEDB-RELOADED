@@ -27,6 +27,7 @@
     <DocumentationFile>
     </DocumentationFile>
     <RegisterForComInterop>false</RegisterForComInterop>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -38,6 +39,7 @@
     <DocumentationFile>
     </DocumentationFile>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'No Torch|AnyCPU'">
     <OutputPath>..\..\..\..\SpaceEngineersDedicado\torch-server\Plugins\SEDiscordBridge\</OutputPath>
@@ -48,6 +50,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DSharpPlus, Version=4.0.0.683, Culture=neutral, processorArchitecture=MSIL">
