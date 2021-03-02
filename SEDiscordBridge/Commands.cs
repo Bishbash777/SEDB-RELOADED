@@ -4,14 +4,8 @@ using Torch.Commands;
 using Torch.Commands.Permissions;
 using VRage.Game.ModAPI;
 using System.Collections.Generic;
-using System.Web;
-using Sandbox;
 using Sandbox.Game;
-using Sandbox.ModAPI;
-using System.Diagnostics;
 using Sandbox.Game.World;
-using VRage.ModAPI;
-using System.Threading.Tasks;
 
 namespace SEDiscordBridge
 {
@@ -26,7 +20,6 @@ namespace SEDiscordBridge
         [Permission(MyPromoteLevel.Admin)]
         public void ReloadBridge() {
             Plugin.InitConfig();
-            Plugin.DDBridge?.SendStatus(null);
 
             if (Plugin.Config.Enabled) {
                 if (Plugin.Torch.CurrentSession == null && !Plugin.Config.PreLoad) {
@@ -85,7 +78,7 @@ namespace SEDiscordBridge
 
 
                 if (player != null) {
-                    uSteamid = player.SteamUserId.ToString();
+                    uSteamid = player.Id.SteamId.ToString();
                     found = true;
                 }
 

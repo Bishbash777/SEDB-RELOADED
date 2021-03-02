@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using Torch;
+using VRageMath;
 
 namespace SEDiscordBridge
 {
@@ -43,7 +44,7 @@ namespace SEDiscordBridge
 
         private bool _botToGame = false;
         public bool BotToGame { get => _botToGame; set => SetValue(ref _botToGame, value); }
-        
+
         private bool _serverToDiscord = false;
         public bool ServerToDiscord { get => _serverToDiscord; set => SetValue(ref _serverToDiscord, value); }
 
@@ -58,6 +59,9 @@ namespace SEDiscordBridge
 
         private string _stopped = ":x: Server Stopped!";
         public string Stopped { get => _stopped; set => SetValue(ref _stopped, value); }
+
+		private string _restarted = ":arrows_counterclockwise: Server Go To Restart!";
+        public string Restarted { get => _restarted; set => SetValue(ref _restarted, value); }
 
         private bool _stripGPS = false;
         public bool StripGPS { get => _stripGPS; set => SetValue(ref _stripGPS, value); }
@@ -110,14 +114,14 @@ namespace SEDiscordBridge
         private int _removeResponse = 30;
         public int RemoveResponse { get => _removeResponse; set => SetValue(ref _removeResponse, value); }
 
-        private ObservableCollection<string> _facChannels = new ObservableCollection<string>();
-        public ObservableCollection<string> FactionChannels { get => _facChannels; set => SetValue(ref _facChannels, value); }
+        private ObservableCollection<FactionChannel> _facChannels = new ObservableCollection<FactionChannel>();
+        public ObservableCollection<FactionChannel> FactionChannels { get => _facChannels; set => SetValue(ref _facChannels, value); }
 
-        private string _globalColor = "White";
-        public string GlobalColor { get => _globalColor; set => SetValue(ref _globalColor, value); }
+        private Color _globalColor = Color.White;
+        public Color GlobalColor { get => _globalColor; set => SetValue(ref _globalColor, value); }
 
-        private string _facColor = "Green";
-        public string FacColor { get => _facColor; set => SetValue(ref _facColor, value); }
+        private Color _facColor = Color.Green;
+        public Color FacColor { get => _facColor; set => SetValue(ref _facColor, value); }
 
         private string _facformat = ":ledger: **{p}**: {msg}";
         public string FacFormat { get => _facformat; set => SetValue(ref _facformat, value); }
@@ -125,7 +129,7 @@ namespace SEDiscordBridge
         private string _facformat2 = "[D-Fac]{p}";
         public string FacFormat2 { get => _facformat2; set => SetValue(ref _facformat2, value); }
 
-        private ObservableCollection<string> _cmdPerms = new ObservableCollection<string>();
-        public ObservableCollection<string> CommandPerms { get => _cmdPerms; set => SetValue(ref _cmdPerms, value); }
+        private ObservableCollection<CommandPermission> _cmdPerms = new ObservableCollection<CommandPermission>();
+        public ObservableCollection<CommandPermission> CommandPerms { get => _cmdPerms; set => SetValue(ref _cmdPerms, value); }
     }
 }

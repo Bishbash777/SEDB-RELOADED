@@ -1,12 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using VRage.Game;
+using VRageMath;
 
 namespace SEDiscordBridge
 {
@@ -26,36 +22,23 @@ namespace SEDiscordBridge
         {
             Plugin = plugin;
             DataContext = plugin.Config;
-
-            cbFontColor.ItemsSource = new ObservableCollection<string>(typeof(MyFontEnum).GetFields().Select(x => x.Name).ToList());
-            cbFacFontColor.ItemsSource = new ObservableCollection<string>(typeof(MyFontEnum).GetFields().Select(x => x.Name).ToList());
-            UpdateFacDataGrid();
-            UpdatePermsDataGrid();
-        }
-
-        private void UpdateFacDataGrid()
-        {
-            var factions = from f in Plugin.Config.FactionChannels select new { Faction = f.Split(':')[0], Channel = f.Split(':')[1] };
-            dgFacList.ItemsSource = factions;
-        }
-
-        private void UpdatePermsDataGrid()
-        {
-            var perms = from f in Plugin.Config.CommandPerms select new { Player = f.Split(':')[0], Permission = f.Split(':')[1] };
-            dgPermList.ItemsSource = perms;
+            dgFacList.ItemsSource = Plugin.Config.FactionChannels;
+            dgPermList.ItemsSource = Plugin.Config.CommandPerms;
+            FacColorBox.ItemsSource = utils.Colors;
+            GlobalChatColorBox.ItemsSource = utils.Colors;
+            FacColorBox.SelectedItem = utils.GetFromColor(Plugin.Config.FacColor);
+            GlobalChatColorBox.SelectedItem = utils.GetFromColor(Plugin.Config.GlobalColor);
         }
 
         private void SaveConfig_OnClick(object sender, RoutedEventArgs e)
         {
             Plugin.Save();
-            Plugin.DDBridge?.SendStatus(null);
 
             if (Plugin.Config.Enabled)
             {
                 if (Plugin.Torch.CurrentSession == null && !Plugin.Config.PreLoad)
                 {
                     Plugin.UnloadSEDB();
-
                 }
                 else
                 {
@@ -74,69 +57,42 @@ namespace SEDiscordBridge
             e.Handled = true;
         }
 
-        private void BtnAddFac_Click(object sender, RoutedEventArgs e)
+        private void Button_Click_7(object sender, RoutedEventArgs e)
         {
-            if (txtFacName.Text.Length > 0 && txtFacChannel.Text.Length > 0)
+            Plugin.Config.FactionChannels.Add(new FactionChannel()
             {
-                Plugin.Config.FactionChannels.Add(txtFacName.Text + ":" + txtFacChannel.Text);
-                UpdateFacDataGrid();
-                dgFacList.Items.MoveCurrentToLast();
-            }
+                Faction = "ABC",
+                Channel = 1234,
+            });
         }
 
-        private void BtnDelFac_Click(object sender, RoutedEventArgs e)
+        private void Button_Click_8(object sender, RoutedEventArgs e)
         {
-            if (dgFacList.SelectedIndex >= 0)
-            {
-                dynamic dataRow = dgFacList.SelectedItem;
-                Plugin.Config.FactionChannels.Remove(dataRow.Faction + ":" + dataRow.Channel);
-                UpdateFacDataGrid();
-            }
+            if (dgFacList.SelectedItem is FactionChannel factionChannel) Plugin.Config.FactionChannels.Remove(factionChannel);
         }
 
-        private void DgFacList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Button_Click_9(object sender, RoutedEventArgs e)
         {
-            if (dgFacList.SelectedIndex >= 0)
+            Plugin.Config.CommandPerms.Add(new CommandPermission()
             {
-                dynamic dataRow = dgFacList.SelectedItem;
-                txtFacName.Text = dataRow.Faction;
-                txtFacChannel.Text = dataRow.Channel;
-            }
+                Player = 1234,
+                Permission = "*",
+            });
         }
 
-        private void CbFontColor_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Button_Click_10(object sender, RoutedEventArgs e)
         {
-            Plugin.Config.GlobalColor = cbFontColor.SelectedValue.ToString();
+            if (dgPermList.SelectedItem is CommandPermission commandPermission) Plugin.Config.CommandPerms.Remove(commandPermission);
         }
 
-        private void DgPermList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void FacColorBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (dgPermList.SelectedIndex >= 0)
-            {
-                dynamic dataRow = dgPermList.SelectedItem;
-                txtPlayerName.Text = dataRow.Player;
-                txtPermission.Text = dataRow.Permission;
-            }
+            if (FacColorBox.SelectedValue is Color color) Plugin.Config.FacColor = color; 
         }
 
-        private void btnAddPerm_Click(object sender, RoutedEventArgs e)
+        private void GlobalChatColorBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (txtPlayerName.Text.Length > 0 && txtPermission.Text.Length > 0)
-            {
-                Plugin.Config.CommandPerms.Add(txtPlayerName.Text + ":" + txtPermission.Text);
-                UpdatePermsDataGrid();
-                dgPermList.Items.MoveCurrentToLast();
-            }
-        }
-
-        private void btnDelPerm_Click(object sender, RoutedEventArgs e)
-        {
-            if (dgPermList.SelectedIndex >= 0)
-            {
-                dynamic dataRow = dgPermList.SelectedItem;
-                Plugin.Config.CommandPerms.Remove(dataRow.Player + ":" + dataRow.Permission);
-                UpdatePermsDataGrid();
-            }
+            if (GlobalChatColorBox.SelectedValue is Color color) Plugin.Config.GlobalColor = color;
         }
     }
 }

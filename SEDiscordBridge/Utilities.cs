@@ -7,6 +7,15 @@ using System.Web;
 using VRage.Game.ModAPI;
 using Sandbox.Game.World;
 using System.Threading.Tasks;
+using VRage.Game.Entity;
+using Sandbox.Game.Entities;
+using Sandbox.Game.Entities.Character;
+using Sandbox.Game.Weapons;
+using Sandbox.Game.Entities.Cube;
+using VRageMath;
+using System.Collections.ObjectModel;
+using System.Reflection;
+using VRage;
 using System.Reflection;
 
 namespace SEDiscordBridge {
@@ -25,7 +34,7 @@ namespace SEDiscordBridge {
             return nvc.AllKeys.ToDictionary(k => k, k => nvc[k]);
         }
 
-        public static IMyPlayer GetPlayerByNameOrId(string nameOrPlayerId) {
+        public static MyPlayer GetPlayerByNameOrId(string nameOrPlayerId) {
             if (!long.TryParse(nameOrPlayerId, out long id)) {
                 foreach (var identity in MySession.Static.Players.GetAllIdentities()) {
                     if (identity.DisplayName == nameOrPlayerId) {
@@ -60,6 +69,8 @@ namespace SEDiscordBridge {
             return await response.Content.ReadAsStringAsync();
         }
 
+        public static ReadOnlyObservableCollection<ColorStruct> Colors { get; } = new ReadOnlyObservableCollection<ColorStruct>(new ObservableCollection<ColorStruct>(typeof(Color).GetProperties(BindingFlags.Public | BindingFlags.Static).Select(b => new ColorStruct((Color)b.GetValue(null), b.Name))));
+        public static ColorStruct GetFromColor(Color color) => Colors.ToList().Find(b => b.Color == color);
 
         public static MethodInfo FindOverLoadMethod(MethodInfo[] methodInfo, string name, int parameterLenth) {
             MethodInfo method = null;
@@ -73,5 +84,12 @@ namespace SEDiscordBridge {
             }
             return method;
         }
+    }
+
+    public struct ColorStruct
+    {
+        public ColorStruct (Color color, string name) { Color = color; DisplayName = name; }
+        public string DisplayName { get; set; }
+        public Color Color { get; set; }
     }
 }
