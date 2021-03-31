@@ -133,7 +133,7 @@ namespace SEDiscordBridge
                 {
                     DiscordChannel chann = Discord.GetChannelAsync(ulong.Parse(Plugin.Config.SimChannel)).Result;
                     //mention
-                    //msg = MentionNameToID(msg, chann);
+                    msg = MentionNameToID(msg, chann);
                     msg = Plugin.Config.SimMessage.Replace("{ts}", TimeZone.CurrentTimeZone.ToLocalTime(DateTime.Now).ToString());
                     botId = Discord.SendMessageAsync(chann, msg.Replace("/n", "\n")).Result.Author.Id;
                 }
@@ -448,6 +448,20 @@ namespace SEDiscordBridge
                         if (part.StartsWith("@"))
                         {
                             string name = Regex.Replace(part.Substring(1), @"[,#]", "");
+
+                            var roleDictionary = chann.Guild.Roles;
+                            dynamic roleToMention = null;
+                            foreach (var role in roleDictionary) {
+                                if (role.Value.Name == name) {
+                                    roleToMention = role.Value;
+                                }
+                            }
+
+                            if (roleToMention != null) {
+                                msg = msg.Replace(part, roleToMention.Mention);
+                                continue;
+                            }
+
                             if (string.Compare(name, "everyone", true) == 0 && !Plugin.Config.MentEveryone)
                             {
                                 msg = msg.Replace(part, part.Substring(1));
