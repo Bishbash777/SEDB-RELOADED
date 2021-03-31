@@ -314,21 +314,6 @@ namespace SEDiscordBridge
                             }
                         }
 
-                        // Server start command
-                        if (cmd.Equals("bridge-startserver"))
-                        {
-                            if (Plugin.Torch.CurrentSession == null)
-                            {
-                                Plugin.Torch.Start();
-                                SendCmdResponse("Torch initiated!", e.Channel, DiscordColor.Green, cmd);
-                            }
-                            else
-                            {
-                                SendCmdResponse("Torch is already running!", e.Channel, DiscordColor.Yellow, cmd);
-                            }
-                            return Task.CompletedTask;
-                        }
-
                         if (Plugin.Torch.CurrentSession?.State == TorchSessionState.Loaded)
                         {
                             var manager = Plugin.Torch.CurrentSession.Managers.GetManager<CommandManager>();
