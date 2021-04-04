@@ -1,22 +1,17 @@
 using NLog;
+using Sandbox.Game;
+using Sandbox.Game.World;
+using System.Collections.Generic;
 using System.Net.Http;
 using Torch.Commands;
 using Torch.Commands.Permissions;
 using VRage.Game.ModAPI;
-using System.Collections.Generic;
-using System.Web;
-using Sandbox;
-using Sandbox.Game;
-using Sandbox.ModAPI;
-using System.Diagnostics;
-using Sandbox.Game.World;
-using VRage.ModAPI;
-using System.Threading.Tasks;
 
 namespace SEDiscordBridge
 {
     [Category("sedb")]
-    public class Commands : CommandModule {
+    public class Commands : CommandModule
+    {
 
         public static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
@@ -24,20 +19,25 @@ namespace SEDiscordBridge
 
         [Command("reload", "Reload current SEDB configuration")]
         [Permission(MyPromoteLevel.Admin)]
-        public void ReloadBridge() {
+        public void ReloadBridge()
+        {
             Plugin.InitConfig();
             Plugin.DDBridge?.SendStatus(null);
 
-            if (Plugin.Config.Enabled) {
-                if (Plugin.Torch.CurrentSession == null && !Plugin.Config.PreLoad) {
+            if (Plugin.Config.Enabled)
+            {
+                if (Plugin.Torch.CurrentSession == null && !Plugin.Config.PreLoad)
+                {
                     Plugin.UnloadSEDB();
 
                 }
-                else {
+                else
+                {
                     Plugin.LoadSEDB();
                 }
             }
-            else {
+            else
+            {
                 Plugin.UnloadSEDB();
             }
             Context.Respond("SEDB plugin reloaded!");
@@ -45,15 +45,18 @@ namespace SEDiscordBridge
 
         [Command("link", "Link you steamID to a discord account")]
         [Permission(MyPromoteLevel.None)]
-        public async void link() {
+        public async void link()
+        {
             IMyPlayer player = Context.Player;
-            if (player == null) {
+            if (player == null)
+            {
                 Context.Respond("Command cannot be ran from console");
                 return;
             }
 
             HttpResponseMessage response;
-            using (HttpClient clients = new HttpClient()) {
+            using (HttpClient clients = new HttpClient())
+            {
                 List<KeyValuePair<string, string>> pairs = new List<KeyValuePair<string, string>>
                 {
                         new KeyValuePair<string, string>("steamid",Context.Player.SteamUserId.ToString()),
@@ -64,11 +67,13 @@ namespace SEDiscordBridge
             string texts = await response.Content.ReadAsStringAsync();
             utils utils = new utils();
             Dictionary<string, string> kvp = utils.ParseQueryString(texts);
-            if (kvp["existance"] == "false") {
+            if (kvp["existance"] == "false")
+            {
                 MyVisualScriptLogicProvider.OpenSteamOverlay($"https://steamcommunity.com/linkfilter/?url=http://sedb.uk/?guid={kvp["guid"]}&steamid={Context.Player.SteamUserId}", Context.Player.IdentityId);
                 Context.Respond("A browser window has been opened... Please continue there.");
             }
-            else {
+            else
+            {
                 Context.Respond("Your SteamId has already been linked to discord, if this has not been authenticated by yourself... Please contact your admin");
             }
 
@@ -76,22 +81,28 @@ namespace SEDiscordBridge
 
         [Command("get")]
         [Permission(MyPromoteLevel.Admin)]
-        public async void GetUser(string playername) {
-            try {
+        public async void GetUser(string playername)
+        {
+            try
+            {
                 bool found = false;
                 utils utils = new utils();
                 var player = utils.GetPlayerByNameOrId(playername);
                 string uSteamid = "0";
 
 
-                if (player != null) {
+                if (player != null)
+                {
                     uSteamid = player.SteamUserId.ToString();
                     found = true;
                 }
 
-                else {
-                    foreach (var member in MySession.Static.Players.GetAllPlayers()) {
-                        if (playername == member.SteamId.ToString()) {
+                else
+                {
+                    foreach (var member in MySession.Static.Players.GetAllPlayers())
+                    {
+                        if (playername == member.SteamId.ToString())
+                        {
                             uSteamid = member.SteamId.ToString();
                             found = true;
                         }
@@ -101,45 +112,55 @@ namespace SEDiscordBridge
                 }
 
                 Dictionary<string, string> kvp = utils.ParseQueryString(await utils.dataRequest(uSteamid, Context.Plugin.Id.ToString(), "get_discord_name"));
-                if (kvp["error_code"] == "0") {
+                if (kvp["error_code"] == "0")
+                {
                     Context.Respond($"The user's discord name is {kvp["data"]}");
                 }
-                if (kvp["error_code"] == "1") {
+                if (kvp["error_code"] == "1")
+                {
                     Context.Respond("Unable to find linked account - Please make sure you have linked an account");
                     Log.Warn(kvp["error_message"]);
                 }
-                if (kvp["error_code"] == "2") {
+                if (kvp["error_code"] == "2")
+                {
                     Context.Respond("Unable to get data - see log for more info");
                     Log.Warn("Unauthorised attempt to access data - Contact Bishbash777");
                 }
-                if (kvp["error_code"] == "3") {
+                if (kvp["error_code"] == "3")
+                {
                     Context.Respond("API error... Please see log");
                     Log.Warn(kvp["error_message"]);
                 }
 
             }
-            catch (System.Exception e) {
+            catch (System.Exception e)
+            {
                 Log.Warn(e.ToString());
             }
         }
 
         [Command("verify", "If you have linked your discord account, you can verify the link by entering this command")]
         [Permission(MyPromoteLevel.None)]
-        public async void GetMyId() {
+        public async void GetMyId()
+        {
             string uSteamid = Context.Player.SteamUserId.ToString();
             Dictionary<string, string> kvp = utils.ParseQueryString(await utils.dataRequest(uSteamid, Context.Plugin.Id.ToString(), "get_discord_name"));
-            if (kvp["error_code"] == "0") {
+            if (kvp["error_code"] == "0")
+            {
                 Context.Respond($"Your discord name is {kvp["data"]}");
             }
-            if (kvp["error_code"] == "1") {
+            if (kvp["error_code"] == "1")
+            {
                 Context.Respond("Unable to find linked account - Please make sure you have linked an account");
                 Log.Warn(kvp["error_message"]);
             }
-            if (kvp["error_code"] == "2") {
+            if (kvp["error_code"] == "2")
+            {
                 Context.Respond("Unable to get data - see log for more info");
                 Log.Warn("Unauthorised attempt to access data - Contact Bishbash777");
             }
-            if (kvp["error_code"] == "3") {
+            if (kvp["error_code"] == "3")
+            {
                 Context.Respond("API error... Please see log");
                 Log.Warn(kvp["error_message"]);
             }
@@ -147,10 +168,12 @@ namespace SEDiscordBridge
 
         [Command("unlink", "If you have linked your discord account, you can verify the link by entering this command")]
         [Permission(MyPromoteLevel.None)]
-        public async void Unlink() {
+        public async void Unlink()
+        {
 
             IMyPlayer player = Context.Player;
-            if (player == null) {
+            if (player == null)
+            {
                 Context.Respond("Command cannot be ran from console");
                 return;
             }

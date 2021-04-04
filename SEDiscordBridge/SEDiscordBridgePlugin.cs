@@ -5,11 +5,8 @@ using Sandbox.Game.Gui;
 using Sandbox.Game.World;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -45,7 +42,7 @@ namespace SEDiscordBridge
         private List<ulong> messageQueue = new List<ulong>();
         private Timer _timer;
         private TorchServer torchServer;
-        private readonly HashSet<ulong>_conecting = new HashSet<ulong>();
+        private readonly HashSet<ulong> _conecting = new HashSet<ulong>();
 
         public static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
@@ -94,7 +91,7 @@ namespace SEDiscordBridge
                 if (!Config.Enabled) return;
 
 
-                if (msg.AuthorSteamId != null && !ChatManager.MutedUsers.Contains((ulong)msg.AuthorSteamId))
+                if (msg.AuthorSteamId != null && !ChatManager.MutedUsers.Contains((ulong)msg.AuthorSteamId) && Config.ServerToDiscord)
                 {
                     switch (msg.Channel)
                     {
@@ -164,76 +161,97 @@ namespace SEDiscordBridge
         }
 
 
-        public void ReflectEssentials() {
+        public void ReflectEssentials()
+        {
             var pluginId = new Guid("cbfdd6ab-4cda-4544-a201-f73efa3d46c0");
             var pluginManager = Torch.Managers.GetManager<PluginManager>();
 
-            if (pluginManager.Plugins.TryGetValue(pluginId, out ITorchPlugin EssentialsPlugin)) {
-                try {
+            if (pluginManager.Plugins.TryGetValue(pluginId, out ITorchPlugin EssentialsPlugin))
+            {
+                try
+                {
                     MethodInfo[] methods = null;
                     methods = EssentialsPlugin.GetType().GetMethods();
-                    foreach (var meth in methods) {
-                        if (meth.Name == "InsertDiscordID") {
+                    foreach (var meth in methods)
+                    {
+                        if (meth.Name == "InsertDiscordID")
+                        {
                             InjectDiscordIDMethod = meth;
                         }
                     }
                 }
-                catch (Exception e) {
+                catch (Exception e)
+                {
                     Log.Warn(e, "failure");
                 }
 
             }
-            else {
+            else
+            {
                 Log.Info("Essentials Plugin not found! ");
             }
         }
 
-        public void InjectDiscordID(IPlayer player) {
+        public void InjectDiscordID(IPlayer player)
+        {
 
-            try {
-                if (InjectDiscordIDMethod != null) {
+            try
+            {
+                if (InjectDiscordIDMethod != null)
+                {
                     string discord_Id = Task.Run(async () => await GetID(player.SteamId)).Result;
-                    if (discord_Id != null) {
+                    if (discord_Id != null)
+                    {
                         var roledata = DDBridge.GetRoles(ulong.Parse(discord_Id));
                         string discordName = DDBridge.GetName(ulong.Parse(discord_Id));
                         Log.Info($"DiscordID for {player.Name} found! Retrieving role data and injecting into essentials...");
                         InjectDiscordIDMethod.Invoke(null, new object[] { player.SteamId, discord_Id, discordName, roledata });
                     }
-                    else if(!messageQueue.Contains(player.SteamId)) {
+                    else if (!messageQueue.Contains(player.SteamId))
+                    {
                         messageQueue.Add(player.SteamId);
                     }
                 }
-                else {
+                else
+                {
                     Log.Warn("Commincation to target method failed!");
                 }
 
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 Log.Warn(e, "failure");
             }
 
-           
+
         }
 
-        public async Task<string> GetID(ulong steamid) {
-            try {
+        public async Task<string> GetID(ulong steamid)
+        {
+            try
+            {
                 Dictionary<string, string> kvp = utils.ParseQueryString(await utils.dataRequest(steamid.ToString(), Id.ToString(), "get_discord_id"));
-                if (kvp["error_code"] == "0") {
+                if (kvp["error_code"] == "0")
+                {
                     return kvp["data"];
                 }
-                if (kvp["error_code"] == "1") {
-                    
+                if (kvp["error_code"] == "1")
+                {
+
                     Log.Warn(kvp["error_message"]);
                 }
-                if (kvp["error_code"] == "2") {
+                if (kvp["error_code"] == "2")
+                {
                     Log.Warn("Unauthorised attempt to access data - Contact Bishbash777");
                 }
-                if (kvp["error_code"] == "3") {
+                if (kvp["error_code"] == "3")
+                {
                     Log.Warn(kvp["error_message"]);
                 }
                 return null;
             }
-            catch (System.Exception e) {
+            catch (System.Exception e)
+            {
                 Log.Warn(e.ToString());
                 return null;
             }
@@ -332,7 +350,7 @@ namespace SEDiscordBridge
         // for counter within _timer_elapsed() 
         private int i = 0;
         private DateTime timerStart = new DateTime(0);
-        
+
         private void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (!Config.Enabled || DDBridge == null) return;
@@ -383,8 +401,8 @@ namespace SEDiscordBridge
                             DiscordBridge.CooldownNeutral = 0;
                             i = 0;
 
-                        } 
-                        DiscordBridge.CooldownNeutral += (60/DiscordBridge.Factor);
+                        }
+                        DiscordBridge.CooldownNeutral += (60 / DiscordBridge.Factor);
                         i++;
                     }
                     else
@@ -437,7 +455,8 @@ namespace SEDiscordBridge
                     {
                         DDBridge.SendStatusMessage(character.DisplayName, Config.Join);
                         //After spawn on world, remove from connecting list
-                        if (messageQueue.Contains(character.ControlSteamId)) {
+                        if (messageQueue.Contains(character.ControlSteamId))
+                        {
                             manager.SendMessageAsOther(null, "Did you know you can link your steamID to your Discord account? Enter '!sedb link' to get started!", VRageMath.Color.Yellow, character.ControlSteamId);
                             messageQueue.Remove(character.ControlSteamId);
                         }

@@ -43,7 +43,7 @@ namespace SEDiscordBridge
 
         private bool _botToGame = false;
         public bool BotToGame { get => _botToGame; set => SetValue(ref _botToGame, value); }
-        
+
         private bool _serverToDiscord = false;
         public bool ServerToDiscord { get => _serverToDiscord; set => SetValue(ref _serverToDiscord, value); }
 
