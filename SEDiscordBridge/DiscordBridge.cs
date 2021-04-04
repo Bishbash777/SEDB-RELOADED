@@ -133,7 +133,7 @@ namespace SEDiscordBridge
                 {
                     DiscordChannel chann = Discord.GetChannelAsync(ulong.Parse(Plugin.Config.SimChannel)).Result;
                     //mention
-                    //msg = MentionNameToID(msg, chann);
+                    msg = MentionNameToID(msg, chann);
                     msg = Plugin.Config.SimMessage.Replace("{ts}", TimeZone.CurrentTimeZone.ToLocalTime(DateTime.Now).ToString());
                     botId = Discord.SendMessageAsync(chann, msg.Replace("/n", "\n")).Result.Author.Id;
                 }
@@ -151,36 +151,41 @@ namespace SEDiscordBridge
 
             if (Ready && Plugin.Config.ChatChannelId.Length > 0)
             {
-                DiscordChannel chann = Discord.GetChannelAsync(ulong.Parse(Plugin.Config.ChatChannelId)).Result;
-                //mention
-                msg = MentionNameToID(msg, chann);
+                foreach (var chanID in Plugin.Config.ChatChannelId.Split(' ')) {
 
-                if (user != null)
-                {
-                    msg = Plugin.Config.Format.Replace("{msg}", msg).Replace("{p}", user).Replace("{ts}", TimeZone.CurrentTimeZone.ToLocalTime(DateTime.Now).ToString());
-                }
-                try {
-                    botId = Discord.SendMessageAsync(chann, msg.Replace("/n", "\n")).Result.Author.Id;
-                }
-                catch (DSharpPlus.Exceptions.RateLimitException) {
-                    if (retry <= 5) {
-                        retry++;
-                        SendChatMessage(user, msg);
+                    DiscordChannel chann = Discord.GetChannelAsync(ulong.Parse(chanID)).Result;
+                    //mention
+                    msg = MentionNameToID(msg, chann);
+
+                    if (user != null) {
+                        msg = Plugin.Config.Format.Replace("{msg}", msg).Replace("{p}", user).Replace("{ts}", TimeZone.CurrentTimeZone.ToLocalTime(DateTime.Now).ToString());
+                    }
+                    try {
+                        botId = Discord.SendMessageAsync(chann, msg.Replace("/n", "\n")).Result.Author.Id;
+                    }
+                    catch (DSharpPlus.Exceptions.RateLimitException) {
+                        if (retry <= 5) {
+                            retry++;
+                            SendChatMessage(user, msg);
+                            retry = 0;
+                        }
+                        else {
+                            SEDiscordBridgePlugin.Log.Fatal($"Aborting send chat message (Too many attempts)");
+                            SEDiscordBridgePlugin.Log.Warn($"Message: {msg}");
+                        }
+                    }
+                    catch (DSharpPlus.Exceptions.RequestSizeException) {
+                        SEDiscordBridgePlugin.Log.Fatal($"Aborting send chat message (Request too large)");
+                        SEDiscordBridgePlugin.Log.Warn($"Message: {msg}");
                         retry = 0;
                     }
-                    else {
-                        SEDiscordBridgePlugin.Log.Fatal($"Aborting send chat message (Too many attempts)");
+                    catch (System.Net.Http.HttpRequestException) {
+                        SEDiscordBridgePlugin.Log.Fatal($"Unable to send message");
                         SEDiscordBridgePlugin.Log.Warn($"Message: {msg}");
                     }
-                }
-                catch (DSharpPlus.Exceptions.RequestSizeException) {
-                    SEDiscordBridgePlugin.Log.Fatal($"Aborting send chat message (Request too large)");
-                    SEDiscordBridgePlugin.Log.Warn($"Message: {msg}");
-                    retry = 0;
-                }
-                catch(System.Net.Http.HttpRequestException) {
-                    SEDiscordBridgePlugin.Log.Fatal($"Unable to send message");
-                    SEDiscordBridgePlugin.Log.Warn($"Message: {msg}");
+                    catch (DSharpPlus.Exceptions.NotFoundException) {
+                        SEDiscordBridgePlugin.Log.Fatal($"Could not find channel with ID of {chanID}");
+                    }
                 }
             }       
         }
@@ -314,21 +319,6 @@ namespace SEDiscordBridge
                             }
                         }
 
-                        // Server start command
-                        if (cmd.Equals("bridge-startserver"))
-                        {
-                            if (Plugin.Torch.CurrentSession == null)
-                            {
-                                Plugin.Torch.Start();
-                                SendCmdResponse("Torch initiated!", e.Channel, DiscordColor.Green, cmd);
-                            }
-                            else
-                            {
-                                SendCmdResponse("Torch is already running!", e.Channel, DiscordColor.Yellow, cmd);
-                            }
-                            return Task.CompletedTask;
-                        }
-
                         if (Plugin.Torch.CurrentSession?.State == TorchSessionState.Loaded)
                         {
                             var manager = Plugin.Torch.CurrentSession.Managers.GetManager<CommandManager>();
@@ -458,6 +448,20 @@ namespace SEDiscordBridge
                         if (part.StartsWith("@"))
                         {
                             string name = Regex.Replace(part.Substring(1), @"[,#]", "");
+
+                            var roleDictionary = chann.Guild.Roles;
+                            dynamic roleToMention = null;
+                            foreach (var role in roleDictionary) {
+                                if (role.Value.Name == name) {
+                                    roleToMention = role.Value;
+                                }
+                            }
+
+                            if (roleToMention != null) {
+                                msg = msg.Replace(part, roleToMention.Mention);
+                                continue;
+                            }
+
                             if (string.Compare(name, "everyone", true) == 0 && !Plugin.Config.MentEveryone)
                             {
                                 msg = msg.Replace(part, part.Substring(1));

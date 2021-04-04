@@ -94,7 +94,7 @@ namespace SEDiscordBridge
                 if (!Config.Enabled) return;
 
 
-                if (msg.AuthorSteamId != null && !ChatManager.MutedUsers.Contains((ulong)msg.AuthorSteamId))
+                if (msg.AuthorSteamId != null && !ChatManager.MutedUsers.Contains((ulong)msg.AuthorSteamId) && Config.ServerToDiscord)
                 {
                     switch (msg.Channel)
                     {
