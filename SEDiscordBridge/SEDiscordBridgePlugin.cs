@@ -94,7 +94,7 @@ namespace SEDiscordBridge
                 if (!Config.Enabled) return;
 
 
-                if (msg.AuthorSteamId != null && !ChatManager.MutedUsers.Contains((ulong)msg.AuthorSteamId) && Config.ServerToDiscord)
+                if (msg.AuthorSteamId != null && !ChatManager.MutedUsers.Contains((ulong)msg.AuthorSteamId))
                 {
                     switch (msg.Channel)
                     {
@@ -113,6 +113,7 @@ namespace SEDiscordBridge
                 else if (Config.ServerToDiscord && msg.Channel.Equals(ChatChannel.Global) && !msg.Message.StartsWith(Config.CommandPrefix) && msg.Target.Equals(0))
                 {
                     DDBridge.SendChatMessage(msg.Author, msg.Message);
+                    DDBridge.SendFacChatMessage(msg.Author, msg.Message, fac.Name);
                 }
             }
             catch (Exception e)
