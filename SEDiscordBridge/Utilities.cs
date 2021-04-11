@@ -16,7 +16,6 @@ using VRageMath;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using VRage;
-using System.Reflection;
 
 namespace SEDiscordBridge {
 

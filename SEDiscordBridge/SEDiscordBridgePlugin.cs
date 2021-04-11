@@ -45,6 +45,7 @@ namespace SEDiscordBridge
         private IMultiplayerManagerBase _multibase;
         private List<ulong> messageQueue = new List<ulong>();
         private Timer _timer;
+        public bool DEBUG = false;
         private TorchServer torchServer;
 
         private readonly HashSet<ulong> _conecting = new HashSet<ulong>();
@@ -94,6 +95,11 @@ namespace SEDiscordBridge
 
                 if (msg.AuthorSteamId != null && !ChatManager.MutedUsers.Contains((ulong)msg.AuthorSteamId))
                 {
+
+                    if (DEBUG) {
+                        Log.Info($"Recieved messages with valid SID {msg.Author} | {msg.Message} | {msg.Target} | {msg.AuthorSteamId}");
+                    }
+
                     switch (msg.Channel)
                     {
                         case ChatChannel.Global:
@@ -103,13 +109,18 @@ namespace SEDiscordBridge
                             DDBridge.RunSendChatTask(msg.Author, msg.Message);
                             break;
                         case ChatChannel.Faction:
-                            IMyFaction fac = MySession.Static.Factions.TryGetFactionById(msg.Target);
-                            DDBridge.RunSendFacTask(msg.Author, msg.Message, fac.Name);
+                            if (msg.AuthorSteamId.ToString().StartsWith("7")) {
+                                IMyFaction fac = MySession.Static.Factions.TryGetFactionById(msg.Target);
+                                DDBridge.RunSendFacTask(msg.Author, msg.Message, fac.Name);
+                            }
                             break;
                     }
                 }
                 else if (Config.ServerToDiscord && msg.Channel.Equals(ChatChannel.Global) && !msg.Message.StartsWith(Config.CommandPrefix) && msg.Target.Equals(0))
                 {
+                    if(DEBUG) {
+                        Log.Info($"Recieved messages with no SID {msg.Author} | {msg.Message} | {msg.Target}");
+                    }
                     DDBridge.RunSendChatTask(msg.Author, msg.Message);
                 }
             }
@@ -449,7 +460,7 @@ namespace SEDiscordBridge
                         DDBridge.SendStatusMessage(character.DisplayName, Config.Join);
                         //After spawn on world, remove from connecting list
                         if (messageQueue.Contains(character.ControlSteamId)) {
-                            manager.SendMessageAsOther(null, "Did you know you can link your steamID to your Discord account? Enter '!sedb link' to get started!", VRageMath.Color.Yellow, character.ControlSteamId);
+                            //manager.SendMessageAsOther(null, "Did you know you can link your steamID to your Discord account? Enter '!sedb link' to get started!", VRageMath.Color.Yellow, character.ControlSteamId);
                             messageQueue.Remove(character.ControlSteamId);
                         }
                         _conecting.Remove(character.ControlSteamId);
