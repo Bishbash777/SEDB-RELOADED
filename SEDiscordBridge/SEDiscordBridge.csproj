@@ -8,7 +8,7 @@
     <OutputType>library</OutputType>
     <RootNamespace>SEDiscordBridge</RootNamespace>
     <AssemblyName>SEDiscordBridge</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -83,44 +83,17 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DSharpPlus, Version=4.0.0.683, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\DSharpPlus.dll</HintPath>
+    <Reference Include="DSharpPlus, Version=3.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DSharpPlus.3.2.3\lib\net47\DSharpPlus.dll</HintPath>
     </Reference>
     <Reference Include="DSharpPlus.WebSocket.WebSocketSharp, Version=3.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DSharpPlus.WebSocket.WebSocketSharp.3.2.3\lib\net46\DSharpPlus.WebSocket.WebSocketSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Emzi0767.Common, Version=2.6.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Emzi0767.Common.2.6.1\lib\net45\Emzi0767.Common.dll</HintPath>
+      <HintPath>..\packages\DSharpPlus.WebSocket.WebSocketSharp.3.2.3\lib\net47\DSharpPlus.WebSocket.WebSocketSharp.dll</HintPath>
     </Reference>
     <Reference Include="HSNXT.DSharpPlus.Extended.Emoji, Version=3.0.198.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\HSNXT.DSharpPlus.Extended.Emoji.3.0.198\lib\netstandard2.0\HSNXT.DSharpPlus.Extended.Emoji.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Nito.AsyncEx.Context, Version=5.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Nito.AsyncEx.Context.5.1.0\lib\netstandard2.0\Nito.AsyncEx.Context.dll</HintPath>
-    </Reference>
-    <Reference Include="Nito.AsyncEx.Coordination, Version=5.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Nito.AsyncEx.Coordination.5.1.0\lib\netstandard2.0\Nito.AsyncEx.Coordination.dll</HintPath>
-    </Reference>
-    <Reference Include="Nito.AsyncEx.Interop.WaitHandles, Version=5.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Nito.AsyncEx.Interop.WaitHandles.5.1.0\lib\netstandard2.0\Nito.AsyncEx.Interop.WaitHandles.dll</HintPath>
-    </Reference>
-    <Reference Include="Nito.AsyncEx.Oop, Version=5.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Nito.AsyncEx.Oop.5.1.0\lib\netstandard2.0\Nito.AsyncEx.Oop.dll</HintPath>
-    </Reference>
-    <Reference Include="Nito.AsyncEx.Tasks, Version=5.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Nito.AsyncEx.Tasks.5.1.0\lib\netstandard2.0\Nito.AsyncEx.Tasks.dll</HintPath>
-    </Reference>
-    <Reference Include="Nito.Cancellation, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Nito.Cancellation.1.1.0\lib\netstandard2.0\Nito.Cancellation.dll</HintPath>
-    </Reference>
-    <Reference Include="Nito.Collections.Deque, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Nito.Collections.Deque.1.1.0\lib\netstandard2.0\Nito.Collections.Deque.dll</HintPath>
-    </Reference>
-    <Reference Include="Nito.Disposables, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Nito.Disposables.2.2.0\lib\net461\Nito.Disposables.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\TorchBinaries\NLog.dll</HintPath>
@@ -136,12 +109,15 @@
     </Reference>
     <Reference Include="Sandbox.Game.XmlSerializers">
       <HintPath>..\GameBinaries\Sandbox.Game.XmlSerializers.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Sandbox.Graphics">
       <HintPath>..\GameBinaries\Sandbox.Graphics.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="SpaceEngineers.Game">
       <HintPath>..\GameBinaries\SpaceEngineers.Game.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System">
       <Private>False</Private>
@@ -168,16 +144,13 @@
     <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
       <Private>True</Private>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System.Net.WebSockets, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Net.WebSockets.4.3.0\lib\net46\System.Net.WebSockets.dll</HintPath>
       <Private>True</Private>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System.Net.WebSockets.Client, Version=4.0.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Net.WebSockets.Client.4.3.2\lib\net46\System.Net.WebSockets.Client.dll</HintPath>
-      <Private>True</Private>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Numerics" />
@@ -190,7 +163,6 @@
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
       <Private>True</Private>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System.Runtime.Serialization">
       <Private>False</Private>
@@ -198,11 +170,9 @@
     <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
       <Private>True</Private>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
-      <Private>True</Private>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.ServiceModel">
@@ -253,6 +223,7 @@
     </Reference>
     <Reference Include="VRage.Dedicated">
       <HintPath>..\GameBinaries\VRage.Dedicated.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="VRage.Game">
       <HintPath>..\GameBinaries\VRage.Game.dll</HintPath>
@@ -260,6 +231,7 @@
     </Reference>
     <Reference Include="VRage.Input">
       <HintPath>..\GameBinaries\VRage.Input.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="VRage.Library">
       <HintPath>..\GameBinaries\VRage.Library.dll</HintPath>
@@ -267,6 +239,7 @@
     </Reference>
     <Reference Include="VRage.Math">
       <HintPath>..\GameBinaries\VRage.Math.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="WindowsBase">
       <Private>False</Private>

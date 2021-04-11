@@ -18,7 +18,7 @@ namespace SEDiscordBridge
     public partial class DiscordBridge
     {
         private static SEDiscordBridgePlugin Plugin;
-        private readonly DiscordActivity game = new DiscordActivity();
+        private readonly DiscordGame game = new DiscordGame();
         private string lastMessage = "";
         private ulong botId = 0;
         private int retry = 0;
@@ -176,11 +176,13 @@ namespace SEDiscordBridge
                             SEDiscordBridgePlugin.Log.Warn($"Message: {msg}");
                         }
                     }
+/*
                     catch (DSharpPlus.Exceptions.RequestSizeException) {
                         SEDiscordBridgePlugin.Log.Fatal($"Aborting send chat message (Request too large)");
                         SEDiscordBridgePlugin.Log.Warn($"Message: {msg}");
                         retry = 0;
                     }
+*/
                     catch (System.Net.Http.HttpRequestException) {
                         SEDiscordBridgePlugin.Log.Fatal($"Unable to send message");
                         SEDiscordBridgePlugin.Log.Warn($"Message: {msg}");
@@ -460,8 +462,8 @@ namespace SEDiscordBridge
                             var roleDictionary = chann.Guild.Roles;
                             dynamic roleToMention = null;
                             foreach (var role in roleDictionary) {
-                                if (role.Value.Name == name) {
-                                    roleToMention = role.Value;
+                                if (role.Name == name) {
+                                    roleToMention = role;
                                 }
                             }
 
@@ -509,9 +511,9 @@ namespace SEDiscordBridge
                         }
 
                         var emojis = chann.Guild.Emojis;
-                        if (part.StartsWith(":") && part.EndsWith(":") && emojis.Any(e => string.Compare(e.Value.GetDiscordName(), part, true) == 0))
+                        if (part.StartsWith(":") && part.EndsWith(":") && emojis.Any(e => string.Compare(e.GetDiscordName(), part, true) == 0))
                         {
-                            msg = msg.Replace(part, $"<{part}{emojis.Where(e => string.Compare(e.Value.GetDiscordName(), part, true) == 0).First().Key}>");
+                            msg = msg.Replace(part, $"<{part}{emojis.Where(e => string.Compare(e.GetDiscordName(), part, true) == 0).First().Id}>");
                         }
                     }
                 }

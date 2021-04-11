@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <PluginManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <Name>SEDB-DORI-RELOADED</Name>
+  <Name>SEDB-DORI-MADE</Name>
   <Guid>3cd3ba7f-c47c-4efe-8cf1-bd3f618f5b9c</Guid>
-  <Repository>bishbash777/SEDB-Reloaded</Repository>
+  <Repository>https://github.com/dorimanx/SEDB-RELOADED</Repository>
   <Version>v2.0.2.6</Version>
 </PluginManifest>
