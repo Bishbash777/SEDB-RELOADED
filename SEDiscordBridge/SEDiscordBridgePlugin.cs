@@ -43,7 +43,7 @@ namespace SEDiscordBridge
         private ChatManagerServer _chatmanager;
         public IChatManagerServer ChatManager => _chatmanager ?? (Torch.CurrentSession.Managers.GetManager<IChatManagerServer>());
         private IMultiplayerManagerBase _multibase;
-        private List<ulong> messageQueue = new List<ulong>();
+        private readonly List<ulong> messageQueue = new List<ulong>();
         private Timer _timer;
         public bool DEBUG = false;
         private TorchServer torchServer;
@@ -233,7 +233,7 @@ namespace SEDiscordBridge
 
         public async Task<string> GetID(ulong steamid) {
             try {
-                Dictionary<string, string> kvp = utils.ParseQueryString(await utils.dataRequest(steamid.ToString(), Id.ToString(), "get_discord_id"));
+                Dictionary<string, string> kvp = Utils.ParseQueryString(await Utils.DataRequest(steamid.ToString(), Id.ToString(), "get_discord_id"));
                 if (kvp["error_code"] == "0") {
                     return kvp["data"];
                 }
@@ -288,8 +288,8 @@ namespace SEDiscordBridge
                     }
                     else
                     {
-                        _multibase.PlayerJoined += _multibase_PlayerJoined;
-                        _multibase.PlayerLeft += _multibase_PlayerLeft;
+                        _multibase.PlayerJoined += Multibase_PlayerJoined;
+                        _multibase.PlayerLeft += Multibase_PlayerLeft;
                         MyEntities.OnEntityAdd += MyEntities_OnEntityAdd;
                     }
                 }
@@ -330,7 +330,7 @@ namespace SEDiscordBridge
             if (_timer != null) StopTimer();
 
             _timer = new Timer(Config.StatusInterval);
-            _timer.Elapsed += _timer_Elapsed;
+            _timer.Elapsed += Timer_Elapsed;
             _timer.Enabled = true;
         }
 
@@ -338,7 +338,7 @@ namespace SEDiscordBridge
         {
             if (_timer != null)
             {
-                _timer.Elapsed -= _timer_Elapsed;
+                _timer.Elapsed -= Timer_Elapsed;
                 _timer.Enabled = false;
                 _timer.Dispose();
                 _timer = null;
@@ -349,7 +349,7 @@ namespace SEDiscordBridge
         private int i = 0;
         private DateTime timerStart = new DateTime(0);
 
-        private void _timer_Elapsed(object sender, ElapsedEventArgs e)
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (!Config.Enabled || DDBridge == null) return;
 
@@ -420,7 +420,7 @@ namespace SEDiscordBridge
             }
         }
 
-        private void _multibase_PlayerLeft(IPlayer obj)
+        private void Multibase_PlayerLeft(IPlayer obj)
         {
             if (!Config.Enabled) return;
 
@@ -432,7 +432,7 @@ namespace SEDiscordBridge
             }
         }
 
-        private void _multibase_PlayerJoined(IPlayer obj)
+        private void Multibase_PlayerJoined(IPlayer obj)
         {
             InjectDiscordID(obj);
             if (!Config.Enabled) return;
@@ -474,9 +474,9 @@ namespace SEDiscordBridge
         {
             if (_multibase != null)
             {
-                _multibase.PlayerJoined -= _multibase_PlayerJoined;
+                _multibase.PlayerJoined -= Multibase_PlayerJoined;
                 MyEntities.OnEntityAdd -= MyEntities_OnEntityAdd;
-                _multibase.PlayerLeft -= _multibase_PlayerLeft;
+                _multibase.PlayerLeft -= Multibase_PlayerLeft;
             }
             _multibase = null;
 

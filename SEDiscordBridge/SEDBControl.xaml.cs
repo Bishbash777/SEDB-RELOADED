@@ -24,10 +24,10 @@ namespace SEDiscordBridge
             DataContext = plugin.Config;
             dgFacList.ItemsSource = Plugin.Config.FactionChannels;
             dgPermList.ItemsSource = Plugin.Config.CommandPerms;
-            FacColorBox.ItemsSource = utils.Colors;
-            GlobalChatColorBox.ItemsSource = utils.Colors;
-            FacColorBox.SelectedItem = utils.GetFromColor(Plugin.Config.FacColor);
-            GlobalChatColorBox.SelectedItem = utils.GetFromColor(Plugin.Config.GlobalColor);
+            FacColorBox.ItemsSource = Utils.Colors;
+            GlobalChatColorBox.ItemsSource = Utils.Colors;
+            FacColorBox.SelectedItem = Utils.GetFromColor(Plugin.Config.FacColor);
+            GlobalChatColorBox.SelectedItem = Utils.GetFromColor(Plugin.Config.GlobalColor);
         }
 
         private void SaveConfig_OnClick(object sender, RoutedEventArgs e)

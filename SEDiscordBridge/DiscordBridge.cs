@@ -18,7 +18,7 @@ namespace SEDiscordBridge
     public partial class DiscordBridge
     {
         private static SEDiscordBridgePlugin Plugin;
-        private readonly DiscordGame game = new DiscordGame();
+        private readonly DiscordActivity game = new DiscordActivity();
         private string lastMessage = "";
         private ulong botId = 0;
         private int retry = 0;
@@ -97,7 +97,7 @@ namespace SEDiscordBridge
 
             Discord.MessageCreated += Discord_MessageCreated;
 
-            Discord.Ready += async e =>
+            Discord.Ready += async (c,e) =>
             {
                 Ready = true;
                 await Task.CompletedTask;
@@ -176,13 +176,11 @@ namespace SEDiscordBridge
                             SEDiscordBridgePlugin.Log.Warn($"Message: {msg}");
                         }
                     }
-/*
                     catch (DSharpPlus.Exceptions.RequestSizeException) {
                         SEDiscordBridgePlugin.Log.Fatal($"Aborting send chat message (Request too large)");
                         SEDiscordBridgePlugin.Log.Warn($"Message: {msg}");
                         retry = 0;
                     }
-*/
                     catch (System.Net.Http.HttpRequestException) {
                         SEDiscordBridgePlugin.Log.Fatal($"Unable to send message");
                         SEDiscordBridgePlugin.Log.Warn($"Message: {msg}");
@@ -252,7 +250,6 @@ namespace SEDiscordBridge
         }
 
         public Dictionary<ulong,string> GetRoles(ulong userID) {
-            _ = new List<DiscordRole>();
             Dictionary<ulong, string> roleData = new Dictionary<ulong, string>();
             var guilds = Discord.Guilds;
             foreach(var guildID in guilds) {
@@ -277,7 +274,7 @@ namespace SEDiscordBridge
             return null;
         }
 
-        private async Task Discord_MessageCreated(DSharpPlus.EventArgs.MessageCreateEventArgs e)
+        private async Task Discord_MessageCreated(DiscordClient dc, DSharpPlus.EventArgs.MessageCreateEventArgs e)
         {
             bool cmdConditionMatch = false;
             dynamic cmdPrefixes = Plugin.Config.CommandPrefix;
@@ -431,7 +428,7 @@ namespace SEDiscordBridge
                     Color = color,
                     Title = string.IsNullOrEmpty(command) ? null : $"Command: {command}"
                 };
-                DiscordMessage dms = Discord.SendMessageAsync(chann, "", false, discordEmbed).Result;
+                DiscordMessage dms = Discord.SendMessageAsync(chann, "", discordEmbed).Result;
 
                 botId = dms.Author.Id;
                 if (Plugin.Config.RemoveResponse > 0)
@@ -462,8 +459,8 @@ namespace SEDiscordBridge
                             var roleDictionary = chann.Guild.Roles;
                             dynamic roleToMention = null;
                             foreach (var role in roleDictionary) {
-                                if (role.Name == name) {
-                                    roleToMention = role;
+                                if (role.Value.Name == name) {
+                                    roleToMention = role.Value;
                                 }
                             }
 
@@ -511,9 +508,9 @@ namespace SEDiscordBridge
                         }
 
                         var emojis = chann.Guild.Emojis;
-                        if (part.StartsWith(":") && part.EndsWith(":") && emojis.Any(e => string.Compare(e.GetDiscordName(), part, true) == 0))
+                        if (part.StartsWith(":") && part.EndsWith(":") && emojis.Any(e => string.Compare(e.Value.GetDiscordName(), part, true) == 0))
                         {
-                            msg = msg.Replace(part, $"<{part}{emojis.Where(e => string.Compare(e.GetDiscordName(), part, true) == 0).First().Id}>");
+                            msg = msg.Replace(part, $"<{part}{emojis.Where(e => string.Compare(e.Value.GetDiscordName(), part, true) == 0).First().Key}>");
                         }
                     }
                 }

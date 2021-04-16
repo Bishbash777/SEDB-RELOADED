@@ -4,22 +4,15 @@ using System.Linq;
 using Torch.API;
 using System.Net.Http;
 using System.Web;
-using VRage.Game.ModAPI;
 using Sandbox.Game.World;
 using System.Threading.Tasks;
-using VRage.Game.Entity;
-using Sandbox.Game.Entities;
-using Sandbox.Game.Entities.Character;
-using Sandbox.Game.Weapons;
-using Sandbox.Game.Entities.Cube;
 using VRageMath;
 using System.Collections.ObjectModel;
 using System.Reflection;
-using VRage;
 
 namespace SEDiscordBridge {
 
-    public class utils {
+    public class Utils {
         public static ITorchBase Torch { get; }
         public static bool debug = true;
         public static readonly Logger Log = LogManager.GetCurrentClassLogger();
@@ -52,7 +45,7 @@ namespace SEDiscordBridge {
         }
 
 
-        public static async Task<string> dataRequest(string uSteamid, string guid, string funciton) {
+        public static async Task<string> DataRequest(string uSteamid, string guid, string funciton) {
             HttpResponseMessage response;
             using (HttpClient clients = new HttpClient()) {
                 List<KeyValuePair<string, string>> pairs = new List<KeyValuePair<string, string>>
