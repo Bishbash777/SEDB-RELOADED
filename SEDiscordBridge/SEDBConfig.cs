@@ -12,6 +12,9 @@ namespace SEDiscordBridge
         private bool _preLoad = true;
         public bool PreLoad { get => _preLoad; set => SetValue(ref _preLoad, value); }
 
+        private bool _loadRanks = false;
+        public bool LoadRanks { get => _loadRanks; set => SetValue(ref _loadRanks, value); }
+
         private bool _embed = false;
         public bool Embed { get => _embed; set => SetValue(ref _embed, value); }
 

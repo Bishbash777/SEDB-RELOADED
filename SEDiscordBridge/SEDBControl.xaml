@@ -11,15 +11,16 @@
                 <Grid Background="#FFE5E5E5">
                     <CheckBox Content="Enabled" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding Enabled}" ToolTip="Enable or disable SEDiscordBridge"/>
                     <CheckBox Content="Load Before Start" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" IsChecked="{Binding PreLoad}" ToolTip="Load BOT before server start? Good to test or check if boot is connecting!"/>
-                    <Label HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top">
+                    <Label HorizontalAlignment="Left" Margin="9,78,0,0" VerticalAlignment="Top">
                         <Hyperlink NavigateUri="https://goo.gl/5Do8LJ" RequestNavigate="Hyperlink_RequestNavigate">
                             <Run Text="Click here to setup your BOT to get your bot token!"/>
                         </Hyperlink>
                     </Label>
-                    <Label Content="*After setup the token, save and restart the torch." HorizontalAlignment="Left" Margin="20,81,0,0" VerticalAlignment="Top"/>
-                    <Label Content="Bot Token" HorizontalAlignment="Left" Margin="10,112,0,0" VerticalAlignment="Top"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="10,143,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="492" IsEnabled="{Binding TokenVisibleState}" Text="{Binding BotToken}" ToolTip="You need to create a discord bot to get the token"/>
-                    <Label Content="*If the token text box is not enabled, you need to enable or change directly on config file." HorizontalAlignment="Left" Margin="20,171,0,0" VerticalAlignment="Top"/>
+                    <Label Content="*After setup the token, save and restart the torch." HorizontalAlignment="Left" Margin="19,104,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Bot Token" HorizontalAlignment="Left" Margin="9,130,0,0" VerticalAlignment="Top"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="9,161,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="492" IsEnabled="{Binding TokenVisibleState}" Text="{Binding BotToken}" ToolTip="You need to create a discord bot to get the token"/>
+                    <Label Content="*If the token text box is not enabled, you need to enable or change directly on config file." HorizontalAlignment="Left" Margin="19,189,0,0" VerticalAlignment="Top"/>
+                    <CheckBox Content="Load Ranks" HorizontalAlignment="Left" Margin="9,50,0,0" VerticalAlignment="Top" IsChecked="{Binding LoadRanks}" ToolTip="Load Essentials Ranks, May Add LAG on Player Join!"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Chat">

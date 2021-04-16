@@ -257,7 +257,9 @@ namespace SEDiscordBridge
 
         public void LoadSEDB()
         {
-            ReflectEssentials();
+            if (Config.LoadRanks)
+                ReflectEssentials();
+
             if (Config.BotToken.Length <= 0)
             {
                 Log.Error("No BOT token set, plugin will not work at all! Add your bot TOKEN, save and restart torch.");
@@ -434,8 +436,10 @@ namespace SEDiscordBridge
 
         private void Multibase_PlayerJoined(IPlayer obj)
         {
-            InjectDiscordID(obj);
             if (!Config.Enabled) return;
+
+            if (Config.LoadRanks)
+                InjectDiscordID(obj);
 
             //Add to conecting list
             _conecting.Add(obj.SteamId);
@@ -458,10 +462,15 @@ namespace SEDiscordBridge
                     if (_conecting.Contains(character.ControlSteamId) && character.IsPlayer && Config.Join.Length > 0)
                     {
                         DDBridge.SendStatusMessage(character.DisplayName, Config.Join);
-                        //After spawn on world, remove from connecting list
-                        if (messageQueue.Contains(character.ControlSteamId)) {
-                            //manager.SendMessageAsOther(null, "Did you know you can link your steamID to your Discord account? Enter '!sedb link' to get started!", VRageMath.Color.Yellow, character.ControlSteamId);
-                            messageQueue.Remove(character.ControlSteamId);
+
+                        if (Config.LoadRanks)
+                        {
+                            //After spawn on world, remove from connecting list
+                            if (messageQueue.Contains(character.ControlSteamId))
+                            {
+                                manager.SendMessageAsOther(null, "Did you know you can link your steamID to your Discord account? Enter '!sedb link' to get started!", VRageMath.Color.Yellow, character.ControlSteamId);
+                                messageQueue.Remove(character.ControlSteamId);
+                            }
                         }
                         _conecting.Remove(character.ControlSteamId);
                     }
