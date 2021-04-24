@@ -199,8 +199,11 @@ namespace SEDiscordBridge
             }
         }
 
-        public void InjectDiscordID(IPlayer player) {
+        public void InjectDiscordIDTask(IPlayer player) {
+            Task.Run(async () => InjectDiscordID(player));
+        }
 
+        public void InjectDiscordID(IPlayer player) {
             try {
                 if (InjectDiscordIDMethod != null) {
                     string discord_Id = Task.Run(async () => await GetID(player.SteamId)).Result;
@@ -221,9 +224,7 @@ namespace SEDiscordBridge
             }
             catch (Exception e) {
                 Log.Warn(e, "failure");
-            }
-
-           
+            }           
         }
 
         public async Task<string> GetID(ulong steamid) {
@@ -423,7 +424,7 @@ namespace SEDiscordBridge
 
         private async void _multibase_PlayerJoined(IPlayer obj)
         {
-            InjectDiscordID(obj);
+            InjectDiscordIDTask(obj);
             if (!Config.Enabled) return;
 
             //Add to conecting list
