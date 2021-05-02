@@ -44,6 +44,7 @@ namespace SEDiscordBridge
         private IMultiplayerManagerBase _multibase;
         private List<ulong> messageQueue = new List<ulong>();
         private Timer _timer;
+        public bool DEBUG = false;
         private TorchServer torchServer;
         private readonly HashSet<ulong>_conecting = new HashSet<ulong>();
 
@@ -94,8 +95,13 @@ namespace SEDiscordBridge
                 if (!Config.Enabled) return;
 
 
-                if (msg.AuthorSteamId != null && !ChatManager.MutedUsers.Contains((ulong)msg.AuthorSteamId) && Config.ServerToDiscord)
+                if (msg.AuthorSteamId != null && !ChatManager.MutedUsers.Contains((ulong)msg.AuthorSteamId))
                 {
+
+                    if (DEBUG) {
+                        Log.Info($"Recieved messages with valid SID {msg.Author} | {msg.Message} | {msg.Target} | {msg.AuthorSteamId}");
+                    }
+
                     switch (msg.Channel)
                     {
                         case ChatChannel.Global:
@@ -105,13 +111,18 @@ namespace SEDiscordBridge
                             DDBridge.SendChatMessage(msg.Author, msg.Message);
                             break;
                         case ChatChannel.Faction:
-                            IMyFaction fac = MySession.Static.Factions.TryGetFactionById(msg.Target);
-                            DDBridge.SendFacChatMessage(msg.Author, msg.Message, fac.Name);
+                            if (msg.AuthorSteamId.ToString().StartsWith("7")) {
+                                IMyFaction fac = MySession.Static.Factions.TryGetFactionById(msg.Target);
+                                DDBridge.SendFacChatMessage(msg.Author, msg.Message, fac.Name);
+                            }
                             break;
                     }
                 }
                 else if (Config.ServerToDiscord && msg.Channel.Equals(ChatChannel.Global) && !msg.Message.StartsWith(Config.CommandPrefix) && msg.Target.Equals(0))
                 {
+                    if(DEBUG) {
+                        Log.Info($"Recieved messages with no SID {msg.Author} | {msg.Message} | {msg.Target}");
+                    }
                     DDBridge.SendChatMessage(msg.Author, msg.Message);
                 }
             }
@@ -188,8 +199,11 @@ namespace SEDiscordBridge
             }
         }
 
-        public void InjectDiscordID(IPlayer player) {
+        public void InjectDiscordIDTask(IPlayer player) {
+            Task.Run(async () => InjectDiscordID(player));
+        }
 
+        public void InjectDiscordID(IPlayer player) {
             try {
                 if (InjectDiscordIDMethod != null) {
                     string discord_Id = Task.Run(async () => await GetID(player.SteamId)).Result;
@@ -210,9 +224,7 @@ namespace SEDiscordBridge
             }
             catch (Exception e) {
                 Log.Warn(e, "failure");
-            }
-
-           
+            }           
         }
 
         public async Task<string> GetID(ulong steamid) {
@@ -412,7 +424,7 @@ namespace SEDiscordBridge
 
         private async void _multibase_PlayerJoined(IPlayer obj)
         {
-            InjectDiscordID(obj);
+            InjectDiscordIDTask(obj);
             if (!Config.Enabled) return;
 
             //Add to conecting list
