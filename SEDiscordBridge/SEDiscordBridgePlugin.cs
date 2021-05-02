@@ -1,5 +1,4 @@
-﻿using DSharpPlus.Entities;
-using NLog;
+﻿using NLog;
 using Sandbox.Game.Entities;
 using Sandbox.Game.Entities.Character;
 using Sandbox.Game.Gui;
@@ -189,29 +188,13 @@ namespace SEDiscordBridge
             }
         }
 
-        public Dictionary<ulong, string> GetRoles(ulong userID, ulong steamID) {
-            List<DiscordRole> discordRoles = new List<DiscordRole>();
-            Dictionary<ulong, string> roleData = new Dictionary<ulong, string>();
-            var guilds = DiscordBridge.Discord.Guilds;
-            foreach (var guildID in guilds) {
-                var Guild = DiscordBridge.Discord.GetGuildAsync(guildID.Key).Result;
-                discordRoles = Guild.GetMemberAsync(userID).Result.Roles.ToList();
-
-                foreach (var role in discordRoles) {
-                    roleData.Add(role.Id, role.Name);
-                }
-            }
-
-            return roleData;
-        }
-
         public void InjectDiscordID(IPlayer player) {
 
             try {
                 if (InjectDiscordIDMethod != null) {
                     string discord_Id = Task.Run(async () => await GetID(player.SteamId)).Result;
                     if (discord_Id != null) {
-                        var roledata = GetRoles(ulong.Parse(discord_Id), player.SteamId);
+                        var roledata = DDBridge.GetRoles(ulong.Parse(discord_Id));
                         string discordName = DDBridge.GetName(ulong.Parse(discord_Id));
                         Log.Info($"DiscordID for {player.Name} found! Retrieving role data and injecting into essentials...");
                         InjectDiscordIDMethod.Invoke(null, new object[] { player.SteamId, discord_Id, discordName, roledata });
@@ -421,8 +404,7 @@ namespace SEDiscordBridge
 
             //Remove to conecting list
             _conecting.Remove(obj.SteamId);
-
-            if (!(obj.Name.StartsWith("[") && obj.Name.EndsWith("]") && obj.Name.Contains("...")))
+            if (Config.Leave.Length > 0)
             {
                 await Task.Run(() => DDBridge.SendStatusMessage(obj.Name, Config.Leave, obj));
             }
