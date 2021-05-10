@@ -1,4 +1,6 @@
 ﻿using NLog;
+using DSharpPlus;
+using DSharpPlus.Entities;
 using Sandbox.Game.Entities;
 using Sandbox.Game.Entities.Character;
 using Sandbox.Game.Gui;
@@ -208,7 +210,7 @@ namespace SEDiscordBridge
                 if (InjectDiscordIDMethod != null) {
                     string discord_Id = Task.Run(async () => await GetID(player.SteamId)).Result;
                     if (discord_Id != null) {
-                        var roledata = DDBridge.GetRoles(ulong.Parse(discord_Id));
+                        var roledata = GetRoles(ulong.Parse(discord_Id), player.SteamId);
                         string discordName = DDBridge.GetName(ulong.Parse(discord_Id));
                         Log.Info($"DiscordID for {player.Name} found! Retrieving role data and injecting into essentials...");
                         InjectDiscordIDMethod.Invoke(null, new object[] { player.SteamId, discord_Id, discordName, roledata });
@@ -225,6 +227,22 @@ namespace SEDiscordBridge
             catch (Exception e) {
                 Log.Warn(e, "failure");
             }           
+        }
+
+        public Dictionary<ulong, string> GetRoles(ulong userID, ulong steamID) {
+            List<DiscordRole> discordRoles = new List<DiscordRole>();
+            Dictionary<ulong, string> roleData = new Dictionary<ulong, string>();
+            var guilds = DiscordBridge.Discord.Guilds;
+            foreach (var guildID in guilds) {
+                var Guild = DiscordBridge.Discord.GetGuildAsync(guildID.Key).Result;
+                discordRoles = Guild.GetMemberAsync(userID).Result.Roles.ToList();
+
+                foreach (var role in discordRoles) {
+                    roleData.Add(role.Id, role.Name);
+                }
+            }
+
+            return roleData;
         }
 
         public async Task<string> GetID(ulong steamid) {
@@ -253,6 +271,8 @@ namespace SEDiscordBridge
 
         public void LoadSEDB()
         {
+            if (DDBridge == null)
+                DDBridge = new DiscordBridge(this);
             ReflectEssentials();
             if (Config.BotToken.Length <= 0)
             {
@@ -312,10 +332,6 @@ namespace SEDiscordBridge
 
         private void InitPost()
         {
-            Log.Info("Starting Discord Bridge!");
-            if (DDBridge == null)
-                DDBridge = new DiscordBridge(this);
-
             //send status
             if (Config.UseStatus)
                 StartTimer();

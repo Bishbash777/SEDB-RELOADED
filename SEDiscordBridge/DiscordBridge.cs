@@ -15,6 +15,7 @@ using Torch.Commands;
 using VRage.Game;
 using VRage.Game.ModAPI;
 
+
 namespace SEDiscordBridge
 {
     public class DiscordBridge
@@ -99,7 +100,7 @@ namespace SEDiscordBridge
 
             Discord.MessageCreated += Discord_MessageCreated;
 
-            Discord.Ready += async e =>
+            Discord.Ready += async (c,e) =>
             {
                 Ready = true;
                 await Task.CompletedTask;
@@ -245,22 +246,6 @@ namespace SEDiscordBridge
             }
         }
 
-        public Dictionary<ulong,string> GetRoles(ulong userID) {
-            List<DiscordRole> discordRoles = new List<DiscordRole>();
-            Dictionary<ulong, string> roleData = new Dictionary<ulong, string>();
-            var guilds = Discord.Guilds;
-            foreach(var guildID in guilds) {
-                var Guild = Discord.GetGuildAsync(guildID.Key).Result;
-                discordRoles = Guild.GetMemberAsync(userID).Result.Roles.ToList();
-
-                foreach (var role in discordRoles) {
-                    roleData.Add(role.Id, role.Name);
-                }
-            }
-
-            return roleData;
-        }
-
         public string GetName(ulong userID) {
             string discordname = "";
             var guilds = Discord.Guilds;
@@ -272,7 +257,7 @@ namespace SEDiscordBridge
             return null;
         }
 
-        private Task Discord_MessageCreated(DSharpPlus.EventArgs.MessageCreateEventArgs e)
+        private Task Discord_MessageCreated(DiscordClient discord, DSharpPlus.EventArgs.MessageCreateEventArgs e)
         {
             bool cmdConditionMatch = false;   
             dynamic cmdPrefixes = Plugin.Config.CommandPrefix;
@@ -422,7 +407,7 @@ namespace SEDiscordBridge
                     Color = color,
                     Title = string.IsNullOrEmpty(command) ? null : $"Command: {command}"
                 };
-                DiscordMessage dms = Discord.SendMessageAsync(chann, "", false, discordEmbed).Result;
+                DiscordMessage dms = Discord.SendMessageAsync(chann, "", discordEmbed).Result;
 
                 botId = dms.Author.Id;
                 if (Plugin.Config.RemoveResponse > 0)
