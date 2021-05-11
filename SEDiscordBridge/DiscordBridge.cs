@@ -119,7 +119,18 @@ namespace SEDiscordBridge
         }
 
         public static async void SendDiscordMessageStatic(string message) {
-            await Discord.SendMessageAsync(Discord.GetChannelAsync(ulong.Parse(Plugin.Config.ChatChannelId)).Result, message);
+
+            string channelToPostIn = Plugin.Config.ChatChannelId;
+            if (channelToPostIn == string.Empty) {
+                channelToPostIn = Plugin.Config.StatusChannelId;
+            }
+
+            if(channelToPostIn == string.Empty) {
+                SEDiscordBridgePlugin.Log.Error("StatusChannelID or ChatChannelID MUST have a value. Cannot use SendDiscordMessageStatic.");
+                return;
+            }
+
+            await Discord.SendMessageAsync(Discord.GetChannelAsync(ulong.Parse(channelToPostIn)).Result, message);
         }
 
         public static async void SendDiscordMessageStatic(string message, string channelID) {
