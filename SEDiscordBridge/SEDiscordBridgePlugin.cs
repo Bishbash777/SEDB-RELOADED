@@ -32,9 +32,9 @@ namespace SEDiscordBridge
 {
     public sealed class SEDiscordBridgePlugin : TorchPluginBase, IWpfPlugin
     {
-        public static SEDBConfig Config => _config?.Data;
+        public SEDBConfig Config => _config?.Data;
 
-        public static Persistent<SEDBConfig> _config;
+        public Persistent<SEDBConfig> _config;
 
         public DiscordBridge DDBridge;
         public MethodInfo InjectDiscordIDMethod = null;
@@ -449,14 +449,6 @@ namespace SEDiscordBridge
             {
                 await Task.Run(() => DDBridge.SendStatusMessage(obj.Name, Config.Connect, obj));
             }
-        }
-
-        public static async Task SendDiscordMessageStatic(string message) {
-            await DiscordBridge.Discord.SendMessageAsync(DiscordBridge.Discord.GetChannelAsync(ulong.Parse(Config.ChatChannelId)).Result, message);
-        }
-
-        public static async Task SendDiscordMessageStatic(string message, string channelID) {
-            await DiscordBridge.Discord.SendMessageAsync(DiscordBridge.Discord.GetChannelAsync(ulong.Parse(channelID)).Result, message);
         }
 
         private void MyEntities_OnEntityAdd(VRage.Game.Entity.MyEntity obj)
