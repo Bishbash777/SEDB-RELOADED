@@ -16,3 +16,9 @@
 /.vs/SEDiscordBridge/v15
 /.gitattributes
 /.vs/SEDiscordBridge/v16/.suo
+
+SEDiscordBridge/obj/x64/Debug/
+
+*.dat
+
+SEDiscordBridge/bin/x64/Debug/

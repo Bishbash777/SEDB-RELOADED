@@ -1,4 +1,4 @@
-﻿using DSharpPlus;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using Sandbox.Game.Multiplayer;
 using Sandbox.Game.World;
@@ -249,21 +249,6 @@ namespace SEDiscordBridge
             }
         }
 
-        public Dictionary<ulong,string> GetRoles(ulong userID) {
-            Dictionary<ulong, string> roleData = new Dictionary<ulong, string>();
-            var guilds = Discord.Guilds;
-            foreach(var guildID in guilds) {
-                var Guild = Discord.GetGuildAsync(guildID.Key).Result;
-                List<DiscordRole> discordRoles = Guild.GetMemberAsync(userID).Result.Roles.ToList();
-
-                foreach (var role in discordRoles) {
-                    roleData.Add(role.Id, role.Name);
-                }
-            }
-
-            return roleData;
-        }
-
         public string GetName(ulong userID) {
             var guilds = Discord.Guilds;
             foreach (var guildID in guilds) {
@@ -274,7 +259,7 @@ namespace SEDiscordBridge
             return null;
         }
 
-        private async Task Discord_MessageCreated(DiscordClient dc, DSharpPlus.EventArgs.MessageCreateEventArgs e)
+        private async Task Discord_MessageCreated(DiscordClient discord, DSharpPlus.EventArgs.MessageCreateEventArgs e)
         {
             bool cmdConditionMatch = false;
             dynamic cmdPrefixes = Plugin.Config.CommandPrefix;
