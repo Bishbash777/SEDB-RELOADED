@@ -118,14 +118,6 @@ namespace SEDiscordBridge
             }
         }
 
-        public static async void SendDiscordMessageStatic(string message) {
-            await Discord.SendMessageAsync(Discord.GetChannelAsync(ulong.Parse(Plugin.Config.ChatChannelId)).Result, message);
-        }
-
-        public static async void SendDiscordMessageStatic(string message, string channelID) {
-            await Discord.SendMessageAsync(Discord.GetChannelAsync(ulong.Parse(channelID)).Result, message);
-        }
-
         public void SendSimMessage(string msg)
         {
             try
