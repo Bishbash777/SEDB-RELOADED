@@ -432,7 +432,7 @@ namespace SEDiscordBridge
 
             //Remove to conecting list
             _conecting.Remove(obj.SteamId);
-            if (Config.Leave.Length > 0)
+            if (Config.Leave.Length > 0 && (!(obj.Name.StartsWith("[") && obj.Name.EndsWith("]") && obj.Name.Contains("..."))))
             {
                 await Task.Run(() => DDBridge.SendStatusMessage(obj.Name, Config.Leave, obj));
             }
