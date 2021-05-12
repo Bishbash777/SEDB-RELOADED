@@ -25,7 +25,7 @@ namespace SEDiscordBridge
         private string lastMessage = "";
         private ulong botId = 0;
         private int retry = 0;
-
+        public DiscordConfiguration DiscordConfiguration { get; set; }
         public bool Ready { get; set; } = false;
         public static DiscordClient Discord { get; set; }
 
@@ -76,23 +76,11 @@ namespace SEDiscordBridge
         {
             try
             {
-                // Windows Vista - 8.1
-                if (Environment.OSVersion.Platform.Equals(PlatformID.Win32NT) && Environment.OSVersion.Version.Major == 6)
-                {
-                    Discord = new DiscordClient(new DiscordConfiguration
-                    {
-                        Token = Plugin.Config.BotToken,
-                        TokenType = TokenType.Bot,
-                    });
-                }
-                else
-                {
-                    Discord = new DiscordClient(new DiscordConfiguration
-                    {
-                        Token = Plugin.Config.BotToken,
-                        TokenType = TokenType.Bot
-                    });
-                }
+                DiscordConfiguration = new DiscordConfiguration {
+                    Token = Plugin.Config.BotToken,
+                    TokenType = TokenType.Bot,
+                };
+                Discord = new DiscordClient(DiscordConfiguration);
             }
             catch (Exception) { }
 
