@@ -181,6 +181,7 @@
         <Label FontWeight="Bold" FontSize="16" Content="Mentions:" />
         <CheckBox Content="Allow in-game players mention Discord users?" Margin="3" IsChecked="{Binding MentOthers}" />
         <CheckBox Content="Allow in-game players ping @everyone?" Margin="3" IsChecked="{Binding MentEveryone}" />
+        <TextBlock Margin="3">NOTE: in-game mention requires <Bold>server members intent</Bold> enabled on your bot</TextBlock>
 
         <Label Height="20">
             <LineBreak/>
