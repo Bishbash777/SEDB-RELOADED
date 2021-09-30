@@ -476,9 +476,9 @@ namespace SEDiscordBridge
                                     continue;
                                 }
                             }
-                            catch (Exception)
+                            catch (Exception e)
                             {
-                                SEDiscordBridgePlugin.Log.Warn("Error on convert a member id to name on mention other players.");
+                                SEDiscordBridgePlugin.Log.Warn(e, "Error on convert a member id to name on mention other players.");
                                 continue;
                             }
                         }
