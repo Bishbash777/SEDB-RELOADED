@@ -8,7 +8,7 @@
     <OutputType>library</OutputType>
     <RootNamespace>SEDiscordBridge</RootNamespace>
     <AssemblyName>SEDiscordBridge</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -53,14 +53,14 @@
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DSharpPlus, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DSharpPlus.4.0.1\lib\netstandard2.0\DSharpPlus.dll</HintPath>
+    <Reference Include="DSharpPlus, Version=4.2.0.1113, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DSharpPlus.4.2.0-nightly-01113\lib\netstandard2.0\DSharpPlus.dll</HintPath>
     </Reference>
     <Reference Include="DSharpPlus.WebSocket.WebSocketSharp, Version=3.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DSharpPlus.WebSocket.WebSocketSharp.3.2.3\lib\net46\DSharpPlus.WebSocket.WebSocketSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Emzi0767.Common, Version=2.6.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Emzi0767.Common.2.6.1\lib\net45\Emzi0767.Common.dll</HintPath>
+    <Reference Include="Emzi0767.Common, Version=2.6.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Emzi0767.Common.2.6.2\lib\net45\Emzi0767.Common.dll</HintPath>
     </Reference>
     <Reference Include="HSNXT.DSharpPlus.Extended.Emoji, Version=3.0.198.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\HSNXT.DSharpPlus.Extended.Emoji.3.0.198\lib\netstandard2.0\HSNXT.DSharpPlus.Extended.Emoji.dll</HintPath>
@@ -96,15 +96,15 @@
       <HintPath>..\packages\Nito.Disposables.2.0.0\lib\netstandard2.0\Nito.Disposables.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\Torch\DedicatedServer64\NLog.dll</HintPath>
+      <HintPath>..\..\Torch\bin\x64\Debug\NLog.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Sandbox.Common">
-      <HintPath>..\..\..\..\Torch\DedicatedServer64\Sandbox.Common.dll</HintPath>
+      <HintPath>..\..\Torch\bin\x64\Debug\DedicatedServer64\Sandbox.Common.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Sandbox.Game">
-      <HintPath>..\..\..\..\Torch\DedicatedServer64\Sandbox.Game.dll</HintPath>
+      <HintPath>..\..\Torch\bin\x64\Debug\DedicatedServer64\Sandbox.Game.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Sandbox.Game.XmlSerializers">
@@ -132,6 +132,11 @@
     <Reference Include="System.Data">
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.IO.Compression">
       <Private>False</Private>
     </Reference>
@@ -156,6 +161,11 @@
     <Reference Include="System.Numerics" />
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.4.3.0\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
@@ -191,6 +201,12 @@
     <Reference Include="System.ServiceModel">
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Threading.Channels, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Channels.5.0.0\lib\net461\System.Threading.Channels.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="System.Transactions">
       <Private>False</Private>
     </Reference>
@@ -219,37 +235,37 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Torch">
-      <HintPath>..\..\..\..\Torch\Torch.dll</HintPath>
+      <HintPath>..\..\Torch\bin\x64\Debug\Torch.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Torch.API">
-      <HintPath>..\..\..\..\Torch\Torch.API.dll</HintPath>
+      <HintPath>..\..\Torch\bin\x64\Debug\Torch.API.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Torch.Server">
-      <HintPath>..\..\..\..\Torch\Torch.Server.exe</HintPath>
+      <HintPath>..\..\Torch\bin\x64\Debug\Torch.Server.exe</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="VRage">
-      <HintPath>..\..\..\TEST SERVER\DedicatedServer64\VRage.dll</HintPath>
+      <HintPath>..\..\Torch\bin\x64\Debug\DedicatedServer64\VRage.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="VRage.Dedicated">
-      <HintPath>..\..\..\..\Torch\DedicatedServer64\VRage.Dedicated.dll</HintPath>
+      <HintPath>..\..\Torch\bin\x64\Debug\DedicatedServer64\VRage.Dedicated.dll</HintPath>
     </Reference>
     <Reference Include="VRage.Game">
-      <HintPath>..\..\..\..\Torch\DedicatedServer64\VRage.Game.dll</HintPath>
+      <HintPath>..\..\Torch\bin\x64\Debug\DedicatedServer64\VRage.Game.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="VRage.Input">
       <HintPath>..\..\..\TEST SERVER\DedicatedServer64\VRage.Input.dll</HintPath>
     </Reference>
     <Reference Include="VRage.Library">
-      <HintPath>..\..\..\..\Torch\DedicatedServer64\VRage.Library.dll</HintPath>
+      <HintPath>..\..\Torch\bin\x64\Debug\DedicatedServer64\VRage.Library.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="VRage.Math">
-      <HintPath>..\..\..\TEST SERVER\DedicatedServer64\VRage.Math.dll</HintPath>
+      <HintPath>..\..\Torch\bin\x64\Debug\DedicatedServer64\VRage.Math.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase">
       <Private>False</Private>
