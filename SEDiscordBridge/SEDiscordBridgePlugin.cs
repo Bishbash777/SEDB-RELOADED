@@ -42,7 +42,7 @@ namespace SEDiscordBridge
         private UserControl _control;
         private TorchSessionManager _sessionManager;
         private ChatManagerServer _chatmanager;
-        private IChatManagerServer ChatManager => _chatmanager ?? (Torch.CurrentSession.Managers.GetManager<IChatManagerServer>());
+        public IChatManagerServer ChatManager => _chatmanager ?? (Torch.CurrentSession?.Managers?.GetManager<IChatManagerServer>());
         private IMultiplayerManagerBase _multibase;
         private readonly List<ulong> messageQueue = new List<ulong>();
         private Timer _timer;
@@ -98,9 +98,14 @@ namespace SEDiscordBridge
             {
                 if (!Config.Enabled) return;
 
+                var foundMutedPlayer = false;
 
-                if (msg.AuthorSteamId != null && !ChatManager.MutedUsers.Contains((ulong)msg.AuthorSteamId))
-                {
+                if (ChatManager != null) {
+                    if (msg.AuthorSteamId != null && ChatManager.MutedUsers.Contains((ulong)msg.AuthorSteamId))
+                        foundMutedPlayer = true;
+                }
+
+                if (msg.AuthorSteamId != null && !foundMutedPlayer) {
                     if (DEBUG)
                         Log.Info($"Recieved messages with valid SID {msg.Author} | {msg.Message} | {msg.Target} | {msg.AuthorSteamId}");
 
@@ -120,8 +125,7 @@ namespace SEDiscordBridge
                             break;
                     }
                 }
-                else if (Config.ServerToDiscord && msg.Channel.Equals(ChatChannel.Global) && !msg.Message.StartsWith(Config.CommandPrefix) && msg.Target.Equals(0))
-                {
+                else if (Config.ServerToDiscord && msg.Channel.Equals(ChatChannel.Global) && !msg.Message.StartsWith(Config.CommandPrefix) && msg.Target.Equals(0)) {
                     if(DEBUG)
                         Log.Info($"Recieved messages with no SID {msg.Author} | {msg.Message} | {msg.Target}");
 
@@ -141,11 +145,9 @@ namespace SEDiscordBridge
             switch (state)
             {
                 case TorchSessionState.Loaded:
-
                     //load
                     LoadSEDB();
                     if (DDBridge != null) DDBridge.SendStatusMessage(null, Config.Started);
-
                     break;
 
                 case TorchSessionState.Unloading:
@@ -352,7 +354,7 @@ namespace SEDiscordBridge
         // for counter within _timer_elapsed() 
         private int i = 0;
         private DateTime timerStart = new DateTime(0);
-        
+
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (!Config.Enabled || DDBridge == null) return;
@@ -376,18 +378,22 @@ namespace SEDiscordBridge
                     status = Regex.Replace(status, "{uptime@(.*?)}", upTime.ToString(format));
                 }
 
+                var playersCount = MySession.Static.Players.GetOnlinePlayers().Where(p => p.IsRealPlayer).Count();
+                var maxPlayers = MySession.Static.MaxPlayers;
+                var simSpeed = torchServer.SimulationRatio.ToString("0.00");
+
                 DDBridge.SendStatus(status
-                .Replace("{p}", MySession.Static.Players.GetOnlinePlayers().Where(p => p.IsRealPlayer).Count().ToString())
-                .Replace("{mp}", MySession.Static.MaxPlayers.ToString())
+                .Replace("{p}", playersCount.ToString())
+                .Replace("{mp}", maxPlayers.ToString())
                 .Replace("{mc}", MySession.Static.Mods.Count.ToString())
-                .Replace("{ss}", torchServer.SimulationRatio.ToString("0.00")));
+                .Replace("{ss}", simSpeed));
 
                 if (Config.SimPing)
                 {
-                    if (torchServer.SimulationRatio < float.Parse(Config.SimThresh))
+                    if (torchServer.SimulationRatio < Config.SimThresh)
                     {
                         //condition
-                        if (i == DiscordBridge.MinIncrement && DiscordBridge.Locked != 1 && MySession.Static.Players.GetOnlinePlayerCount() > 0)
+                        if (i == DiscordBridge.MinIncrement && DiscordBridge.Locked != 1 && playersCount > 0)
                         {
                             Task.Run(() => DDBridge.SendSimMessage(Config.SimMessage));
                             i = 0;
@@ -397,7 +403,7 @@ namespace SEDiscordBridge
                             Log.Warn("Simulation warning sent!");
                         }
 
-                        if (DiscordBridge.FirstWarning == 1 && DiscordBridge.CooldownNeutral.ToString("00") == "60" && MySession.Static.Players.GetOnlinePlayerCount() > 0)
+                        if (DiscordBridge.FirstWarning == 1 && DiscordBridge.CooldownNeutral.ToString("00") == "60" && playersCount > 0)
                         {
                             Task.Run(() => DDBridge.SendSimMessage(Config.SimMessage));
                             Log.Warn("Simulation warning sent!");
@@ -450,7 +456,7 @@ namespace SEDiscordBridge
 
             if (obj is MyCharacter character)
             {
-                var manager = Torch.CurrentSession.Managers.GetManager<IChatManagerServer>();
+                var manager = Torch.CurrentSession?.Managers?.GetManager<IChatManagerServer>();
                 Task.Run(() =>
                 {
                     System.Threading.Thread.Sleep(1000);
@@ -462,8 +468,12 @@ namespace SEDiscordBridge
                         {
                             //After spawn on world, remove from connecting list
                             if (messageQueue.Contains(character.ControlSteamId))
-                            	manager.SendMessageAsOther(null, "Did you know you can link your steamID to your Discord account? Enter '!sedb link' to get started!", VRageMath.Color.Yellow, character.ControlSteamId);
-                            messageQueue.Remove(character.ControlSteamId);
+                            {
+                                if (manager != null)
+                                    manager.SendMessageAsOther(null, "Did you know you can link your steamID to your Discord account? Enter '!sedb link' to get started!", VRageMath.Color.Yellow, character.ControlSteamId);
+ 
+                                messageQueue.Remove(character.ControlSteamId);
+                            }
                         }
                         _conecting.Remove(character.ControlSteamId);
                     }

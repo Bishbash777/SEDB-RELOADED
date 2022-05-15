@@ -149,15 +149,15 @@ namespace SEDiscordBridge
 
             if (Ready && Plugin.Config.ChatChannelId.Length > 0)
             {
+                var OriginalMsg = msg;
                 foreach (var chanID in Plugin.Config.ChatChannelId.Split(' ')) {
-
                     DiscordChannel chann = Discord.GetChannelAsync(ulong.Parse(chanID)).Result;
                     //mention
-                    msg = MentionNameToID(msg, chann);
+                    msg = MentionNameToID(OriginalMsg, chann);
 
-                    if (user != null) {
+                    if (user != null)
                         msg = Plugin.Config.Format.Replace("{msg}", msg).Replace("{p}", user).Replace("{ts}", TimeZone.CurrentTimeZone.ToLocalTime(DateTime.Now).ToString());
-                    }
+
                     try {
                         botId = Discord.SendMessageAsync(chann, msg.Replace("/n", "\n")).Result.Author.Id;
                     }
@@ -349,12 +349,13 @@ namespace SEDiscordBridge
                             sender = e.Guild.GetMemberAsync(e.Author.Id).Result.Username;
                     }
 
-                    var manager = Plugin.Torch.CurrentSession.Managers.GetManager<IChatManagerServer>();
-                    var dSender = Plugin.Config.Format2.Replace("{p}", sender);
-                    var msg = MentionIDToName(e.Message);
-                    lastMessage = dSender + msg;
-                    manager.SendMessageAsOther(dSender, msg,
-                        typeof(MyFontEnum).GetFields().Select(x => x.Name).Where(x => x.Equals(Plugin.Config.GlobalColor)).First());
+                    var manager = Plugin.Torch?.CurrentSession?.Managers?.GetManager<IChatManagerServer>();
+                    if (manager != null) {
+                        var dSender = Plugin.Config.Format2.Replace("{p}", sender);
+                        var msg = MentionIDToName(e.Message);
+                        lastMessage = dSender + msg;
+                    	manager.SendMessageAsOther(dSender, msg,
+                        	typeof(MyFontEnum).GetFields().Select(x => x.Name).Where(x => x.Equals(Plugin.Config.GlobalColor)).First());
                 }
 
                 //send to faction
@@ -381,12 +382,15 @@ namespace SEDiscordBridge
                                     else
                                         sender = e.Author.Username;
                                 }
-                                var manager = Plugin.Torch.CurrentSession.Managers.GetManager<IChatManagerServer>();
-                                var dSender = Plugin.Config.FacFormat2.Replace("{p}", sender);
-                                var msg = MentionIDToName(e.Message);
-                                lastMessage = dSender + msg;
-                                manager.SendMessageAsOther(dSender, msg,
-                                    typeof(MyFontEnum).GetFields().Select(x => x.Name).Where(x => x.Equals(Plugin.Config.FacColor)).First(), steamid);
+
+                                var manager = Plugin.Torch?.CurrentSession?.Managers?.GetManager<IChatManagerServer>();
+                                if (manager != null)
+                                {
+                                    var dSender = Plugin.Config.FacFormat2.Replace("{p}", sender);
+                                    var msg = MentionIDToName(e.Message);
+                                    lastMessage = dSender + msg;
+                                	manager.SendMessageAsOther(dSender, msg,
+                                    	typeof(MyFontEnum).GetFields().Select(x => x.Name).Where(x => x.Equals(Plugin.Config.FacColor)).First(), steamid);
                             }
                         }
                     }
