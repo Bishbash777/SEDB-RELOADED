@@ -11,6 +11,9 @@ namespace SEDiscordBridge
         private bool _preLoad = true;
         public bool PreLoad { get => _preLoad; set => SetValue(ref _preLoad, value); }
 
+        private bool _loadRanks = true;
+        public bool LoadRanks { get => _loadRanks; set => SetValue(ref _loadRanks, value); }
+
         private bool _embed = false;
         public bool Embed { get => _embed; set => SetValue(ref _embed, value); }
 
@@ -43,7 +46,7 @@ namespace SEDiscordBridge
 
         private bool _botToGame = false;
         public bool BotToGame { get => _botToGame; set => SetValue(ref _botToGame, value); }
-        
+
         private bool _serverToDiscord = false;
         public bool ServerToDiscord { get => _serverToDiscord; set => SetValue(ref _serverToDiscord, value); }
 
@@ -77,8 +80,8 @@ namespace SEDiscordBridge
         private string _simChannel = "";
         public string SimChannel { get => _simChannel; set => SetValue(ref _simChannel, value); }
 
-        private string _simThresh = "0.60";
-        public string SimThresh { get => _simThresh; set => SetValue(ref _simThresh, value); }
+        private float _simThresh = 0.60f;
+        public float SimThresh { get => _simThresh; set => SetValue(ref _simThresh, value); }
 
         private string _simMessage = "@here Simulation speed has dropped below threshold!";
         public string SimMessage { get => _simMessage; set => SetValue(ref _simMessage, value); }
