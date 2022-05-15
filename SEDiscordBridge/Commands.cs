@@ -4,14 +4,9 @@ using Torch.Commands;
 using Torch.Commands.Permissions;
 using VRage.Game.ModAPI;
 using System.Collections.Generic;
-using System.Web;
-using Sandbox;
 using Sandbox.Game;
-using Sandbox.ModAPI;
-using System.Diagnostics;
 using Sandbox.Game.World;
-using VRage.ModAPI;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace SEDiscordBridge
 {
