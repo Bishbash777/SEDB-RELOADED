@@ -5,9 +5,7 @@ using Sandbox.Game.World;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using Torch.API.Managers;
 using Torch.API.Session;
@@ -17,7 +15,7 @@ using VRage.Game.ModAPI;
 
 namespace SEDiscordBridge
 {
-    public class DiscordBridge
+    public partial class DiscordBridge
     {
         private static SEDiscordBridgePlugin Plugin;
         private readonly DiscordActivity game = new DiscordActivity();
@@ -78,6 +76,7 @@ namespace SEDiscordBridge
                     Token = Plugin.Config.BotToken,
                     TokenType = TokenType.Bot,
                 };
+
                 Discord = new DiscordClient(DiscordConfiguration);
             }
             catch (Exception) { }
@@ -95,12 +94,12 @@ namespace SEDiscordBridge
             return Task.CompletedTask;
         }
 
-        public void SendStatus(string status)
+        public void SendStatus(string status, UserStatus userStatus)
         {
             if (Ready && status?.Length > 0)
             {
                 game.Name = status;
-                Discord.UpdateStatusAsync(game);
+                Discord.UpdateStatusAsync(game, userStatus);
 
             }
         }
@@ -356,6 +355,7 @@ namespace SEDiscordBridge
                         lastMessage = dSender + msg;
                     	manager.SendMessageAsOther(dSender, msg,
                         	typeof(MyFontEnum).GetFields().Select(x => x.Name).Where(x => x.Equals(Plugin.Config.GlobalColor)).First());
+                    }
                 }
 
                 //send to faction
@@ -391,6 +391,7 @@ namespace SEDiscordBridge
                                     lastMessage = dSender + msg;
                                 	manager.SendMessageAsOther(dSender, msg,
                                     	typeof(MyFontEnum).GetFields().Select(x => x.Name).Where(x => x.Equals(Plugin.Config.FacColor)).First(), steamid);
+                                }
                             }
                         }
                     }

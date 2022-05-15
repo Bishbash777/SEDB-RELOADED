@@ -7,11 +7,8 @@ using Sandbox.Game.Gui;
 using Sandbox.Game.World;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -37,6 +34,9 @@ namespace SEDiscordBridge
         public Persistent<SEDBConfig> _config;
 
         public DiscordBridge DDBridge;
+
+        public bool IsRestart { get; set; } = false;
+
         public MethodInfo InjectDiscordIDMethod = null;
 
         private UserControl _control;
@@ -52,6 +52,7 @@ namespace SEDiscordBridge
         private readonly HashSet<ulong> _conecting = new HashSet<ulong>();
 
         public static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        public static SEDiscordBridgePlugin Static { get; private set; }
 
         /// <inheritdoc />
         public UserControl GetControl() => _control ??= new SEDBControl(this);
@@ -64,7 +65,7 @@ namespace SEDiscordBridge
         {
             base.Init(torch);
             torchServer = (TorchServer)torch;
-
+            Static = this;
             //Init config
             InitConfig();
 
@@ -138,7 +139,7 @@ namespace SEDiscordBridge
             }
         }
 
-        private void SessionChanged(ITorchSession session, TorchSessionState state)
+        public void SessionChanged(ITorchSession session, TorchSessionState state)
         {
             if (!Config.Enabled) return;
 
@@ -151,8 +152,16 @@ namespace SEDiscordBridge
                     break;
 
                 case TorchSessionState.Unloading:
-                    if (Config.Stopped.Length > 0)
-                        DDBridge.SendStatusMessage(null, Config.Stopped);
+                    if (IsRestart)
+                    {
+                        if (Config.Restarted.Length > 0)
+                            DDBridge.SendStatusMessage(null, Config.Restarted);
+                    }
+                    else
+                    {
+                        if (Config.Stopped.Length > 0)
+                            DDBridge.SendStatusMessage(null, Config.Stopped);
+                    }
                     break;
 
                 case TorchSessionState.Unloaded:
@@ -359,10 +368,8 @@ namespace SEDiscordBridge
         {
             if (!Config.Enabled || DDBridge == null) return;
 
-            if (Torch.CurrentSession == null)
-            {
-                DDBridge.SendStatus(Config.StatusPre);
-            }
+            if (Torch.CurrentSession == null || torchServer.SimulationRatio <= 0f)
+                DDBridge.SendStatus(Config.StatusPre, UserStatus.DoNotDisturb);
             else
             {
                 if (timerStart.Ticks == 0) timerStart = e.SignalTime;
@@ -386,7 +393,7 @@ namespace SEDiscordBridge
                 .Replace("{p}", playersCount.ToString())
                 .Replace("{mp}", maxPlayers.ToString())
                 .Replace("{mc}", MySession.Static.Mods.Count.ToString())
-                .Replace("{ss}", simSpeed));
+                .Replace("{ss}", simSpeed), playersCount > 0? UserStatus.Online : UserStatus.Idle);
 
                 if (Config.SimPing)
                 {

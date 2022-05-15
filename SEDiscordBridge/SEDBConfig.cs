@@ -62,6 +62,9 @@ namespace SEDiscordBridge
         private string _stopped = ":x: Server Stopped!";
         public string Stopped { get => _stopped; set => SetValue(ref _stopped, value); }
 
+		private string _restarted = ":arrows_counterclockwise: Server Go To Restart!";
+        public string Restarted { get => _restarted; set => SetValue(ref _restarted, value); }
+
         private bool _stripGPS = false;
         public bool StripGPS { get => _stripGPS; set => SetValue(ref _stripGPS, value); }
 
