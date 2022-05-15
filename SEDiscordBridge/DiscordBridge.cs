@@ -75,15 +75,25 @@ namespace SEDiscordBridge
                 DiscordConfiguration = new DiscordConfiguration {
                     Token = Plugin.Config.BotToken,
                     TokenType = TokenType.Bot,
+                    AutoReconnect = true,
+                    HttpTimeout = TimeSpan.FromSeconds(10),
+                    MessageCacheSize = 2048,
+                    LargeThreshold = 250,
                 };
 
                 Discord = new DiscordClient(DiscordConfiguration);
             }
             catch (Exception) { }
 
-            Discord.ConnectAsync();
+            if (!Plugin.Config.UseStatus)
+            {
+                Discord.DisconnectAsync();
+                Discord.ConnectAsync();
+            }
 
             Discord.MessageCreated += Discord_MessageCreated;
+            Discord.SocketClosed += Discord_SocketError;
+            Discord.Zombied += Discord_Zombied;
 
             Discord.Ready += async (c, e) =>
             {
@@ -100,8 +110,23 @@ namespace SEDiscordBridge
             {
                 game.Name = status;
                 Discord.UpdateStatusAsync(game, userStatus);
-
             }
+        }
+
+        private Task Discord_SocketError(DiscordClient discord, DSharpPlus.EventArgs.SocketCloseEventArgs e)
+        {
+            Ready = false;
+
+            SEDiscordBridgePlugin.Log.Warn($"SocketClose Event: {e}");
+
+            return Task.CompletedTask;
+        }
+
+        private Task Discord_Zombied(DiscordClient discord, DSharpPlus.EventArgs.ZombiedEventArgs e)
+        {
+            Discord.ReconnectAsync();
+
+            return Task.CompletedTask;
         }
 
         public static async void SendDiscordMessageStatic(string message) {

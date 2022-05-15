@@ -363,10 +363,46 @@ namespace SEDiscordBridge
         // for counter within _timer_elapsed() 
         private int i = 0;
         private DateTime timerStart = new DateTime(0);
+        private int TickRetry = 0;
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (!Config.Enabled || DDBridge == null) return;
+
+            if (DDBridge.Ready)
+                TickRetry = 0;
+
+            if (!DDBridge.Ready)
+            {
+                if (TickRetry == 5)
+                {
+                    DiscordBridge.Discord.DisconnectAsync();
+                    DiscordBridge.Discord.ConnectAsync();
+                }
+                else
+                {
+                    if (TickRetry > 24)
+                    {
+                        DDBridge.Ready = false;
+                        TickRetry = 0;
+                        DiscordBridge.Discord.DisconnectAsync();
+                        DiscordBridge.Discord.Dispose();
+                        DDBridge = new DiscordBridge(this);
+                        return;
+                    }
+                }
+
+                TickRetry++;
+            }
+            else if (DiscordBridge.Discord.Ping == 0)
+            {
+                DDBridge.Ready = false;
+                TickRetry = 0;
+                DiscordBridge.Discord.DisconnectAsync();
+                DiscordBridge.Discord.Dispose();
+                DDBridge = new DiscordBridge(this);
+                return;
+            }
 
             if (Torch.CurrentSession == null || torchServer.SimulationRatio <= 0f)
                 DDBridge.SendStatus(Config.StatusPre, UserStatus.DoNotDisturb);
