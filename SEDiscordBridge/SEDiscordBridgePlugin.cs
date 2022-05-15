@@ -247,7 +247,7 @@ namespace SEDiscordBridge
 
         public async Task<string> GetID(ulong steamid) {
             try {
-                Dictionary<string, string> kvp = utils.ParseQueryString(await utils.dataRequest(steamid.ToString(), Id.ToString(), "get_discord_id"));
+                Dictionary<string, string> kvp = Utils.ParseQueryString(await Utils.DataRequest(steamid.ToString(), Id.ToString(), "get_discord_id"));
                 if (kvp["error_code"] == "0") {
                     return kvp["data"];
                 }

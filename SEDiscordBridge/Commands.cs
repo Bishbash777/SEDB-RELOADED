@@ -22,9 +22,23 @@ namespace SEDiscordBridge
 
         public SEDiscordBridgePlugin Plugin => (SEDiscordBridgePlugin)Context.Plugin;
 
-        [Command("reload", "Reload current SEDB configuration")]
+        [Command("reload", "Reload SEDB Service")]
         [Permission(MyPromoteLevel.Admin)]
-        public void ReloadBridge() {
+        public void ReloadBridge()
+        {
+            if (Plugin.Config.Enabled) {
+                Plugin.UnloadSEDB();
+                Thread.Sleep(100);
+                Plugin.LoadSEDB();
+                Context.Respond("SEDB plugin reloaded!");
+            }
+            else
+                Context.Respond("SEDB plugin Disabled!");
+        }
+
+        [Command("reloadconfig", "Reload current SEDB configuration")]
+        [Permission(MyPromoteLevel.Admin)]
+        public void ReloadBridgeConfig() {
             Plugin.InitConfig();
             Plugin.DDBridge?.SendStatus(null);
 
@@ -45,7 +59,7 @@ namespace SEDiscordBridge
 
         [Command("link", "Link you steamID to a discord account")]
         [Permission(MyPromoteLevel.None)]
-        public async void link() {
+        public async void Link() {
             IMyPlayer player = Context.Player;
             if (player == null) {
                 Context.Respond("Command cannot be ran from console");
@@ -61,9 +75,11 @@ namespace SEDiscordBridge
                 FormUrlEncodedContent content = new FormUrlEncodedContent(pairs);
                 response = await clients.PostAsync("http://sedb.uk/discord/guid-manager.php", content);
             }
+
             string texts = await response.Content.ReadAsStringAsync();
-            utils utils = new utils();
-            Dictionary<string, string> kvp = utils.ParseQueryString(texts);
+            utils Utils = new Utils();
+            Dictionary<string, string> kvp = Utils.ParseQueryString(texts);
+
             if (kvp["existance"] == "false") {
                 MyVisualScriptLogicProvider.OpenSteamOverlay($"https://steamcommunity.com/linkfilter/?url=http://sedb.uk/?guid={kvp["guid"]}&steamid={Context.Player.SteamUserId}", Context.Player.IdentityId);
                 Context.Respond("A browser window has been opened... Please continue there.");
@@ -79,13 +95,13 @@ namespace SEDiscordBridge
         public async void GetUser(string playername) {
             try {
                 bool found = false;
-                utils utils = new utils();
-                var player = utils.GetPlayerByNameOrId(playername);
+                Utils utils = new Utils();
+                var player = Utils.GetPlayerByNameOrId(playername);
                 string uSteamid = "0";
 
 
                 if (player != null) {
-                    uSteamid = player.SteamUserId.ToString();
+                    uSteamid = player.Id.SteamId.ToString();
                     found = true;
                 }
 
@@ -100,7 +116,7 @@ namespace SEDiscordBridge
                         Context.Respond("Player not found or steamID not valid");
                 }
 
-                Dictionary<string, string> kvp = utils.ParseQueryString(await utils.dataRequest(uSteamid, Context.Plugin.Id.ToString(), "get_discord_name"));
+                Dictionary<string, string> kvp = Utils.ParseQueryString(await Utils.DataRequest(uSteamid, Context.Plugin.Id.ToString(), "get_discord_name"));
                 if (kvp["error_code"] == "0") {
                     Context.Respond($"The user's discord name is {kvp["data"]}");
                 }
@@ -127,7 +143,7 @@ namespace SEDiscordBridge
         [Permission(MyPromoteLevel.None)]
         public async void GetMyId() {
             string uSteamid = Context.Player.SteamUserId.ToString();
-            Dictionary<string, string> kvp = utils.ParseQueryString(await utils.dataRequest(uSteamid, Context.Plugin.Id.ToString(), "get_discord_name"));
+            Dictionary<string, string> kvp = Utils.ParseQueryString(await Utils.DataRequest(uSteamid, Context.Plugin.Id.ToString(), "get_discord_name"));
             if (kvp["error_code"] == "0") {
                 Context.Respond($"Your discord name is {kvp["data"]}");
             }
@@ -155,7 +171,7 @@ namespace SEDiscordBridge
                 return;
             }
             string uSteamid = Context.Player.SteamUserId.ToString();
-            await utils.dataRequest(uSteamid, Context.Plugin.Id.ToString(), "unlink");
+            await Utils.DataRequest(uSteamid, Context.Plugin.Id.ToString(), "unlink");
             Context.Respond("Your discord account has been unlinked! You may now link your account again");
         }
 

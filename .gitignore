@@ -17,3 +17,11 @@
 /.gitattributes
 /.vs/SEDiscordBridge/v16/.suo
 /.vs/SEDiscordBridge/v17
+
+SEDiscordBridge/bin/x64/Debug/
+
+SEDiscordBridge/bin/x64/Release/
+
+SEDiscordBridge/obj/x64/Debug/
+
+SEDiscordBridge/obj/x64/Release/
