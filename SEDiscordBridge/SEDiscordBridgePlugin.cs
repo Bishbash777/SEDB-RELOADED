@@ -1,5 +1,4 @@
 ﻿using NLog;
-using DSharpPlus;
 using DSharpPlus.Entities;
 using Sandbox.Game.Entities;
 using Sandbox.Game.Entities.Character;

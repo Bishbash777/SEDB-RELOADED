@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Sandbox.Game;
 using Sandbox.Game.World;
 using System.Threading;
+using DSharpPlus.Entities;
 
 namespace SEDiscordBridge
 {
@@ -14,7 +15,6 @@ namespace SEDiscordBridge
     public class Commands : CommandModule {
 
         public static readonly Logger Log = LogManager.GetCurrentClassLogger();
-
         public SEDiscordBridgePlugin Plugin => (SEDiscordBridgePlugin)Context.Plugin;
 
         [Command("reload", "Reload SEDB Service")]
@@ -35,7 +35,7 @@ namespace SEDiscordBridge
         [Permission(MyPromoteLevel.Admin)]
         public void ReloadBridgeConfig() {
             Plugin.InitConfig();
-            Plugin.DDBridge?.SendStatus(null);
+            Plugin.DDBridge?.SendStatus(null, UserStatus.DoNotDisturb);
 
             if (Plugin.Config.Enabled) {
                 if (Plugin.Torch.CurrentSession == null && !Plugin.Config.PreLoad) {
@@ -72,7 +72,7 @@ namespace SEDiscordBridge
             }
 
             string texts = await response.Content.ReadAsStringAsync();
-            utils Utils = new Utils();
+
             Dictionary<string, string> kvp = Utils.ParseQueryString(texts);
 
             if (kvp["existance"] == "false") {
@@ -82,7 +82,6 @@ namespace SEDiscordBridge
             else {
                 Context.Respond("Your SteamId has already been linked to discord, if this has not been authenticated by yourself... Please contact your admin");
             }
-
         }
 
         [Command("get")]
@@ -93,7 +92,6 @@ namespace SEDiscordBridge
                 Utils utils = new Utils();
                 var player = Utils.GetPlayerByNameOrId(playername);
                 string uSteamid = "0";
-
 
                 if (player != null) {
                     uSteamid = player.Id.SteamId.ToString();
@@ -169,7 +167,6 @@ namespace SEDiscordBridge
             await Utils.DataRequest(uSteamid, Context.Plugin.Id.ToString(), "unlink");
             Context.Respond("Your discord account has been unlinked! You may now link your account again");
         }
-
 
         [Command("enable", "To enable SEDB if disabled")]
         [Permission(MyPromoteLevel.Admin)]

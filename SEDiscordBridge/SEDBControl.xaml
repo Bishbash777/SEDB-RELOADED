@@ -85,8 +85,8 @@
         <CheckBox Content="Strip GPS points from Command Output" Margin="3" IsChecked="{Binding StripGPS}" ToolTip="Prevent GPS points returned by commands from appearing in Discord?"/>
         <Label Content="Command Permissions (leave blank to disable):" />
         <StackPanel Orientation="Horizontal">
-            <Button x:Name="btnAddPerm" Width="100" Content="Add Permission" Margin="3" Height="22" Click="btnAddPerm_Click" />
-            <Button x:Name="btnDelPerm" Width="100" Content="Delete Permission" Margin="3" Click="btnDelPerm_Click" />
+            <Button x:Name="btnAddPerm" Width="100" Content="Add Permission" Margin="3" Height="22" Click="BtnAddPerm_Click" />
+            <Button x:Name="btnDelPerm" Width="100" Content="Delete Permission" Margin="3" Click="BtnDelPerm_Click" />
         </StackPanel>
 
         <StackPanel Orientation="Horizontal">

@@ -25,3 +25,11 @@ SEDiscordBridge/bin/x64/Release/
 SEDiscordBridge/obj/x64/Debug/
 
 SEDiscordBridge/obj/x64/Release/
+
+.vs/Supercharger/_/
+
+SEDiscordBridge/bin/Release/
+
+SEDiscordBridge/obj/Release/
+
+*.dat
