@@ -47,6 +47,9 @@ namespace SEDiscordBridge
         private bool _serverToDiscord = false;
         public bool ServerToDiscord { get => _serverToDiscord; set => SetValue(ref _serverToDiscord, value); }
 
+        string _serverToDiscordFilter = "";
+        public string ServerToDiscordFilter { get => _serverToDiscordFilter; set => SetValue(ref _serverToDiscordFilter, value); }
+
         private string _serverName = "Server";
         public string ServerName { get => _serverName; set => SetValue(ref _serverName, value); }
 

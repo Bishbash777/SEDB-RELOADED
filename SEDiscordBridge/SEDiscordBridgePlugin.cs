@@ -120,7 +120,11 @@ namespace SEDiscordBridge
                             break;
                     }
                 }
-                else if (Config.ServerToDiscord && msg.Channel.Equals(ChatChannel.Global) && !msg.Message.StartsWith(Config.CommandPrefix) && msg.Target.Equals(0))
+                else if (Config.ServerToDiscord &&
+                         msg.Channel.Equals(ChatChannel.Global) && 
+                         !msg.Message.StartsWith(Config.CommandPrefix) &&
+                         msg.Target.Equals(0) &&
+                         !ServerToDiscordFilterMatch(msg))
                 {
                     if(DEBUG) {
                         Log.Info($"Recieved messages with no SID {msg.Author} | {msg.Message} | {msg.Target}");
@@ -132,6 +136,13 @@ namespace SEDiscordBridge
             {
                 Log.Fatal(e);
             }
+        }
+
+        private bool ServerToDiscordFilterMatch(TorchChatMessage msg)
+        {
+            if (string.IsNullOrEmpty(Config.ServerToDiscordFilter)) return false;
+            
+            return new Regex(Config.ServerToDiscordFilter).IsMatch(msg.Author);
         }
 
         private void SessionChanged(ITorchSession session, TorchSessionState state)

@@ -60,6 +60,10 @@
             <Label Content="Discord Messages Server Name"/>
         </StackPanel>
         <CheckBox Content="Server outputs to Discord" Margin="3" IsChecked="{Binding ServerToDiscord}" ToolTip="Send any in-game Server outputs to Discord?"/>
+        <StackPanel Orientation="Horizontal" IsEnabled="{Binding ServerToDiscord}">
+            <TextBox Width="180" Text="{Binding ServerToDiscordFilter}" Margin="3" />
+            <Label Content="Ignored server output author (name) regular expression"/>
+        </StackPanel>
         <CheckBox Content="Receive Other BOT Messages" Margin="3" IsChecked="{Binding BotToGame}" ToolTip="Receive and send bot messages to in-game?"/>
 
         <Label Height="20">
