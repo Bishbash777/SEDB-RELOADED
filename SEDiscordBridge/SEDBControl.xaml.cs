@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using DSharpPlus.Entities;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics;
@@ -48,7 +49,7 @@ namespace SEDiscordBridge
         private void SaveConfig_OnClick(object sender, RoutedEventArgs e)
         {
             Plugin.Save();
-            Plugin.DDBridge?.SendStatus(null);
+            Plugin.DDBridge?.SendStatus(null, UserStatus.DoNotDisturb);
 
             if (Plugin.Config.Enabled)
             {
@@ -119,7 +120,7 @@ namespace SEDiscordBridge
             }
         }
 
-        private void btnAddPerm_Click(object sender, RoutedEventArgs e)
+        private void BtnAddPerm_Click(object sender, RoutedEventArgs e)
         {
             if (txtPlayerName.Text.Length > 0 && txtPermission.Text.Length > 0)
             {
@@ -129,7 +130,7 @@ namespace SEDiscordBridge
             }
         }
 
-        private void btnDelPerm_Click(object sender, RoutedEventArgs e)
+        private void BtnDelPerm_Click(object sender, RoutedEventArgs e)
         {
             if (dgPermList.SelectedIndex >= 0)
             {

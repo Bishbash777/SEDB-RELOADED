@@ -4,14 +4,13 @@ using System.Linq;
 using Torch.API;
 using System.Net.Http;
 using System.Web;
-using VRage.Game.ModAPI;
 using Sandbox.Game.World;
 using System.Threading.Tasks;
 using System.Reflection;
 
 namespace SEDiscordBridge {
 
-    public class utils {
+    public class Utils {
         public static ITorchBase Torch { get; }
         public static bool debug = true;
         public static readonly Logger Log = LogManager.GetCurrentClassLogger();
@@ -25,7 +24,7 @@ namespace SEDiscordBridge {
             return nvc.AllKeys.ToDictionary(k => k, k => nvc[k]);
         }
 
-        public static IMyPlayer GetPlayerByNameOrId(string nameOrPlayerId) {
+        public static MyPlayer GetPlayerByNameOrId(string nameOrPlayerId) {
             if (!long.TryParse(nameOrPlayerId, out long id)) {
                 foreach (var identity in MySession.Static.Players.GetAllIdentities()) {
                     if (identity.DisplayName == nameOrPlayerId) {
@@ -44,7 +43,7 @@ namespace SEDiscordBridge {
         }
 
 
-        public static async Task<string> dataRequest(string uSteamid, string guid, string funciton) {
+        public static async Task<string> DataRequest(string uSteamid, string guid, string funciton) {
             HttpResponseMessage response;
             using (HttpClient clients = new HttpClient()) {
                 List<KeyValuePair<string, string>> pairs = new List<KeyValuePair<string, string>>
