@@ -369,10 +369,11 @@ namespace SEDiscordBridge
                     {
                         if (Plugin.Config.UseNicks)
                         {
-                            sender = e.Guild.GetMemberAsync(e.Author.Id).Result.Nickname;
+                            var user = e.Guild.GetMemberAsync(e.Author.Id).Result;
+                            sender = user.Nickname;
                             if (string.IsNullOrWhiteSpace(sender))
                             {
-                                sender = e.Guild.GetMemberAsync(e.Author.Id).Result.Username;
+                                sender = user.Username;
                             }
                         }
                         else
@@ -410,10 +411,11 @@ namespace SEDiscordBridge
                                 {
                                     if (Plugin.Config.UseNicks)
                                     {
-                                        sender = e.Guild.GetMemberAsync(e.Author.Id).Result.Nickname;
+                                        var user = e.Guild.GetMemberAsync(e.Author.Id).Result;
+                                        sender = user.Nickname;
                                         if (string.IsNullOrWhiteSpace(sender))
                                         {
-                                            sender = e.Author.Username;
+                                            sender = user.Username;
                                         }
                                     }
                                     else
