@@ -505,18 +505,6 @@ namespace SEDiscordBridge
                     if (_conecting.Contains(character.ControlSteamId) && character.IsPlayer && Config.Join.Length > 0)
                     {
                         DDBridge.SendStatusMessage(character.DisplayName, Config.Join);
-
-                        if (Config.LoadRanks)
-                        {
-                            //After spawn on world, remove from connecting list
-                            if (messageQueue.Contains(character.ControlSteamId))
-                            {
-                                if (manager != null)
-                                    manager.SendMessageAsOther(null, "Did you know you can link your steamID to your Discord account? Enter '!sedb link' to get started!", VRageMath.Color.Yellow, character.ControlSteamId);
- 
-                                messageQueue.Remove(character.ControlSteamId);
-                            }
-                        }
                         _conecting.Remove(character.ControlSteamId);
                     }
                 });
