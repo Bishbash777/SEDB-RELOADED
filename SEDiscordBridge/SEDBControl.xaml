@@ -123,6 +123,10 @@
             <Label Content="Server Stopped Message"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
+            <TextBox Width="180" Text="{Binding Restarted}" ToolTip="Message to show on server go to restart" Margin="3" />
+            <Label Content="Server Go To Restart Message"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
             <TextBox Width="180" Text="{Binding Connect}" Margin="3" ToolTip="Use {p} for player name. Leave empty to disable"/>
             <Label Content="Player Connected Message" />
         </StackPanel>
