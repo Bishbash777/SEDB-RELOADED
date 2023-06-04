@@ -58,6 +58,16 @@ namespace SEDiscordBridge
 
         public void Save() => _config?.Save();
 
+        private bool Reflected = false;
+        public override void Update()
+        {
+            if (!Reflected && Config.LoadRanks)
+            {
+                ReflectEssentials();
+                Reflected = true;
+            }
+        }
+
 
         /// <inheritdoc />
         public override void Init(ITorchBase torch)
@@ -281,8 +291,8 @@ namespace SEDiscordBridge
             if (DDBridge == null)
                 DDBridge = new DiscordBridge(this);
 
-            if (Config.LoadRanks)
-                ReflectEssentials();
+         //   if (Config.LoadRanks)
+           //     ReflectEssentials();
 
             if (Config.BotToken.Length <= 0)
             {
