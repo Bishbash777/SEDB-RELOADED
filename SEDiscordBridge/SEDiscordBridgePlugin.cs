@@ -208,36 +208,6 @@ namespace SEDiscordBridge
             else
                 Log.Info("Essentials Plugin not found! ");
         }
-
-        public async void InjectDiscordIDTask(IPlayer player) {
-            await Task.Run(() => {
-                InjectDiscordID(player);
-                return Task.CompletedTask;
-            });
-        }
-
-        public void InjectDiscordID(IPlayer player) {
-            try {
-                if (InjectDiscordIDMethod != null) {
-                    string discord_Id = Task.Run(async () => await GetID(player.SteamId)).Result;
-                    if (discord_Id != null) {
-                        var roledata = GetRoles(ulong.Parse(discord_Id));
-                        string discordName = DDBridge.GetName(ulong.Parse(discord_Id));
-                        Log.Info($"DiscordID for {player.Name} found! Retrieving role data and injecting into essentials...");
-                        InjectDiscordIDMethod.Invoke(null, new object[] { player.SteamId, discord_Id, discordName, roledata });
-                    }
-                    else if(!messageQueue.Contains(player.SteamId)) {
-                        messageQueue.Add(player.SteamId);
-                    }
-                }
-                else
-                    Log.Warn("Commincation to target method failed!");
-            }
-            catch (Exception e) {
-                Log.Warn(e, "failure");
-            }
-        }
-
         public Dictionary<ulong, string> GetRoles(ulong userID) {
             List<DiscordRole> discordRoles;
             Dictionary<ulong, string> roleData = new Dictionary<ulong, string>();
@@ -251,29 +221,6 @@ namespace SEDiscordBridge
                 }
             }
             return roleData;
-        }
-
-        public async Task<string> GetID(ulong steamid) {
-            try {
-                Dictionary<string, string> kvp = Utils.ParseQueryString(await Utils.DataRequest(steamid.ToString(), Id.ToString(), "get_discord_id"));
-                if (kvp["error_code"] == "0")
-                    return kvp["data"];
-
-                if (kvp["error_code"] == "1")          
-                    Log.Warn(kvp["error_message"]);
-
-                if (kvp["error_code"] == "2")
-                    Log.Warn("Unauthorised attempt to access data - Contact Bishbash777");
-
-                if (kvp["error_code"] == "3")
-                    Log.Warn(kvp["error_message"]);
-
-                return null;
-            }
-            catch (System.Exception e) {
-                Log.Warn(e.ToString());
-                return null;
-            }
         }
 
         public void LoadSEDB()
@@ -482,9 +429,6 @@ namespace SEDiscordBridge
         private async void Multibase_PlayerJoined(IPlayer obj)
         {
             if (!Config.Enabled) return;
-
-            if (Config.LoadRanks)
-            	InjectDiscordIDTask(obj);
 
             //Add to conecting list
             _conecting.Add(obj.SteamId);
