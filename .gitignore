@@ -33,3 +33,5 @@ SEDiscordBridge/bin/Release/
 SEDiscordBridge/obj/Release/
 
 *.dat
+/.vs/SEDiscordBridge/FileContentIndex
+/Build
