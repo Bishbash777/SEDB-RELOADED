@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Controls;
@@ -23,6 +24,7 @@ using Torch.Managers.ChatManager;
 using Torch.Server;
 using Torch.Session;
 using VRage.Game.ModAPI;
+using Timer = System.Timers.Timer;
 
 namespace SEDiscordBridge
 {
@@ -92,7 +94,7 @@ namespace SEDiscordBridge
             _uniqueMessages.Add(msg);
             _ = Task.Run(() =>
             {
-                Task.Delay(1000);
+                Thread.Sleep(1000);
                 _uniqueMessages.ForEach(SendAsync);
                 _uniqueMessages.Clear();
                 return Task.CompletedTask;
