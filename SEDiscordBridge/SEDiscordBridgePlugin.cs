@@ -43,7 +43,7 @@ namespace SEDiscordBridge
         private ChatManagerServer _chatmanager;
         public IChatManagerServer ChatManager => _chatmanager ?? (Torch.CurrentSession?.Managers?.GetManager<IChatManagerServer>());
         private IMultiplayerManagerBase _multibase;
-        private readonly List<ulong> messageQueue = new List<ulong>();
+        private readonly HashSet<TorchChatMessage> _uniqueMessages = new HashSet<TorchChatMessage>(new MessageComparer());
         private Timer _timer;
         public bool DEBUG = false;
         private TorchServer torchServer;
@@ -87,9 +87,16 @@ namespace SEDiscordBridge
                 _config = new Persistent<SEDBConfig>(Path.Combine(StoragePath, "SEDiscordBridge.cfg"), new SEDBConfig());
         }
 
-        private void MessageRecieved(TorchChatMessage msg, ref bool consumed)
+        private void MessageReceived(TorchChatMessage msg, ref bool consumed)
         {
-            _ = Task.Run(() => { SendAsync(msg); return Task.CompletedTask; });
+            _uniqueMessages.Add(msg);
+            _ = Task.Run(() =>
+            {
+                Task.Delay(1000);
+                _uniqueMessages.ForEach(SendAsync);
+                _uniqueMessages.Clear();
+                return Task.CompletedTask;
+            });
         }
 
         private async void SendAsync(TorchChatMessage msg)
@@ -269,7 +276,7 @@ namespace SEDiscordBridge
                     if (_chatmanager == null)
                         Log.Warn("No chat manager loaded!");
                     else
-                        _chatmanager.MessageRecieved += MessageRecieved;
+                        _chatmanager.MessageRecieved += MessageReceived;
                 }
                 InitPost();
             }
@@ -472,11 +479,25 @@ namespace SEDiscordBridge
             _sessionManager = null;
 
             if (_chatmanager != null)
-                _chatmanager.MessageRecieved -= MessageRecieved;
+                _chatmanager.MessageRecieved -= MessageReceived;
 
             _chatmanager = null;
 
             StopTimer();
+        }
+    }
+
+    class MessageComparer : IEqualityComparer<TorchChatMessage>
+    {
+        public bool Equals(TorchChatMessage m1, TorchChatMessage m2)
+        {
+            return Equals(m1.Message, m2.Message)
+                   && Equals(m1.Author, m2.Author);
+        }
+
+        public int GetHashCode(TorchChatMessage m)
+        {
+            return m.Message.GetHashCode();
         }
     }
 }
