@@ -45,7 +45,7 @@ namespace SEDiscordBridge
         private ChatManagerServer _chatmanager;
         public IChatManagerServer ChatManager => _chatmanager ?? (Torch.CurrentSession?.Managers?.GetManager<IChatManagerServer>());
         private IMultiplayerManagerBase _multibase;
-        private readonly HashSet<TorchChatMessage> _uniqueMessages = new HashSet<TorchChatMessage>(new MessageComparer());
+        private readonly List<TorchChatMessage> _uniqueMessages = new List<TorchChatMessage>();
         private Timer _timer;
         public bool DEBUG = false;
         private TorchServer torchServer;
@@ -91,12 +91,25 @@ namespace SEDiscordBridge
 
         private void MessageReceived(TorchChatMessage msg, ref bool consumed)
         {
-            _uniqueMessages.Add(msg);
+
             _ = Task.Run(() =>
             {
+                lock (_uniqueMessages)
+                {
+                    if (_uniqueMessages.Any(message => Equals(message.Message,msg.Message) && Equals(message.Author,msg.Author)))
+                    {
+                        return Task.CompletedTask;
+                    }
+                    _uniqueMessages.Add(msg);
+                }
+
                 Thread.Sleep(1000);
-                _uniqueMessages.ForEach(SendAsync);
-                _uniqueMessages.Clear();
+                
+                lock (_uniqueMessages)
+                {
+                    _uniqueMessages.ForEach(SendAsync);
+                    _uniqueMessages.Clear();
+                }
                 return Task.CompletedTask;
             });
         }
@@ -486,20 +499,6 @@ namespace SEDiscordBridge
             _chatmanager = null;
 
             StopTimer();
-        }
-    }
-
-    class MessageComparer : IEqualityComparer<TorchChatMessage>
-    {
-        public bool Equals(TorchChatMessage m1, TorchChatMessage m2)
-        {
-            return Equals(m1.Message, m2.Message)
-                   && Equals(m1.Author, m2.Author);
-        }
-
-        public int GetHashCode(TorchChatMessage m)
-        {
-            return m.Message.GetHashCode();
         }
     }
 }
