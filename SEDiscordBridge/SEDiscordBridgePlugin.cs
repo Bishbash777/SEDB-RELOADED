@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Controls;
@@ -23,6 +24,7 @@ using Torch.Managers.ChatManager;
 using Torch.Server;
 using Torch.Session;
 using VRage.Game.ModAPI;
+using Timer = System.Timers.Timer;
 
 namespace SEDiscordBridge
 {
@@ -43,7 +45,7 @@ namespace SEDiscordBridge
         private ChatManagerServer _chatmanager;
         public IChatManagerServer ChatManager => _chatmanager ?? (Torch.CurrentSession?.Managers?.GetManager<IChatManagerServer>());
         private IMultiplayerManagerBase _multibase;
-        private readonly List<ulong> messageQueue = new List<ulong>();
+        private readonly List<TorchChatMessage> _uniqueMessages = new List<TorchChatMessage>();
         private Timer _timer;
         public bool DEBUG = false;
         private TorchServer torchServer;
@@ -87,9 +89,29 @@ namespace SEDiscordBridge
                 _config = new Persistent<SEDBConfig>(Path.Combine(StoragePath, "SEDiscordBridge.cfg"), new SEDBConfig());
         }
 
-        private void MessageRecieved(TorchChatMessage msg, ref bool consumed)
+        private void MessageReceived(TorchChatMessage msg, ref bool consumed)
         {
-            _ = Task.Run(() => { SendAsync(msg); return Task.CompletedTask; });
+
+            _ = Task.Run(() =>
+            {
+                lock (_uniqueMessages)
+                {
+                    if (_uniqueMessages.Any(message => Equals(message.Message,msg.Message) && Equals(message.Author,msg.Author)))
+                    {
+                        return Task.CompletedTask;
+                    }
+                    _uniqueMessages.Add(msg);
+                }
+
+                Thread.Sleep(1000);
+                
+                lock (_uniqueMessages)
+                {
+                    _uniqueMessages.ForEach(SendAsync);
+                    _uniqueMessages.Clear();
+                }
+                return Task.CompletedTask;
+            });
         }
 
         private async void SendAsync(TorchChatMessage msg)
@@ -269,7 +291,7 @@ namespace SEDiscordBridge
                     if (_chatmanager == null)
                         Log.Warn("No chat manager loaded!");
                     else
-                        _chatmanager.MessageRecieved += MessageRecieved;
+                        _chatmanager.MessageRecieved += MessageReceived;
                 }
                 InitPost();
             }
@@ -472,7 +494,7 @@ namespace SEDiscordBridge
             _sessionManager = null;
 
             if (_chatmanager != null)
-                _chatmanager.MessageRecieved -= MessageRecieved;
+                _chatmanager.MessageRecieved -= MessageReceived;
 
             _chatmanager = null;
 
