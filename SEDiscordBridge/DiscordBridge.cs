@@ -77,7 +77,7 @@ namespace SEDiscordBridge
                     TokenType = TokenType.Bot,
                     AutoReconnect = true,
                     HttpTimeout = TimeSpan.FromSeconds(10),
-                    MessageCacheSize = 2048,
+                    MessageCacheSize = 4096,
                     LargeThreshold = 250,
                 };
 
@@ -93,7 +93,7 @@ namespace SEDiscordBridge
 
             Discord.MessageCreated += Discord_MessageCreated;
             Discord.SocketClosed += Discord_SocketError;
-            Discord.Zombied += Discord_Zombied;
+            //Discord.Zombied += Discord_Zombied;
 
             Discord.Ready += async (c, e) =>
             {
@@ -116,25 +116,15 @@ namespace SEDiscordBridge
         private Task Discord_SocketError(DiscordClient discord, DSharpPlus.EventArgs.SocketCloseEventArgs e)
         {
             Ready = false;
-
-            SEDiscordBridgePlugin.Log.Warn($"SocketClose Event: {e}");
-
-            return Task.CompletedTask;
-        }
-
-        private Task Discord_Zombied(DiscordClient discord, DSharpPlus.EventArgs.ZombiedEventArgs e)
-        {
-            Discord.ReconnectAsync();
-
             return Task.CompletedTask;
         }
 
         public static async void SendDiscordMessageStatic(string message) {
 
             string channelToPostIn = Plugin.Config.ChatChannelId;
-            if (channelToPostIn == string.Empty) {
+
+            if (channelToPostIn == string.Empty)
                 channelToPostIn = Plugin.Config.StatusChannelId;
-            }
 
             if(channelToPostIn == string.Empty) {
                 SEDiscordBridgePlugin.Log.Error("StatusChannelID or ChatChannelID MUST have a value. Cannot use SendDiscordMessageStatic.");
