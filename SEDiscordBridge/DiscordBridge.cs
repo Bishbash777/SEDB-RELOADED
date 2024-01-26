@@ -308,18 +308,17 @@ namespace SEDiscordBridge
                         if (Plugin.Config.CommandPerms.Count() > 0)
                         {
                             var userId = e.Author.Id.ToString();
-                            bool hasRolePerm = e.Guild.GetMemberAsync(e.Author.Id).Result.Roles.Where(r => Plugin.Config.CommandPerms.Where(c => c.Split(':')[0].Equals(r.Id.ToString())).Any()).Any();
+                            var roleIds = e.Guild.GetMemberAsync(e.Author.Id).Result.Roles.Select(r => r.Id.ToString()).ToList();
 
-                            if (Plugin.Config.CommandPerms.Where(c =>
+                            if (Plugin.Config.CommandPerms.Any(c =>
                             {
-                                if (!hasRolePerm && !c.Split(':')[0].Equals(userId))
+                                var AllowedId = c.Split(':')[0];
+                                var AllowedCommand = c.Split(':')[1];
+                                if ((AllowedId.Equals(userId) || roleIds.Contains(AllowedId)) && (AllowedCommand.Equals(cmd) || AllowedCommand.Equals("*")))
                                     return true;
-                                else
-                                if ((c.Split(':')[0].Equals(userId) || hasRolePerm) && (c.Split(':')[1].Equals(cmd) || c.Split(':')[1].Equals("*")))
-                                    return false;
 
-                                return true;
-                            }).Any())
+                                return false;
+                            }) == false)
                             {
                                 SendCmdResponse($"No permission for command: {cmd}", e.Channel, DiscordColor.Red, cmd);
                                 return Task.CompletedTask;
