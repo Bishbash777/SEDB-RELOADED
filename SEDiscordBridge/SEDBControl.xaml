@@ -32,11 +32,17 @@
         <Label Content="*After setup the token, save and restart the torch." />
 
         <StackPanel Orientation="Horizontal" Visibility="{Binding TokenVisibleState}">
-            <TextBox Width="420" Text="{Binding BotToken}" ToolTip="You need to create a discord bot to get the token" Margin="3"/>
+            <TextBox Width="420" Text="{Binding BotTokenConfig}" ToolTip="You need to create a discord bot to get the token" Margin="3"/>
             <Label Content="Discord Bot Token"/>
         </StackPanel>
         <Label>
-            <TextBlock><Run Text="*If the token is not visible here, you need to enable or change directly on config file."/><LineBreak/><Run Text="Change between 'Visible' and 'Collapsed'."/></TextBlock>
+            <TextBlock>
+                <Run Text="*If the token is not visible here, you need to enable or change directly on config file."/>
+                <LineBreak/>
+                <Run Text="Change between 'Visible' and 'Collapsed'."/>
+                <LineBreak/>
+                <Run Text="* If token is not provided here, plugin will try to read environment variable `DISCORD_TOKEN`."/>
+            </TextBlock>
         </Label>
         <Label FontWeight="Bold" FontSize="16" Content="Chat configuration:" />
         <StackPanel Orientation="Horizontal">

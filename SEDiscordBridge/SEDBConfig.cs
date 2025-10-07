@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using Torch;
 
 namespace SEDiscordBridge
@@ -21,7 +22,14 @@ namespace SEDiscordBridge
         public bool DisplaySteamId { get => _displaySteamId; set => SetValue(ref _displaySteamId, value); }
 
         private string _token = "";
-        public string BotToken { get => _token; set => SetValue(ref _token, value); }
+        public string BotToken => !string.IsNullOrEmpty(_token) ? _token : Environment.GetEnvironmentVariable("DISCORD_TOKEN") ?? "";
+
+        public string BotTokenConfig
+        {
+            get => _token;
+            set => SetValue(ref _token, value);
+        }
+
 
         private string _chatChannelID = "";
         public string ChatChannelId { get => _chatChannelID; set => SetValue(ref _chatChannelID, value); }
