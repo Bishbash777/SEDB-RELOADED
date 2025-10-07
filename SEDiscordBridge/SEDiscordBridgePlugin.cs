@@ -253,7 +253,7 @@ namespace SEDiscordBridge
             if (Config.LoadRanks)
                 ReflectEssentials();
 
-            if (Config.BotToken.Length <= 0)
+            if (Config.BotTokenConfig.Length <= 0)
             {
                 Log.Error("No BOT token set, plugin will not work at all! Add your bot TOKEN, save and restart torch.");
                 return;

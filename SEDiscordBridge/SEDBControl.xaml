@@ -32,7 +32,7 @@
         <Label Content="*After setup the token, save and restart the torch." />
 
         <StackPanel Orientation="Horizontal" Visibility="{Binding TokenVisibleState}">
-            <TextBox Width="420" Text="{Binding BotTokenConfig}" ToolTip="You need to create a discord bot to get the token" Margin="3"/>
+            <TextBox Width="420" Text="{Binding BotToken}" ToolTip="You need to create a discord bot to get the token" Margin="3"/>
             <Label Content="Discord Bot Token"/>
         </StackPanel>
         <Label>

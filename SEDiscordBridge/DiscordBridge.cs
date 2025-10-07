@@ -67,13 +67,13 @@ namespace SEDiscordBridge
 
         private Task RegisterDiscord()
         {
-            if (Plugin.Config.BotToken == null || Plugin.Config.BotToken == string.Empty)
+            if (Plugin.Config.BotTokenConfig == null || Plugin.Config.BotTokenConfig == string.Empty)
                 return Task.CompletedTask;
 
             try
             {
                 DiscordConfiguration = new DiscordConfiguration {
-                    Token = Plugin.Config.BotToken,
+                    Token = Plugin.Config.BotTokenConfig,
                     TokenType = TokenType.Bot,
                     AutoReconnect = true,
                     HttpTimeout = TimeSpan.FromSeconds(10),
